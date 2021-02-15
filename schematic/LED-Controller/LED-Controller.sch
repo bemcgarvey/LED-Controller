@@ -1,0 +1,365 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr A 11000 8500
+encoding utf-8
+Sheet 1 1
+Title "LED Controller"
+Date "2021-02-14"
+Rev "V1"
+Comp "Quantum Empbedded Systems"
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L Connector:Conn_01x03_Male J?
+U 1 1 602A7478
+P 5250 950
+F 0 "J?" V 5312 1094 50  0000 L CNN
+F 1 "Serial Connect" V 5403 1094 50  0000 L CNN
+F 2 "" H 5250 950 50  0001 C CNN
+F 3 "~" H 5250 950 50  0001 C CNN
+	1    5250 950 
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:Screw_Terminal_01x02 J?
+U 1 1 602A7CC6
+P 1050 2400
+F 0 "J?" H 1050 2150 50  0000 C CNN
+F 1 "5V Power" H 1050 2550 50  0000 C CNN
+F 2 "" H 1050 2400 50  0001 C CNN
+F 3 "~" H 1050 2400 50  0001 C CNN
+	1    1050 2400
+	-1   0    0    1   
+$EndComp
+$Comp
+L Connector:Conn_01x02_Male J?
+U 1 1 602AB8D2
+P 7900 1000
+F 0 "J?" H 8008 1181 50  0000 C CNN
+F 1 "Enable Pull-ups" V 7800 1000 50  0000 C CNN
+F 2 "" H 7900 1000 50  0001 C CNN
+F 3 "~" H 7900 1000 50  0001 C CNN
+	1    7900 1000
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 602ABE5F
+P 1600 2450
+F 0 "C?" H 1715 2496 50  0000 L CNN
+F 1 "1 uF" H 1715 2405 50  0000 L CNN
+F 2 "" H 1638 2300 50  0001 C CNN
+F 3 "~" H 1600 2450 50  0001 C CNN
+	1    1600 2450
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 602AC63F
+P 8100 1550
+F 0 "R?" H 8170 1596 50  0000 L CNN
+F 1 "R" H 8170 1505 50  0000 L CNN
+F 2 "" V 8030 1550 50  0001 C CNN
+F 3 "~" H 8100 1550 50  0001 C CNN
+	1    8100 1550
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 602ACC53
+P 8100 2050
+F 0 "R?" H 8170 2096 50  0000 L CNN
+F 1 "R" H 8170 2005 50  0000 L CNN
+F 2 "" V 8030 2050 50  0001 C CNN
+F 3 "~" H 8100 2050 50  0001 C CNN
+	1    8100 2050
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 602AD426
+P 8100 2550
+F 0 "R?" H 8170 2596 50  0000 L CNN
+F 1 "R" H 8170 2505 50  0000 L CNN
+F 2 "" V 8030 2550 50  0001 C CNN
+F 3 "~" H 8100 2550 50  0001 C CNN
+	1    8100 2550
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 602ADA40
+P 8100 3100
+F 0 "R?" H 8170 3146 50  0000 L CNN
+F 1 "R" H 8170 3055 50  0000 L CNN
+F 2 "" V 8030 3100 50  0001 C CNN
+F 3 "~" H 8100 3100 50  0001 C CNN
+	1    8100 3100
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 602AE09C
+P 8100 3650
+F 0 "R?" H 8170 3696 50  0000 L CNN
+F 1 "R" H 8170 3605 50  0000 L CNN
+F 2 "" V 8030 3650 50  0001 C CNN
+F 3 "~" H 8100 3650 50  0001 C CNN
+	1    8100 3650
+	1    0    0    -1  
+$EndComp
+$Comp
+L MCU_Microchip_PIC18:PIC18F26K22-xSO U?
+U 1 1 602AEAF8
+P 4450 3250
+F 0 "U?" H 4450 4431 50  0000 C CNN
+F 1 "PIC18F26K22-xSO" H 4450 4340 50  0000 C CNN
+F 2 "Package_SO:SOIC-28W_7.5x17.9mm_P1.27mm" H 4650 3250 50  0001 C CNN
+F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/40001412G.pdf" H 4650 3250 50  0001 C CNN
+	1    4450 3250
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 602AFB39
+P 3900 4800
+F 0 "C?" H 4015 4846 50  0000 L CNN
+F 1 "C" H 4015 4755 50  0000 L CNN
+F 2 "" H 3938 4650 50  0001 C CNN
+F 3 "~" H 3900 4800 50  0001 C CNN
+	1    3900 4800
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:VDD #PWR?
+U 1 1 602B01BA
+P 1600 2100
+F 0 "#PWR?" H 1600 1950 50  0001 C CNN
+F 1 "VDD" H 1615 2273 50  0000 C CNN
+F 2 "" H 1600 2100 50  0001 C CNN
+F 3 "" H 1600 2100 50  0001 C CNN
+	1    1600 2100
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 602B0C64
+P 1600 2750
+F 0 "#PWR?" H 1600 2500 50  0001 C CNN
+F 1 "GND" H 1605 2577 50  0000 C CNN
+F 2 "" H 1600 2750 50  0001 C CNN
+F 3 "" H 1600 2750 50  0001 C CNN
+	1    1600 2750
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 602B1183
+P 2800 4650
+F 0 "#PWR?" H 2800 4400 50  0001 C CNN
+F 1 "GND" H 2805 4477 50  0000 C CNN
+F 2 "" H 2800 4650 50  0001 C CNN
+F 3 "" H 2800 4650 50  0001 C CNN
+	1    2800 4650
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1600 2300 1600 2100
+Wire Wire Line
+	1250 2300 1600 2300
+Connection ~ 1600 2300
+Wire Wire Line
+	1600 2750 1600 2650
+Wire Wire Line
+	1250 2400 1400 2400
+Wire Wire Line
+	1400 2400 1400 2650
+Wire Wire Line
+	1400 2650 1600 2650
+Connection ~ 1600 2650
+Wire Wire Line
+	1600 2650 1600 2600
+$Comp
+L Connector:Conn_01x03_Male J?
+U 1 1 602AAFA4
+P 9150 3800
+F 0 "J?" H 9122 3732 50  0000 R CNN
+F 1 "String5" H 9122 3823 50  0000 R CNN
+F 2 "" H 9150 3800 50  0001 C CNN
+F 3 "~" H 9150 3800 50  0001 C CNN
+	1    9150 3800
+	-1   0    0    1   
+$EndComp
+$Comp
+L Connector:Conn_01x03_Male J?
+U 1 1 602AA6DA
+P 9150 3250
+F 0 "J?" H 9122 3182 50  0000 R CNN
+F 1 "String4" H 9122 3273 50  0000 R CNN
+F 2 "" H 9150 3250 50  0001 C CNN
+F 3 "~" H 9150 3250 50  0001 C CNN
+	1    9150 3250
+	-1   0    0    1   
+$EndComp
+$Comp
+L Connector:Conn_01x03_Male J?
+U 1 1 602A9B25
+P 9150 2700
+F 0 "J?" H 9122 2632 50  0000 R CNN
+F 1 "String3" H 9122 2723 50  0000 R CNN
+F 2 "" H 9150 2700 50  0001 C CNN
+F 3 "~" H 9150 2700 50  0001 C CNN
+	1    9150 2700
+	-1   0    0    1   
+$EndComp
+$Comp
+L Connector:Conn_01x03_Male J?
+U 1 1 602A9004
+P 9150 2200
+F 0 "J?" H 9122 2132 50  0000 R CNN
+F 1 "String2" H 9122 2223 50  0000 R CNN
+F 2 "" H 9150 2200 50  0001 C CNN
+F 3 "~" H 9150 2200 50  0001 C CNN
+	1    9150 2200
+	-1   0    0    1   
+$EndComp
+$Comp
+L Connector:Conn_01x03_Male J?
+U 1 1 602A882C
+P 9150 1700
+F 0 "J?" H 9122 1632 50  0000 R CNN
+F 1 "String1" H 9122 1723 50  0000 R CNN
+F 2 "" H 9150 1700 50  0001 C CNN
+F 3 "~" H 9150 1700 50  0001 C CNN
+	1    9150 1700
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:VDD #PWR?
+U 1 1 602C05A1
+P 8450 1200
+F 0 "#PWR?" H 8450 1050 50  0001 C CNN
+F 1 "VDD" H 8465 1373 50  0000 C CNN
+F 2 "" H 8450 1200 50  0001 C CNN
+F 3 "" H 8450 1200 50  0001 C CNN
+	1    8450 1200
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 602C0B28
+P 8700 4250
+F 0 "#PWR?" H 8700 4000 50  0001 C CNN
+F 1 "GND" H 8705 4077 50  0000 C CNN
+F 2 "" H 8700 4250 50  0001 C CNN
+F 3 "" H 8700 4250 50  0001 C CNN
+	1    8700 4250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8700 4250 8700 3900
+Wire Wire Line
+	8700 3900 8950 3900
+Wire Wire Line
+	8950 3350 8700 3350
+Wire Wire Line
+	8700 3350 8700 3900
+Connection ~ 8700 3900
+Wire Wire Line
+	8950 2800 8700 2800
+Wire Wire Line
+	8700 2800 8700 3350
+Connection ~ 8700 3350
+Wire Wire Line
+	8950 2300 8700 2300
+Wire Wire Line
+	8700 2300 8700 2800
+Connection ~ 8700 2800
+Wire Wire Line
+	8950 1800 8700 1800
+Wire Wire Line
+	8700 1800 8700 2300
+Connection ~ 8700 2300
+Wire Wire Line
+	8950 1600 8450 1600
+Wire Wire Line
+	8450 1600 8450 1350
+Wire Wire Line
+	8950 2100 8450 2100
+Wire Wire Line
+	8450 2100 8450 1600
+Connection ~ 8450 1600
+Wire Wire Line
+	8950 2600 8450 2600
+Wire Wire Line
+	8450 2600 8450 2100
+Connection ~ 8450 2100
+Wire Wire Line
+	8950 3150 8450 3150
+Wire Wire Line
+	8450 3150 8450 2600
+Connection ~ 8450 2600
+Wire Wire Line
+	8950 3700 8450 3700
+Wire Wire Line
+	8450 3700 8450 3150
+Connection ~ 8450 3150
+Wire Wire Line
+	8950 3800 8100 3800
+Wire Wire Line
+	8950 3250 8100 3250
+Wire Wire Line
+	8950 2700 8100 2700
+Wire Wire Line
+	8950 2200 8100 2200
+Wire Wire Line
+	8950 1700 8100 1700
+Wire Wire Line
+	7900 1200 8300 1200
+Wire Wire Line
+	8300 1200 8300 1350
+Wire Wire Line
+	8300 1350 8450 1350
+Connection ~ 8450 1350
+Wire Wire Line
+	8450 1350 8450 1200
+Wire Wire Line
+	8100 1400 7800 1400
+Wire Wire Line
+	7800 1400 7800 1200
+Wire Wire Line
+	8100 1900 7800 1900
+Wire Wire Line
+	7800 1900 7800 1400
+Connection ~ 7800 1400
+Wire Wire Line
+	8100 2400 7800 2400
+Wire Wire Line
+	7800 2400 7800 1900
+Connection ~ 7800 1900
+Wire Wire Line
+	8100 2950 7800 2950
+Wire Wire Line
+	7800 2950 7800 2400
+Connection ~ 7800 2400
+Wire Wire Line
+	8100 3500 7800 3500
+Wire Wire Line
+	7800 3500 7800 2950
+Connection ~ 7800 2950
+$Comp
+L Connector:Conn_01x05_Male J?
+U 1 1 602D318D
+P 4700 5850
+F 0 "J?" V 4808 6231 50  0000 C CNN
+F 1 "ICSP" V 4800 5500 50  0000 C CNN
+F 2 "" H 4700 5850 50  0001 C CNN
+F 3 "~" H 4700 5850 50  0001 C CNN
+	1    4700 5850
+	0    -1   -1   0   
+$EndComp
+$EndSCHEMATC
