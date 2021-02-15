@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name LEDStringConn)(type KiCad)(uri C:/Projects/LED-Controller/LEDStringConn.pretty)(options "")(descr ""))
+)

@@ -40,7 +40,7 @@ L Device:C C1
 U 1 1 602ABE5F
 P 1600 2450
 F 0 "C1" H 1715 2496 50  0000 L CNN
-F 1 "1 uF" H 1715 2405 50  0000 L CNN
+F 1 "10 uF" H 1715 2405 50  0000 L CNN
 F 2 "Capacitor_SMD:C_1206_3216Metric_Pad1.33x1.80mm_HandSolder" H 1638 2300 50  0001 C CNN
 F 3 "~" H 1600 2450 50  0001 C CNN
 	1    1600 2450
@@ -123,7 +123,7 @@ U 1 1 602AAFA4
 P 9150 3800
 F 0 "J9" H 9122 3732 50  0000 R CNN
 F 1 "String5" H 9122 3823 50  0000 R CNN
-F 2 "Connector_Wire:SolderWire-1sqmm_1x03_P7.8mm_D1.4mm_OD3.9mm" H 9150 3800 50  0001 C CNN
+F 2 "LEDStringConn:TopBottom_3Pin" H 9150 3800 50  0001 C CNN
 F 3 "~" H 9150 3800 50  0001 C CNN
 	1    9150 3800
 	-1   0    0    1   
@@ -134,7 +134,7 @@ U 1 1 602AA6DA
 P 9150 3250
 F 0 "J8" H 9122 3182 50  0000 R CNN
 F 1 "String4" H 9122 3273 50  0000 R CNN
-F 2 "Connector_Wire:SolderWire-1sqmm_1x03_P7.8mm_D1.4mm_OD3.9mm" H 9150 3250 50  0001 C CNN
+F 2 "LEDStringConn:TopBottom_3Pin" H 9150 3250 50  0001 C CNN
 F 3 "~" H 9150 3250 50  0001 C CNN
 	1    9150 3250
 	-1   0    0    1   
@@ -145,7 +145,7 @@ U 1 1 602A9B25
 P 9150 2700
 F 0 "J7" H 9122 2632 50  0000 R CNN
 F 1 "String3" H 9122 2723 50  0000 R CNN
-F 2 "Connector_Wire:SolderWire-1sqmm_1x03_P7.8mm_D1.4mm_OD3.9mm" H 9150 2700 50  0001 C CNN
+F 2 "LEDStringConn:TopBottom_3Pin" H 9150 2700 50  0001 C CNN
 F 3 "~" H 9150 2700 50  0001 C CNN
 	1    9150 2700
 	-1   0    0    1   
@@ -156,7 +156,7 @@ U 1 1 602A9004
 P 9150 2200
 F 0 "J6" H 9122 2132 50  0000 R CNN
 F 1 "String2" H 9122 2223 50  0000 R CNN
-F 2 "Connector_Wire:SolderWire-1sqmm_1x03_P7.8mm_D1.4mm_OD3.9mm" H 9150 2200 50  0001 C CNN
+F 2 "LEDStringConn:TopBottom_3Pin" H 9150 2200 50  0001 C CNN
 F 3 "~" H 9150 2200 50  0001 C CNN
 	1    9150 2200
 	-1   0    0    1   
@@ -167,7 +167,7 @@ U 1 1 602A882C
 P 9150 1700
 F 0 "J5" H 9122 1632 50  0000 R CNN
 F 1 "String1" H 9122 1723 50  0000 R CNN
-F 2 "Connector_Wire:SolderWire-1sqmm_1x03_P7.8mm_D1.4mm_OD3.9mm" H 9150 1700 50  0001 C CNN
+F 2 "LEDStringConn:TopBottom_3Pin" H 9150 1700 50  0001 C CNN
 F 3 "~" H 9150 1700 50  0001 C CNN
 	1    9150 1700
 	-1   0    0    1   
@@ -194,57 +194,13 @@ F 3 "" H 8700 4800 50  0001 C CNN
 	1    8700 4800
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	8700 3900 8950 3900
-Wire Wire Line
-	8950 3350 8700 3350
-Wire Wire Line
-	8700 3350 8700 3900
-Connection ~ 8700 3900
-Wire Wire Line
-	8950 2800 8700 2800
-Wire Wire Line
-	8700 2800 8700 3350
-Connection ~ 8700 3350
-Wire Wire Line
-	8950 2300 8700 2300
-Wire Wire Line
-	8700 2300 8700 2800
-Connection ~ 8700 2800
-Wire Wire Line
-	8950 1800 8700 1800
-Wire Wire Line
-	8700 1800 8700 2300
-Connection ~ 8700 2300
-Wire Wire Line
-	8950 1600 8450 1600
-Wire Wire Line
-	8950 2100 8450 2100
-Wire Wire Line
-	8450 2100 8450 1600
-Connection ~ 8450 1600
-Wire Wire Line
-	8950 2600 8450 2600
-Wire Wire Line
-	8450 2600 8450 2100
-Connection ~ 8450 2100
-Wire Wire Line
-	8950 3150 8450 3150
-Wire Wire Line
-	8450 3150 8450 2600
-Connection ~ 8450 2600
-Wire Wire Line
-	8950 3700 8450 3700
-Wire Wire Line
-	8450 3700 8450 3150
-Connection ~ 8450 3150
 $Comp
 L Connector:Conn_01x05_Male J2
 U 1 1 602D318D
 P 5800 5650
 F 0 "J2" V 5908 6031 50  0000 C CNN
 F 1 "ICSP" V 5700 5650 50  0000 C CNN
-F 2 "" H 5800 5650 50  0001 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical" H 5800 5650 50  0001 C CNN
 F 3 "~" H 5800 5650 50  0001 C CNN
 	1    5800 5650
 	0    -1   -1   0   
@@ -260,8 +216,6 @@ F 3 "~" H 6600 4600 50  0001 C CNN
 	1    6600 4600
 	-1   0    0    1   
 $EndComp
-Wire Wire Line
-	8450 1200 8450 1600
 $Comp
 L Device:R R2
 U 1 1 6029F916
@@ -384,12 +338,6 @@ Wire Wire Line
 Wire Wire Line
 	7150 3250 8950 3250
 Wire Wire Line
-	5150 4150 7900 4150
-Wire Wire Line
-	7900 4150 7900 3800
-Wire Wire Line
-	7900 3800 8950 3800
-Wire Wire Line
 	5150 3750 6450 3750
 Wire Wire Line
 	6450 3750 6450 3700
@@ -441,70 +389,122 @@ U 1 1 602ADC6B
 P 9150 4400
 F 0 "J10" H 9122 4332 50  0000 R CNN
 F 1 "String6" H 9122 4423 50  0000 R CNN
-F 2 "Connector_Wire:SolderWire-1sqmm_1x03_P7.8mm_D1.4mm_OD3.9mm" H 9150 4400 50  0001 C CNN
+F 2 "LEDStringConn:TopBottom_3Pin" H 9150 4400 50  0001 C CNN
 F 3 "~" H 9150 4400 50  0001 C CNN
 	1    9150 4400
 	-1   0    0    1   
 $EndComp
 Wire Wire Line
-	8700 3900 8700 4500
-Wire Wire Line
-	8950 4500 8700 4500
-Connection ~ 8700 4500
-Wire Wire Line
-	8700 4500 8700 4800
-Wire Wire Line
-	8950 4300 8450 4300
-Wire Wire Line
-	8450 4300 8450 3700
-Connection ~ 8450 3700
-Wire Wire Line
 	8950 4400 7400 4400
-Wire Wire Line
-	7400 4400 7400 4250
-Wire Wire Line
-	7400 4250 5150 4250
 $Comp
 L Device:LED D1
 U 1 1 602B6ED3
-P 2550 4050
-F 0 "D1" H 2543 4267 50  0000 C CNN
-F 1 "LED" H 2543 4176 50  0000 C CNN
-F 2 "LED_SMD:LED_0603_1608Metric_Pad1.05x0.95mm_HandSolder" H 2550 4050 50  0001 C CNN
-F 3 "~" H 2550 4050 50  0001 C CNN
-	1    2550 4050
-	1    0    0    -1  
+P 7000 5250
+F 0 "D1" H 6993 5467 50  0000 C CNN
+F 1 "LED" H 6993 5376 50  0000 C CNN
+F 2 "LED_SMD:LED_0603_1608Metric_Pad1.05x0.95mm_HandSolder" H 7000 5250 50  0001 C CNN
+F 3 "~" H 7000 5250 50  0001 C CNN
+	1    7000 5250
+	0    -1   -1   0   
 $EndComp
 $Comp
 L Device:R R1
 U 1 1 602B7BC0
-P 2050 4250
-F 0 "R1" H 2120 4296 50  0000 L CNN
-F 1 "220" H 2120 4205 50  0000 L CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 1980 4250 50  0001 C CNN
-F 3 "~" H 2050 4250 50  0001 C CNN
-	1    2050 4250
+P 7000 5850
+F 0 "R1" H 7070 5896 50  0000 L CNN
+F 1 "220" H 7070 5805 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 6930 5850 50  0001 C CNN
+F 3 "~" H 7000 5850 50  0001 C CNN
+	1    7000 5850
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:GND #PWR03
 U 1 1 602B7F4F
-P 2050 4550
-F 0 "#PWR03" H 2050 4300 50  0001 C CNN
-F 1 "GND" H 2055 4377 50  0000 C CNN
-F 2 "" H 2050 4550 50  0001 C CNN
-F 3 "" H 2050 4550 50  0001 C CNN
-	1    2050 4550
+P 7000 6150
+F 0 "#PWR03" H 7000 5900 50  0001 C CNN
+F 1 "GND" H 7005 5977 50  0000 C CNN
+F 2 "" H 7000 6150 50  0001 C CNN
+F 3 "" H 7000 6150 50  0001 C CNN
+	1    7000 6150
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	3750 4050 2700 4050
-Wire Wire Line
-	2050 4550 2050 4400
-Wire Wire Line
-	2050 4100 2050 4050
-Wire Wire Line
-	2050 4050 2400 4050
+	7000 6150 7000 6000
 Text Notes 8950 1400 0    50   ~ 0
 LED Strings
+Wire Wire Line
+	8950 4300 8700 4300
+Connection ~ 8700 4300
+Wire Wire Line
+	8700 4300 8700 4800
+Wire Wire Line
+	8950 3700 8700 3700
+Connection ~ 8700 3700
+Wire Wire Line
+	8700 3700 8700 4300
+Wire Wire Line
+	8450 4500 8950 4500
+Wire Wire Line
+	8950 3900 8450 3900
+Connection ~ 8450 3900
+Wire Wire Line
+	8450 3900 8450 4500
+Wire Wire Line
+	8950 3350 8450 3350
+Connection ~ 8450 3350
+Wire Wire Line
+	8450 3350 8450 3900
+Wire Wire Line
+	8950 3150 8700 3150
+Connection ~ 8700 3150
+Wire Wire Line
+	8700 3150 8700 3700
+Wire Wire Line
+	8950 2800 8450 2800
+Connection ~ 8450 2800
+Wire Wire Line
+	8450 2800 8450 3350
+Wire Wire Line
+	8950 2600 8700 2600
+Connection ~ 8700 2600
+Wire Wire Line
+	8700 2600 8700 3150
+Wire Wire Line
+	8950 2300 8450 2300
+Connection ~ 8450 2300
+Wire Wire Line
+	8450 2300 8450 2800
+Wire Wire Line
+	8950 2100 8700 2100
+Connection ~ 8700 2100
+Wire Wire Line
+	8700 2100 8700 2600
+Wire Wire Line
+	8450 1200 8450 1800
+Wire Wire Line
+	8700 1600 8950 1600
+Wire Wire Line
+	8700 1600 8700 2100
+Wire Wire Line
+	8950 1800 8450 1800
+Connection ~ 8450 1800
+Wire Wire Line
+	8450 1800 8450 2300
+Wire Wire Line
+	6900 3800 6900 4250
+Wire Wire Line
+	6900 4250 5150 4250
+Wire Wire Line
+	6900 3800 8950 3800
+Wire Wire Line
+	5150 4150 7400 4150
+Wire Wire Line
+	7400 4150 7400 4400
+Wire Wire Line
+	5150 3950 7000 3950
+Wire Wire Line
+	7000 3950 7000 5100
+Wire Wire Line
+	7000 5400 7000 5700
 $EndSCHEMATC
