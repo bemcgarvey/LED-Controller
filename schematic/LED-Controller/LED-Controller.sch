@@ -30,7 +30,7 @@ U 1 1 602A7CC6
 P 1050 2400
 F 0 "J1" H 1050 2150 50  0000 C CNN
 F 1 "5V Power" H 1050 2550 50  0000 C CNN
-F 2 "Connector_Wire:SolderWire-2.5sqmm_1x02_P8.8mm_D2.4mm_OD4.4mm" H 1050 2400 50  0001 C CNN
+F 2 "Connector_Wire:SolderWire-1sqmm_1x02_P5.4mm_D1.4mm_OD2.7mm" H 1050 2400 50  0001 C CNN
 F 3 "~" H 1050 2400 50  0001 C CNN
 	1    1050 2400
 	-1   0    0    1   
@@ -118,80 +118,25 @@ Connection ~ 1600 2650
 Wire Wire Line
 	1600 2650 1600 2600
 $Comp
-L Connector:Conn_01x03_Male J9
-U 1 1 602AAFA4
-P 9150 3800
-F 0 "J9" H 9122 3732 50  0000 R CNN
-F 1 "String5" H 9122 3823 50  0000 R CNN
-F 2 "LEDStringConn:TopBottom_3Pin" H 9150 3800 50  0001 C CNN
-F 3 "~" H 9150 3800 50  0001 C CNN
-	1    9150 3800
-	-1   0    0    1   
-$EndComp
-$Comp
-L Connector:Conn_01x03_Male J8
-U 1 1 602AA6DA
-P 9150 3250
-F 0 "J8" H 9122 3182 50  0000 R CNN
-F 1 "String4" H 9122 3273 50  0000 R CNN
-F 2 "LEDStringConn:TopBottom_3Pin" H 9150 3250 50  0001 C CNN
-F 3 "~" H 9150 3250 50  0001 C CNN
-	1    9150 3250
-	-1   0    0    1   
-$EndComp
-$Comp
-L Connector:Conn_01x03_Male J7
-U 1 1 602A9B25
-P 9150 2700
-F 0 "J7" H 9122 2632 50  0000 R CNN
-F 1 "String3" H 9122 2723 50  0000 R CNN
-F 2 "LEDStringConn:TopBottom_3Pin" H 9150 2700 50  0001 C CNN
-F 3 "~" H 9150 2700 50  0001 C CNN
-	1    9150 2700
-	-1   0    0    1   
-$EndComp
-$Comp
-L Connector:Conn_01x03_Male J6
-U 1 1 602A9004
-P 9150 2200
-F 0 "J6" H 9122 2132 50  0000 R CNN
-F 1 "String2" H 9122 2223 50  0000 R CNN
-F 2 "LEDStringConn:TopBottom_3Pin" H 9150 2200 50  0001 C CNN
-F 3 "~" H 9150 2200 50  0001 C CNN
-	1    9150 2200
-	-1   0    0    1   
-$EndComp
-$Comp
-L Connector:Conn_01x03_Male J5
-U 1 1 602A882C
-P 9150 1700
-F 0 "J5" H 9122 1632 50  0000 R CNN
-F 1 "String1" H 9122 1723 50  0000 R CNN
-F 2 "LEDStringConn:TopBottom_3Pin" H 9150 1700 50  0001 C CNN
-F 3 "~" H 9150 1700 50  0001 C CNN
-	1    9150 1700
-	-1   0    0    1   
-$EndComp
-$Comp
 L power:VDD #PWR09
 U 1 1 602C05A1
-P 8450 1200
-F 0 "#PWR09" H 8450 1050 50  0001 C CNN
-F 1 "VDD" H 8465 1373 50  0000 C CNN
-F 2 "" H 8450 1200 50  0001 C CNN
-F 3 "" H 8450 1200 50  0001 C CNN
-	1    8450 1200
+P 8200 1100
+F 0 "#PWR09" H 8200 950 50  0001 C CNN
+F 1 "VDD" H 8215 1273 50  0000 C CNN
+F 2 "" H 8200 1100 50  0001 C CNN
+F 3 "" H 8200 1100 50  0001 C CNN
+	1    8200 1100
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:GND #PWR010
 U 1 1 602C0B28
-P 8700 4800
-F 0 "#PWR010" H 8700 4550 50  0001 C CNN
-F 1 "GND" H 8705 4627 50  0000 C CNN
-F 2 "" H 8700 4800 50  0001 C CNN
-F 3 "" H 8700 4800 50  0001 C CNN
-	1    8700 4800
+P 8350 6150
+F 0 "#PWR010" H 8350 5900 50  0001 C CNN
+F 1 "GND" H 8355 5977 50  0000 C CNN
+F 2 "" H 8350 6150 50  0001 C CNN
+F 3 "" H 8350 6150 50  0001 C CNN
+	1    8350 6150
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -280,31 +225,9 @@ Wire Wire Line
 Wire Wire Line
 	2900 1600 7950 1600
 Wire Wire Line
-	7950 1600 7950 1700
-Wire Wire Line
-	7950 1700 8950 1700
-Wire Wire Line
 	3750 3550 2750 3550
 Wire Wire Line
 	2750 3550 2750 1500
-Wire Wire Line
-	2750 1500 8150 1500
-Wire Wire Line
-	8150 1500 8150 2200
-Wire Wire Line
-	8150 2200 8950 2200
-Wire Wire Line
-	5150 3050 7650 3050
-Wire Wire Line
-	7650 3050 7650 2700
-Wire Wire Line
-	7650 2700 8950 2700
-Wire Wire Line
-	5150 2950 7150 2950
-Wire Wire Line
-	7150 2950 7150 3250
-Wire Wire Line
-	7150 3250 8950 3250
 Wire Wire Line
 	6650 3500 6750 3500
 Wire Wire Line
@@ -344,19 +267,6 @@ Wire Wire Line
 Wire Wire Line
 	6250 4700 6250 4950
 $Comp
-L Connector:Conn_01x03_Male J10
-U 1 1 602ADC6B
-P 9150 4400
-F 0 "J10" H 9122 4332 50  0000 R CNN
-F 1 "String6" H 9122 4423 50  0000 R CNN
-F 2 "LEDStringConn:TopBottom_3Pin" H 9150 4400 50  0001 C CNN
-F 3 "~" H 9150 4400 50  0001 C CNN
-	1    9150 4400
-	-1   0    0    1   
-$EndComp
-Wire Wire Line
-	8950 4400 7400 4400
-$Comp
 L Device:LED D1
 U 1 1 602B6ED3
 P 7000 5250
@@ -391,76 +301,6 @@ F 3 "" H 7000 6150 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	7000 6150 7000 6000
-Text Notes 8950 1400 0    50   ~ 0
-LED Strings
-Wire Wire Line
-	8950 4300 8700 4300
-Connection ~ 8700 4300
-Wire Wire Line
-	8700 4300 8700 4800
-Wire Wire Line
-	8950 3700 8700 3700
-Connection ~ 8700 3700
-Wire Wire Line
-	8700 3700 8700 4300
-Wire Wire Line
-	8450 4500 8950 4500
-Wire Wire Line
-	8950 3900 8450 3900
-Connection ~ 8450 3900
-Wire Wire Line
-	8450 3900 8450 4500
-Wire Wire Line
-	8950 3350 8450 3350
-Connection ~ 8450 3350
-Wire Wire Line
-	8450 3350 8450 3900
-Wire Wire Line
-	8950 3150 8700 3150
-Connection ~ 8700 3150
-Wire Wire Line
-	8700 3150 8700 3700
-Wire Wire Line
-	8950 2800 8450 2800
-Connection ~ 8450 2800
-Wire Wire Line
-	8450 2800 8450 3350
-Wire Wire Line
-	8950 2600 8700 2600
-Connection ~ 8700 2600
-Wire Wire Line
-	8700 2600 8700 3150
-Wire Wire Line
-	8950 2300 8450 2300
-Connection ~ 8450 2300
-Wire Wire Line
-	8450 2300 8450 2800
-Wire Wire Line
-	8950 2100 8700 2100
-Connection ~ 8700 2100
-Wire Wire Line
-	8700 2100 8700 2600
-Wire Wire Line
-	8450 1200 8450 1800
-Wire Wire Line
-	8700 1600 8950 1600
-Wire Wire Line
-	8700 1600 8700 2100
-Wire Wire Line
-	8950 1800 8450 1800
-Connection ~ 8450 1800
-Wire Wire Line
-	8450 1800 8450 2300
-Wire Wire Line
-	6900 3800 6900 4250
-Wire Wire Line
-	6900 4250 5150 4250
-Wire Wire Line
-	6900 3800 8950 3800
-Wire Wire Line
-	5150 4150 7400 4150
-Wire Wire Line
-	7400 4150 7400 4400
 Wire Wire Line
 	5150 3950 7000 3950
 Wire Wire Line
@@ -473,7 +313,7 @@ U 1 1 602C7A81
 P 3550 6000
 F 0 "JP1" H 3550 6205 50  0000 C CNN
 F 1 "uC Power" H 3550 6114 50  0000 C CNN
-F 2 "" H 3550 6000 50  0001 C CNN
+F 2 "Jumper:SolderJumper-3_P1.3mm_Bridged12_RoundedPad1.0x1.5mm_NumberLabels" H 3550 6000 50  0001 C CNN
 F 3 "~" H 3550 6000 50  0001 C CNN
 	1    3550 6000
 	1    0    0    -1  
@@ -535,4 +375,155 @@ Wire Wire Line
 	3550 6350 3850 6350
 Wire Wire Line
 	3550 6150 3550 6350
+$Comp
+L SamacSys_Parts:TSW-102-08-L-T-RA J5
+U 1 1 602C605F
+P 8600 1850
+F 0 "J5" H 9000 2115 50  0000 C CNN
+F 1 "TSW-102-08-L-T-RA" H 9000 2024 50  0000 C CNN
+F 2 "HDRRA6W64P254_3X2_508X254X810P" H 9250 1950 50  0001 L CNN
+F 3 "http://suddendocs.samtec.com/catalog_english/tsw_th.pdf" H 9250 1850 50  0001 L CNN
+F 4 "CONN HEADER 6 POS .100\"" H 9250 1750 50  0001 L CNN "Description"
+F 5 "8.1" H 9250 1650 50  0001 L CNN "Height"
+F 6 "200-TSW10208LTRA" H 9250 1550 50  0001 L CNN "Mouser Part Number"
+F 7 "https://www.mouser.co.uk/ProductDetail/Samtec/TSW-102-08-L-T-RA/?qs=rU5fayqh%252BE1g9ojY3d%2FW1A%3D%3D" H 9250 1450 50  0001 L CNN "Mouser Price/Stock"
+F 8 "SAMTEC" H 9250 1350 50  0001 L CNN "Manufacturer_Name"
+F 9 "TSW-102-08-L-T-RA" H 9250 1250 50  0001 L CNN "Manufacturer_Part_Number"
+	1    8600 1850
+	1    0    0    -1  
+$EndComp
+$Comp
+L SamacSys_Parts:TSW-102-08-L-T-RA J6
+U 1 1 602CA55D
+P 8600 3500
+F 0 "J6" H 9000 3765 50  0000 C CNN
+F 1 "TSW-102-08-L-T-RA" H 9000 3674 50  0000 C CNN
+F 2 "HDRRA6W64P254_3X2_508X254X810P" H 9250 3600 50  0001 L CNN
+F 3 "http://suddendocs.samtec.com/catalog_english/tsw_th.pdf" H 9250 3500 50  0001 L CNN
+F 4 "CONN HEADER 6 POS .100\"" H 9250 3400 50  0001 L CNN "Description"
+F 5 "8.1" H 9250 3300 50  0001 L CNN "Height"
+F 6 "200-TSW10208LTRA" H 9250 3200 50  0001 L CNN "Mouser Part Number"
+F 7 "https://www.mouser.co.uk/ProductDetail/Samtec/TSW-102-08-L-T-RA/?qs=rU5fayqh%252BE1g9ojY3d%2FW1A%3D%3D" H 9250 3100 50  0001 L CNN "Mouser Price/Stock"
+F 8 "SAMTEC" H 9250 3000 50  0001 L CNN "Manufacturer_Name"
+F 9 "TSW-102-08-L-T-RA" H 9250 2900 50  0001 L CNN "Manufacturer_Part_Number"
+	1    8600 3500
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9850 5350 9850 3500
+Wire Wire Line
+	9850 3500 9400 3500
+Wire Wire Line
+	9400 1850 9850 1850
+Wire Wire Line
+	9850 1850 9850 3500
+Connection ~ 9850 3500
+Wire Wire Line
+	8200 2050 8200 3700
+Wire Wire Line
+	8200 2050 8600 2050
+Wire Wire Line
+	8200 3700 8600 3700
+Connection ~ 8200 3700
+Wire Wire Line
+	8200 3700 8200 5550
+$Comp
+L SamacSys_Parts:TSW-102-08-L-T-RA J7
+U 1 1 602CB4AA
+P 8600 5350
+F 0 "J7" H 9000 5615 50  0000 C CNN
+F 1 "TSW-102-08-L-T-RA" H 9000 5524 50  0000 C CNN
+F 2 "HDRRA6W64P254_3X2_508X254X810P" H 9250 5450 50  0001 L CNN
+F 3 "http://suddendocs.samtec.com/catalog_english/tsw_th.pdf" H 9250 5350 50  0001 L CNN
+F 4 "CONN HEADER 6 POS .100\"" H 9250 5250 50  0001 L CNN "Description"
+F 5 "8.1" H 9250 5150 50  0001 L CNN "Height"
+F 6 "200-TSW10208LTRA" H 9250 5050 50  0001 L CNN "Mouser Part Number"
+F 7 "https://www.mouser.co.uk/ProductDetail/Samtec/TSW-102-08-L-T-RA/?qs=rU5fayqh%252BE1g9ojY3d%2FW1A%3D%3D" H 9250 4950 50  0001 L CNN "Mouser Price/Stock"
+F 8 "SAMTEC" H 9250 4850 50  0001 L CNN "Manufacturer_Name"
+F 9 "TSW-102-08-L-T-RA" H 9250 4750 50  0001 L CNN "Manufacturer_Part_Number"
+	1    8600 5350
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9400 5350 9850 5350
+Wire Wire Line
+	8600 5550 8200 5550
+Wire Wire Line
+	8600 5450 8350 5450
+Wire Wire Line
+	8350 5450 8350 5950
+Wire Wire Line
+	8600 3600 8350 3600
+Wire Wire Line
+	8350 3600 8350 5450
+Connection ~ 8350 5450
+Wire Wire Line
+	8600 1950 8350 1950
+Wire Wire Line
+	8350 1950 8350 3600
+Connection ~ 8350 3600
+Connection ~ 8350 5950
+Wire Wire Line
+	8350 5950 8350 6150
+Wire Wire Line
+	9400 3700 9700 3700
+Wire Wire Line
+	9700 3700 9700 5550
+Wire Wire Line
+	8350 5950 9700 5950
+Wire Wire Line
+	9400 5550 9700 5550
+Connection ~ 9700 5550
+Wire Wire Line
+	9700 5550 9700 5950
+Wire Wire Line
+	9400 2050 9700 2050
+Wire Wire Line
+	9700 2050 9700 3700
+Connection ~ 9700 3700
+Wire Wire Line
+	8200 1100 8200 1350
+Connection ~ 8200 2050
+Wire Wire Line
+	7950 1850 8600 1850
+Wire Wire Line
+	7950 1600 7950 1850
+Wire Wire Line
+	9600 1500 9600 1950
+Wire Wire Line
+	9600 1950 9400 1950
+Wire Wire Line
+	2750 1500 9600 1500
+Wire Wire Line
+	9550 3600 9400 3600
+Wire Wire Line
+	7400 5350 8600 5350
+Wire Wire Line
+	9550 5450 9400 5450
+Wire Wire Line
+	7400 4250 7400 5350
+Wire Wire Line
+	5150 4250 7400 4250
+Wire Wire Line
+	5150 4150 9550 4150
+Wire Wire Line
+	9550 4150 9550 5450
+Wire Wire Line
+	9850 1850 9850 1350
+Wire Wire Line
+	9850 1350 8200 1350
+Connection ~ 9850 1850
+Connection ~ 8200 1350
+Wire Wire Line
+	8200 1350 8200 2050
+Wire Wire Line
+	5150 3050 7800 3050
+Wire Wire Line
+	7800 3050 7800 3500
+Wire Wire Line
+	7800 3500 8600 3500
+Wire Wire Line
+	5150 2950 9550 2950
+Wire Wire Line
+	9550 2950 9550 3600
 $EndSCHEMATC
