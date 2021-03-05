@@ -536,4 +536,10 @@ Wire Wire Line
 	7150 3300 6100 3300
 Wire Wire Line
 	6100 3300 6100 6000
+Text Notes 6950 4500 0    50   ~ 0
+RX
+Text Notes 6950 4700 0    50   ~ 0
+TX
+Text Notes 6950 4600 0    50   ~ 0
+GND
 $EndSCHEMATC
