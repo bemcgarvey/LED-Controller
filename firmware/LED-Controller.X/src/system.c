@@ -22,6 +22,7 @@ void initPins(void) {
     TRISB = 0;
     TRISC = 0;
     TRISCbits.TRISC3 = 1;
+    TRISCbits.TRISC0 = 1;
 
     PPSLOCK = 0x55;
     PPSLOCK = 0xaa;
@@ -30,6 +31,9 @@ void initPins(void) {
     RB3PPS = 0b011111; //SPI SDO
     RC2PPS = 0b010011; //UART1 TX
     U1RXPPS = 0b010011; //RC3
+    T1GPPS = 0b010000; //RC0
+    
+    //Keep unlocked
     //PPSLOCK = 0x55;
     //PPSLOCK = 0xaa;
     //PPSLOCKbits.PPSLOCKED = 1;

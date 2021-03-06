@@ -20,7 +20,7 @@ void initSerial(void) {
     U1BRGH = 138 >> 8;
     U1BRGL = (uint8_t)138; //115200
     PIE3bits.U1RXIE = 1;
-    IPR3bits.U1RXIP = 1;
+    IPR3bits.U1RXIP = 0;
     U1CON1bits.ON = 1;
     U1CON0bits.TXEN = 1;
     U1CON0bits.RXEN = 1;
