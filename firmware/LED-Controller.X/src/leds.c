@@ -1,3 +1,13 @@
+/////////////////////////////////////////////////////
+// Project: LED-Controller                         //
+// File: leds.c                                    //
+// Target: PIC18F2xK42                             // 
+// Compiler: XC8                                   //
+// Author: Brad McGarvey                           //
+// License: GNU General Public License v3.0        //
+// Description: WS2812B LED functions              //
+/////////////////////////////////////////////////////
+
 #include <xc.h>
 #include "leds.h"
 

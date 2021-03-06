@@ -1,20 +1,18 @@
 /////////////////////////////////////////////////////
 // Project: LED-Controller                         //
-// File: leds.h                                    //
+// File: serial.h                                  //
 // Target: PIC18F2xK42                             // 
 // Compiler: XC8                                   //
 // Author: Brad McGarvey                           //
 // License: GNU General Public License v3.0        //
-// Description: WS2812B LED functions              //
+// Description: serial communication functions     //
 /////////////////////////////////////////////////////
 
-#ifndef LEDS_H
-#define	LEDS_H
+#ifndef SERIAL_H
+#define	SERIAL_H
 
-#include <stdint.h>
+void initSerial(void);
+void txBytes(void *buf, int nBytes);
 
-void initLEDs(void);
-void transmitByte(uint8_t b);
-
-#endif	/* LEDS_H */
+#endif	/* SERIAL_H */
 

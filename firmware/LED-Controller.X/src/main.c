@@ -11,6 +11,12 @@
 #include <xc.h>
 #include "system.h"
 #include "leds.h"
+#include "serial.h"
+
+char str[] = "hello world\r\n";
+uint8_t g = 0;
+uint8_t r = 0;
+uint8_t b = 0;
 
 void main(void) {
     initOscillator();
@@ -18,13 +24,22 @@ void main(void) {
     initPMD();
     initInterrupts();
     initLEDs();
+    initSerial();
+    INTCON0bits.GIEH = 1;
     while (1) {
-        ledToggle();
-        //LATBbits.LATB3 ^= 1;
-        transmitByte(0x00);
-        transmitByte(0x00);
-        transmitByte(0xff);
-        __delay_ms(500);
+        transmitByte(g);
+        transmitByte(r);
+        transmitByte(b);
+        b += 5;
+        if (b > 255) {
+            b = 0;
+        } 
+        r += 20;
+        if (r > 255) {
+            r = 0;
+        }
+        txBytes(str, 13);
+        __delay_ms(200);
     }
     
     return;
