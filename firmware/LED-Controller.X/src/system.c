@@ -25,18 +25,11 @@ void initPins(void) {
     PPSLOCK = 0x55;
     PPSLOCK = 0xaa;
     PPSLOCKbits.PPSLOCKED = 0;
-    /*RB2PPS = 0x04;   //RB2->CLC4:CLC4;    
-    CCP1PPS = 0x10;   //RC0->CCP1:CCP1;    
-    RB3PPS = 0x03;   //RB3->CLC3:CLC3;    
-    RC2PPS = 0x20;   //RC2->UART1:TX1;    
-    RA1PPS = 0x01;   //RA1->CLC1:CLC1;    
-    RA2PPS = 0x02;   //RA2->CLC2:CLC2;    
-    RC5PPS = 0x06;   //RC5->CLC6:CLC6;    
-    RC6PPS = 0x05;   //RC6->CLC5:CLC5;    
-    U1RXPPS = 0x13;   //RC3->UART1:RX1;*/
-    PPSLOCK = 0x55;
-    PPSLOCK = 0xaa;
-    PPSLOCKbits.PPSLOCKED = 1;
+    RA1PPS = 0b000001; //CLC1OUT
+    RB3PPS = 0b011111; //SPI SDO
+    //PPSLOCK = 0x55;
+    //PPSLOCK = 0xaa;
+    //PPSLOCKbits.PPSLOCKED = 1;
 }
 
 void initOscillator(void) {

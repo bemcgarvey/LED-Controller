@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////
 // Project: LED-Controller                         //
 // File: system.h                                  //
-// Target: PIC18F27Q43                             // 
+// Target: PIC18F2xK42                             // 
 // Compiler: XC8                                   //
 // Author: Brad McGarvey                           //
 // License: GNU General Public License v3.0        //
