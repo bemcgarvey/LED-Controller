@@ -14,7 +14,7 @@
 #include <stdint.h>
 
 void initLEDs(void);
-void transmitByte(uint8_t b);
+void setLEDs(uint8_t output, uint8_t *rgb, uint8_t ledCount);
 
 #endif	/* LEDS_H */
 

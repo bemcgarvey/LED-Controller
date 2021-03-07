@@ -20,3 +20,7 @@ void initTimer1(void) {
     TMR1L = 0;
     T1CONbits.ON = 1;
 }
+
+void initSystemTimer(void) {
+    
+}
