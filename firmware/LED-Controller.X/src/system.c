@@ -66,15 +66,3 @@ void initInterrupts(void) {
 void __interrupt(irq(default),base(8)) Default_ISR()
 {
 }
-
-inline void ledOn(void) {
-    LATCbits.LATC1 = 1;
-}
-
-inline void ledOff(void) {
-    LATCbits.LATC1 = 0;
-}
-
-inline void ledToggle(void) {
-    LATCbits.LATC1 ^= 1;
-}
