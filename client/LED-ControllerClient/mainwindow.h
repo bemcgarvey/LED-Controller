@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QLabel>
+#include <QSerialPort>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -17,5 +19,15 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    QLabel *portLabel;
+    QLabel *connectedLabel;
+    QSerialPort *port;
+    char buffer[64];
+
+private slots:
+    void updatePortMenu(void);
+    void comPortSelected(void);
+    void onReadyRead(void);
+    void on_pushButton_clicked();
 };
 #endif // MAINWINDOW_H

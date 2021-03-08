@@ -39,7 +39,7 @@ void main(void) {
                 setLEDs(4, str1A, 4);
                 setLEDs(5, str1A, 4);
                 setLEDs(6, str1A, 4);
-                ledToggle();
+                //ledToggle();
             }
         }
     }

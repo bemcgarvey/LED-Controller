@@ -18,7 +18,7 @@ void initSerial(void) {
     U1CON0bits.BRGS = 1;
     U1CON0bits.MODE = 0b0000;
     U1BRGH = 138 >> 8;
-    U1BRGL = (uint8_t)138; //115200
+    U1BRGL = (uint8_t) 138; //115200
     PIE3bits.U1RXIE = 1;
     IPR3bits.U1RXIP = 0;
     U1CON1bits.ON = 1;
@@ -46,8 +46,9 @@ void __interrupt(irq(U1RX), base(8)) U1_RX_ISR() {
             case 'o': ledOn();
                 break;
             case 't': ledToggle();
+            char buff[] = "ACK";
+            txBytes(buff, 3);
                 break;
-
         }
     }
 }
