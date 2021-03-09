@@ -28,6 +28,6 @@ private slots:
     void updatePortMenu(void);
     void comPortSelected(void);
     void onReadyRead(void);
-    void on_pushButton_clicked();
+    void on_actionExit_triggered();
 };
 #endif // MAINWINDOW_H

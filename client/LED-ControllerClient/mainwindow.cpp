@@ -50,7 +50,7 @@ void MainWindow::comPortSelected()
         port->setStopBits(QSerialPort::OneStop);
         portLabel->setText(action->text());
         connectedLabel->setText("Connected");
-        port->clear();  //read(buffer, 64); //clear out extra bytes from device power on
+        port->clear();  //clear out extra bytes from device power on
         connect(port, &QSerialPort::readyRead, this, &MainWindow::onReadyRead);
     } else {
         delete port;
@@ -70,8 +70,7 @@ void MainWindow::onReadyRead(void) {
     ui->statusbar->showMessage(buffer, 2000);
 }
 
-void MainWindow::on_pushButton_clicked()
+void MainWindow::on_actionExit_triggered()
 {
-    buffer[0] = 't';
-    port->write(buffer, 1);
+    close();
 }
