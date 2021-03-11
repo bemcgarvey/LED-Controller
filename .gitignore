@@ -69,6 +69,7 @@ compile_commands.json
 
 **/debug
 **/release
+*object_script*
 
 #MPLabX entries
 *.o

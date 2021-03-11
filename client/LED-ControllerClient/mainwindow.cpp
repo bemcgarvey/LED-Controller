@@ -5,20 +5,29 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow), port(nullptr)
+    , ui(new Ui::MainWindow), port(nullptr), output1(3, 1)
 {
     ui->setupUi(this);
     portLabel = new QLabel();
     portLabel->setText("----");
     connectedLabel = new QLabel();
     connectedLabel->setText("Not Connected");
+    memoryLabel = new QLabel("Memory used: 0");
     ui->statusbar->addPermanentWidget(portLabel);
     ui->statusbar->addWidget(connectedLabel);
+    ui->statusbar->addWidget(new QLabel("     "));
+    ui->statusbar->addWidget(memoryLabel);
     connect(ui->menuPort, &QMenu::aboutToShow, this, &MainWindow::updatePortMenu);
+    output1Config = new LEDOutputConfig(10, 3);  //NOTE this is for testing
+    output1DM = new OutputPanelDisplayManager(output1Config, ui->nLEDsSpinBox, ui->nPatternsSpinBox, ui->output1PatternLabelsFrame, ui->output1PatternsFrame);
+    connect(output1Config, &LEDOutputConfig::sizeChanged, this, &MainWindow::onLEDOutputSizeChange);
+    onLEDOutputSizeChange(output1Config->sizeInBytes());
 }
 
 MainWindow::~MainWindow()
 {
+    delete output1DM;
+    delete output1Config;
     delete ui;
 }
 
@@ -73,4 +82,9 @@ void MainWindow::onReadyRead(void) {
 void MainWindow::on_actionExit_triggered()
 {
     close();
+}
+
+void MainWindow::onLEDOutputSizeChange(int newSize)
+{
+    memoryLabel->setText(QString("Memory used: %1").arg(newSize));
 }
