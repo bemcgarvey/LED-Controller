@@ -17,8 +17,9 @@ public:
     ~EditPatternDialog();
 
 private slots:
-    void on_buttonBox_rejected();
-    void on_buttonBox_accepted();
+    void onButtonBoxRejected();
+    void onButtonBoxAccepted();
+    void onColorChange(QColor c);
 
 private:
     Ui::EditPatternDialog *ui;

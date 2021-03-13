@@ -116,16 +116,19 @@ void LEDPatternDisplay::resizeEvent(QResizeEvent *event)
     ledSize = vHeight / 2;
 }
 
-void LEDPatternDisplay::onLeftButton()
-{
-    ++leftIndex;
-    update();
-}
+//TODO Scrolling should stop when right most led displayed
+//Disable buttons when scrolled to one side
 
-void LEDPatternDisplay::onRightButton()
+void LEDPatternDisplay::onLeftButton()
 {
     if (leftIndex > 0) {
         --leftIndex;
         update();
     }
+}
+
+void LEDPatternDisplay::onRightButton()
+{
+    ++leftIndex;
+    update();
 }

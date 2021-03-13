@@ -71,6 +71,7 @@ void ColorPicker::mouseDoubleClickEvent(QMouseEvent *event)
     if (newColor.isValid() && newColor != colors[selectedColor]) {
         colors[selectedColor] = newColor;
         colorsChanged = true;
+        emit colorChanged(newColor);
     }
 }
 
@@ -102,16 +103,6 @@ void ColorPicker::paintEvent(QPaintEvent *event)
     }
 }
 
-int ColorPicker::getSelectedColor() const
-{
-    return selectedColor;
-}
-
-void ColorPicker::setSelectedColor(int value)
-{
-    selectedColor = value;
-}
-
 QVector<QColor> ColorPicker::getColors() const
 {
     return colors;
@@ -122,6 +113,11 @@ void ColorPicker::setColors(const QVector<QColor> &value)
     colors = value;
 }
 
+QColor ColorPicker::getColor()
+{
+    return colors[selectedColor];
+}
+
 
 void ColorPicker::mousePressEvent(QMouseEvent *event)
 {
@@ -129,6 +125,7 @@ void ColorPicker::mousePressEvent(QMouseEvent *event)
         int c = (event->x() - border) / (rWidth + space);
         int r = (event->y() - border) / (rHeight + space);
         selectedColor = r * 6 + c;
+        emit colorChanged(colors[selectedColor]);
         update();
     }
 }

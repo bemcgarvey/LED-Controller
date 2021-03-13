@@ -12,8 +12,7 @@ public:
     static void saveColors();
     QVector<QColor> getColors() const;
     void setColors(const QVector<QColor> &value);
-    int getSelectedColor() const;
-    void setSelectedColor(int value);
+    QColor getColor(void);
 protected:
     void mouseDoubleClickEvent(QMouseEvent *event) override;
     void paintEvent(QPaintEvent *event) override;
@@ -30,6 +29,8 @@ private:
     int border;
 public slots:
     void onPatternSelectionChange(int value);
+signals:
+    void colorChanged(QColor c);
 };
 
 #endif // COLORPICKER_H
