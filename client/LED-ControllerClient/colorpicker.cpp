@@ -5,7 +5,6 @@
 #include <QSettings>
 #include "ledpatterndisplay.h"
 
-//TODO Save colors in registry? Load on startup?
 QVector<QColor> ColorPicker::colors(36, Qt::black);
 bool ColorPicker::colorsLoaded = false;
 bool ColorPicker::colorsChanged = false;

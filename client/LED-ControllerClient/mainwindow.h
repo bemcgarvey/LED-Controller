@@ -26,9 +26,12 @@ private:
     QLabel *memoryLabel;
     QSerialPort *port;
     char buffer[64];
-    LEDOutputConfig output1;
-    OutputPanelDisplayManager *output1DM;
-    LEDOutputConfig *output1Config;
+    const int numOutputs = 6;
+    QVector<LEDOutputConfig *> outputs;
+    QVector<OutputPanelDisplayManager *> outputDMs;
+    //LEDOutputConfig output1;
+    //OutputPanelDisplayManager *output1DM;
+    //LEDOutputConfig *output1Config;
 private slots:
     void updatePortMenu(void);
     void comPortSelected(void);

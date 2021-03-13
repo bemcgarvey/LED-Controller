@@ -7,30 +7,39 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow), port(nullptr), output1(3, 1)
+    , ui(new Ui::MainWindow), port(nullptr)
 {
     ui->setupUi(this);
-    portLabel = new QLabel();
-    portLabel->setText("----");
-    connectedLabel = new QLabel();
-    connectedLabel->setText("Not Connected");
+    portLabel = new QLabel("----");
+    connectedLabel = new QLabel("Not Connected");
     memoryLabel = new QLabel("Memory used: 0");
     ui->statusbar->addPermanentWidget(portLabel);
     ui->statusbar->addWidget(connectedLabel);
     ui->statusbar->addWidget(new QLabel("     "));
     ui->statusbar->addWidget(memoryLabel);
     connect(ui->menuPort, &QMenu::aboutToShow, this, &MainWindow::updatePortMenu);
-    output1Config = new LEDOutputConfig(1, 1);
-    output1DM = new OutputPanelDisplayManager(output1Config, ui->nLEDsSpinBox, ui->nPatternsSpinBox, ui->output1PatternLabelsFrame, ui->output1PatternsFrame);
-    connect(output1Config, &LEDOutputConfig::sizeChanged, this, &MainWindow::onLEDOutputSizeChange);
-    onLEDOutputSizeChange(output1Config->sizeInBytes());
+    for (int i = 0; i < numOutputs; ++i) {
+        outputs.append(new LEDOutputConfig(0, 1));
+        connect(outputs[i], &LEDOutputConfig::sizeChanged, this, &MainWindow::onLEDOutputSizeChange);
+    }
+    outputDMs.append(new OutputPanelDisplayManager(outputs[0], ui->nLEDsSpinBox1, ui->nPatternsSpinBox1, ui->output1PatternLabelsFrame, ui->output1PatternsFrame));
+    outputDMs.append(new OutputPanelDisplayManager(outputs[1], ui->nLEDsSpinBox2, ui->nPatternsSpinBox2, ui->output2PatternLabelsFrame, ui->output2PatternsFrame));
+    outputDMs.append(new OutputPanelDisplayManager(outputs[2], ui->nLEDsSpinBox3, ui->nPatternsSpinBox3, ui->output3PatternLabelsFrame, ui->output3PatternsFrame));
+    outputDMs.append(new OutputPanelDisplayManager(outputs[3], ui->nLEDsSpinBox4, ui->nPatternsSpinBox4, ui->output4PatternLabelsFrame, ui->output4PatternsFrame));
+    outputDMs.append(new OutputPanelDisplayManager(outputs[4], ui->nLEDsSpinBox5, ui->nPatternsSpinBox5, ui->output5PatternLabelsFrame, ui->output5PatternsFrame));
+    outputDMs.append(new OutputPanelDisplayManager(outputs[5], ui->nLEDsSpinBox6, ui->nPatternsSpinBox6, ui->output6PatternLabelsFrame, ui->output6PatternsFrame));
+    onLEDOutputSizeChange(outputs[0]->sizeInBytes());
     ColorPicker::loadColors();
 }
 
 MainWindow::~MainWindow()
 {
-    delete output1DM;
-    delete output1Config;
+    for (int i = 0; i < outputs.size(); ++i) {
+        delete outputs[i];
+    }
+    for (int i = 0; i < outputDMs.size(); ++i) {
+        delete outputDMs[i];
+    }
     delete ui;
 }
 
@@ -89,10 +98,13 @@ void MainWindow::on_actionExit_triggered()
 
 void MainWindow::onLEDOutputSizeChange(int newSize)
 {
-    memoryLabel->setText(QString("Memory used: %1").arg(newSize));
+    Q_UNUSED(newSize)
+    int sizeUsed = 0;
+    for (auto &&i : outputs) {
+        sizeUsed += i->sizeInBytes();
+    }
+    memoryLabel->setText(QString("Memory used: %1").arg(sizeUsed));
 }
-
-
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     ColorPicker::saveColors();
