@@ -1,13 +1,13 @@
 #include "ledpattern.h"
 
 LEDPattern::LEDPattern() :
-    numLEDs(0), leds(0)
+    numLEDs(0), onTime(-1), nextPattern(0), leds(0)
 {
 
 }
 
 LEDPattern::LEDPattern(int numleds) :
-    numLEDs(numleds), leds(numleds)
+    numLEDs(numleds), onTime(-1), nextPattern(0), leds(numleds)
 {
 
 }

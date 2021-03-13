@@ -12,13 +12,6 @@ LEDOutputConfig::LEDOutputConfig(int nleds, int nPatterns) :
 {
     setNumLEDs(nleds);
     setNumPatterns(nPatterns);
-    //NOTE Test code
-    if (numLEDs >= 4 && numPatterns > 0) {
-        patterns[0][0].setColor(0xff0000);
-        patterns[0][1].setColor(0x00ff00);
-        patterns[0][2].setColor(0x0000ff);
-        patterns[0][3].setColor(0xffffff);
-    }
 }
 
 int LEDOutputConfig::getNumLEDs() const

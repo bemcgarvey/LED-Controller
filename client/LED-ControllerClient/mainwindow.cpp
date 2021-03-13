@@ -18,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->statusbar->addWidget(new QLabel("     "));
     ui->statusbar->addWidget(memoryLabel);
     connect(ui->menuPort, &QMenu::aboutToShow, this, &MainWindow::updatePortMenu);
-    output1Config = new LEDOutputConfig(10, 3);  //NOTE this is for testing
+    output1Config = new LEDOutputConfig(1, 1);
     output1DM = new OutputPanelDisplayManager(output1Config, ui->nLEDsSpinBox, ui->nPatternsSpinBox, ui->output1PatternLabelsFrame, ui->output1PatternsFrame);
     connect(output1Config, &LEDOutputConfig::sizeChanged, this, &MainWindow::onLEDOutputSizeChange);
     onLEDOutputSizeChange(output1Config->sizeInBytes());

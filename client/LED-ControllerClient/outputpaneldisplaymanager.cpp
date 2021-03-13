@@ -41,6 +41,7 @@ void OutputPanelDisplayManager::on_nPatternSpinBoxChange(int value)
     for (int i = 0; i < value; ++i) {
         patternLabels[i]->setVisible(true);
         patternDisplays[i]->setVisible(true);
+        patternDisplays[i]->setPattern(&((*outputConfig)[i]));
     }
     for (int i = value; i < 3; ++i) {
         patternLabels[i]->setVisible(false);

@@ -21,8 +21,8 @@ public:
 
 private:
     int numLEDs; //0 - 255
-    int onTime;  //in ms
-    int nextPattern;  //0 - 3
+    int onTime;  //in 0.1s increments -1 = stay on
+    int nextPattern;  //0 - 2 for A - C
     QVector<LEDrgb> leds;
 };
 

@@ -9,6 +9,8 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    colorpicker.cpp \
+    editpatterndialog.cpp \
     ledoutputconfig.cpp \
     ledpattern.cpp \
     ledpatterndisplay.cpp \
@@ -18,6 +20,8 @@ SOURCES += \
     outputpaneldisplaymanager.cpp
 
 HEADERS += \
+    colorpicker.h \
+    editpatterndialog.h \
     ledoutputconfig.h \
     ledpattern.h \
     ledpatterndisplay.h \
@@ -26,6 +30,7 @@ HEADERS += \
     outputpaneldisplaymanager.h
 
 FORMS += \
+    editpatterndialog.ui \
     mainwindow.ui
 
 # Default rules for deployment.

@@ -1,0 +1,118 @@
+#include "colorpicker.h"
+#include <QColorDialog>
+#include <QMouseEvent>
+#include <QPainter>
+#include "ledpatterndisplay.h"
+
+//TODO Save colors in registry? Load on startup?
+
+ColorPicker::ColorPicker(QWidget *parent) :
+    QFrame(parent), colors(36, Qt::black), selectedColor(0)
+{
+    //TODO choose decent starting colors
+    colors[0] = Qt::white;
+    colors[1] = Qt::red;
+    colors[2] = Qt::green;
+    colors[3] = Qt::blue;
+    colors[4] = Qt::yellow;
+    colors[5] = Qt::magenta;
+    colors[6] = Qt::cyan;
+    colors[7] = Qt::darkBlue;
+    colors[8] = Qt::darkCyan;
+    colors[9] = Qt::darkGreen;
+    colors[10] = Qt::darkMagenta;
+    colors[11] = Qt::darkRed;
+    colors[12] = Qt::darkYellow;
+    border = lineWidth();
+    rWidth = (width() - 2 * border) / 6;
+    rWidth -= space;
+    rHeight = (height() - 2 * border) / 6;
+    rHeight -= space; 
+}
+
+void ColorPicker::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    Q_UNUSED(event)
+    QColor newColor = QColorDialog::getColor(colors[selectedColor], this, "Select Color");
+    if (newColor.isValid()) {
+        colors[selectedColor] = newColor;
+    }
+}
+
+void ColorPicker::paintEvent(QPaintEvent *event)
+{
+    QFrame::paintEvent(event);
+
+    QPainter painter(this);
+    QBrush brush(Qt::black);
+    QPen pen(Qt::black);
+    pen.setWidth(2);
+    for (int r = 0; r < 6; ++r) {
+        for (int c = 0; c < 6; ++c) {
+            brush.setColor(colors[r * 6 + c]);
+            painter.setBrush(brush);
+            painter.drawRoundedRect(border + space + c * (rWidth + space), border + space + r * (rHeight + space), rWidth, rHeight, 3, 3);
+            if(r * 6 + c == selectedColor) {
+                if (colors[r * 6 + c] != Qt::black) {
+                    pen.setColor(Qt::black);
+                } else {
+                    pen.setColor(Qt::yellow);
+                }
+                painter.save();
+                painter.setPen(pen);
+                painter.drawRoundedRect(border + space + c * (rWidth + space) + 2, border + space + r * (rHeight + space) + 2, rWidth - 4, rHeight - 4, 3, 3);
+                painter.restore();
+            }
+        }
+    }
+}
+
+int ColorPicker::getSelectedColor() const
+{
+    return selectedColor;
+}
+
+void ColorPicker::setSelectedColor(int value)
+{
+    selectedColor = value;
+}
+
+QVector<QColor> ColorPicker::getColors() const
+{
+    return colors;
+}
+
+void ColorPicker::setColors(const QVector<QColor> &value)
+{
+    colors = value;
+}
+
+
+void ColorPicker::mousePressEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton) {
+        int c = (event->x() - border) / (rWidth + space);
+        int r = (event->y() - border) / (rHeight + space);
+        selectedColor = r * 6 + c;
+        update();
+    }
+}
+
+void ColorPicker::resizeEvent(QResizeEvent *event)
+{
+    Q_UNUSED(event)
+    border = lineWidth();
+    rWidth = (width() - 2 * border) / 6;
+    rWidth -= space;
+    rHeight = (height() - 2 * border) / 6;
+    rHeight -= space;
+}
+
+void ColorPicker::onPatternSelectionChange(int value)
+{
+    LEDPatternDisplay *pat = dynamic_cast<LEDPatternDisplay *>(sender());
+    if (pat) {
+        QColor c = colors[selectedColor];
+        pat->setColor(value, c.red(), c.green(), c.blue());
+    }
+}
