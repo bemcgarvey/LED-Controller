@@ -2,40 +2,70 @@
 #include <QColorDialog>
 #include <QMouseEvent>
 #include <QPainter>
+#include <QSettings>
 #include "ledpatterndisplay.h"
 
 //TODO Save colors in registry? Load on startup?
+QVector<QColor> ColorPicker::colors(36, Qt::black);
+bool ColorPicker::colorsLoaded = false;
 
 ColorPicker::ColorPicker(QWidget *parent) :
-    QFrame(parent), colors(36, Qt::black), selectedColor(0)
+    QFrame(parent), selectedColor(0), colorsChanged(false)
 {
-    //TODO choose decent starting colors
-    colors[0] = Qt::white;
-    colors[1] = Qt::red;
-    colors[2] = Qt::green;
-    colors[3] = Qt::blue;
-    colors[4] = Qt::yellow;
-    colors[5] = Qt::magenta;
-    colors[6] = Qt::cyan;
-    colors[7] = Qt::darkBlue;
-    colors[8] = Qt::darkCyan;
-    colors[9] = Qt::darkGreen;
-    colors[10] = Qt::darkMagenta;
-    colors[11] = Qt::darkRed;
-    colors[12] = Qt::darkYellow;
+    if (!colorsLoaded) {
+        QSettings settings;
+        int size = settings.beginReadArray("colors");
+        if (size > 0) {
+            for (int i = 0; i < colors.size(); ++i) {
+                settings.setArrayIndex(i);
+                colors[i].setRgb(settings.value("color", 0).toInt());
+            }
+            settings.endArray();
+        } else {
+            //TODO choose decent starting colors
+            colors[0] = Qt::white;
+            colors[1] = Qt::red;
+            colors[2] = Qt::green;
+            colors[3] = Qt::blue;
+            colors[4] = Qt::yellow;
+            colors[5] = Qt::magenta;
+            colors[6] = Qt::cyan;
+            colors[7] = Qt::darkBlue;
+            colors[8] = Qt::darkCyan;
+            colors[9] = Qt::darkGreen;
+            colors[10] = Qt::darkMagenta;
+            colors[11] = Qt::darkRed;
+            colors[12] = Qt::darkYellow;
+        }
+        colorsLoaded = true;
+    }
     border = lineWidth();
     rWidth = (width() - 2 * border) / 6;
     rWidth -= space;
     rHeight = (height() - 2 * border) / 6;
-    rHeight -= space; 
+    rHeight -= space;
+}
+
+ColorPicker::~ColorPicker()
+{
+    if (colorsChanged) {
+        QSettings settings;
+        settings.beginWriteArray("colors");
+        for (int i = 0; i < colors.size(); ++i) {
+            settings.setArrayIndex(i);
+            settings.setValue("color", colors[i].rgb());
+        }
+        settings.endArray();
+    }
 }
 
 void ColorPicker::mouseDoubleClickEvent(QMouseEvent *event)
 {
     Q_UNUSED(event)
     QColor newColor = QColorDialog::getColor(colors[selectedColor], this, "Select Color");
-    if (newColor.isValid()) {
+    if (newColor.isValid() && newColor != colors[selectedColor]) {
         colors[selectedColor] = newColor;
+        colorsChanged = true;
     }
 }
 

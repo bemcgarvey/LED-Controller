@@ -70,6 +70,7 @@ compile_commands.json
 **/debug
 **/release
 *object_script*
+*appdatalocaltemp*
 
 #MPLabX entries
 *.o
