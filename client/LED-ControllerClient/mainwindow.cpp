@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 #include <QSerialPortInfo>
 #include <QMessageBox>
+#include <QCloseEvent>
+#include "colorpicker.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -22,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
     output1DM = new OutputPanelDisplayManager(output1Config, ui->nLEDsSpinBox, ui->nPatternsSpinBox, ui->output1PatternLabelsFrame, ui->output1PatternsFrame);
     connect(output1Config, &LEDOutputConfig::sizeChanged, this, &MainWindow::onLEDOutputSizeChange);
     onLEDOutputSizeChange(output1Config->sizeInBytes());
+    ColorPicker::loadColors();
 }
 
 MainWindow::~MainWindow()
@@ -87,4 +90,11 @@ void MainWindow::on_actionExit_triggered()
 void MainWindow::onLEDOutputSizeChange(int newSize)
 {
     memoryLabel->setText(QString("Memory used: %1").arg(newSize));
+}
+
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    ColorPicker::saveColors();
+    event->accept();
 }

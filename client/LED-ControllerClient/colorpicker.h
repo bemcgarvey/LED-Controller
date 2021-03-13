@@ -8,7 +8,8 @@ class ColorPicker : public QFrame
     Q_OBJECT
 public:
     ColorPicker(QWidget *parent = nullptr);
-    ~ColorPicker();
+    static void loadColors();
+    static void saveColors();
     QVector<QColor> getColors() const;
     void setColors(const QVector<QColor> &value);
     int getSelectedColor() const;
@@ -21,12 +22,12 @@ protected:
 private:
     static QVector<QColor> colors;
     static bool colorsLoaded;
+    static bool colorsChanged;
     int selectedColor;
     const int space = 2;
     int rWidth;
     int rHeight;
     int border;
-    bool colorsChanged;
 public slots:
     void onPatternSelectionChange(int value);
 };

@@ -8,9 +8,19 @@
 //TODO Save colors in registry? Load on startup?
 QVector<QColor> ColorPicker::colors(36, Qt::black);
 bool ColorPicker::colorsLoaded = false;
+bool ColorPicker::colorsChanged = false;
 
 ColorPicker::ColorPicker(QWidget *parent) :
-    QFrame(parent), selectedColor(0), colorsChanged(false)
+    QFrame(parent), selectedColor(0)
+{
+    border = lineWidth();
+    rWidth = (width() - 2 * border) / 6;
+    rWidth -= space;
+    rHeight = (height() - 2 * border) / 6;
+    rHeight -= space;
+}
+
+void ColorPicker::loadColors()
 {
     if (!colorsLoaded) {
         QSettings settings;
@@ -39,14 +49,9 @@ ColorPicker::ColorPicker(QWidget *parent) :
         }
         colorsLoaded = true;
     }
-    border = lineWidth();
-    rWidth = (width() - 2 * border) / 6;
-    rWidth -= space;
-    rHeight = (height() - 2 * border) / 6;
-    rHeight -= space;
 }
 
-ColorPicker::~ColorPicker()
+void ColorPicker::saveColors()
 {
     if (colorsChanged) {
         QSettings settings;
