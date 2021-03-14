@@ -1,14 +1,12 @@
 #include "ledoutput.h"
 
-LEDOutput::LEDOutput() :
-    QObject()
+LEDOutput::LEDOutput()
 {
     setNumLEDs(0);
     setNumPatterns(1);
 }
 
-LEDOutput::LEDOutput(int nleds, int nPatterns) :
-    QObject()
+LEDOutput::LEDOutput(int nleds, int nPatterns)
 {
     setNumLEDs(nleds);
     setNumPatterns(nPatterns);
@@ -25,7 +23,6 @@ void LEDOutput::setNumLEDs(int value)
     for (auto&& i : patterns) {
         i.setNumLEDs(numLEDs);
     }
-    emit sizeChanged(sizeInBytes());
 }
 
 int LEDOutput::sizeInBytes()
@@ -59,7 +56,6 @@ void LEDOutput::setNumPatterns(int value)
     for (auto&& i : patterns) {
         i.setNumLEDs(numLEDs);
     }
-    emit sizeChanged(sizeInBytes());
 }
 
 LEDPattern &LEDOutput::operator[](int i)

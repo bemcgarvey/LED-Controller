@@ -22,25 +22,31 @@ MainWindow::MainWindow(QWidget *parent)
     ui->statusbar->addWidget(new QLabel("     "));
     ui->statusbar->addWidget(memoryLabel);
     connect(ui->menuPort, &QMenu::aboutToShow, this, &MainWindow::updatePortMenu);
-    for (int i = 0; i < numOutputs; ++i) {
-        outputs.append(new LEDOutput(0, 1));
-        connect(outputs[i], &LEDOutput::sizeChanged, this, &MainWindow::onLEDOutputSizeChange);
-    }
-    outputDMs.append(new OutputPanelDisplayManager(outputs[0], ui->nLEDsSpinBox1, ui->nPatternsSpinBox1, ui->output1PatternLabelsFrame, ui->output1PatternsFrame));
-    outputDMs.append(new OutputPanelDisplayManager(outputs[1], ui->nLEDsSpinBox2, ui->nPatternsSpinBox2, ui->output2PatternLabelsFrame, ui->output2PatternsFrame));
-    outputDMs.append(new OutputPanelDisplayManager(outputs[2], ui->nLEDsSpinBox3, ui->nPatternsSpinBox3, ui->output3PatternLabelsFrame, ui->output3PatternsFrame));
-    outputDMs.append(new OutputPanelDisplayManager(outputs[3], ui->nLEDsSpinBox4, ui->nPatternsSpinBox4, ui->output4PatternLabelsFrame, ui->output4PatternsFrame));
-    outputDMs.append(new OutputPanelDisplayManager(outputs[4], ui->nLEDsSpinBox5, ui->nPatternsSpinBox5, ui->output5PatternLabelsFrame, ui->output5PatternsFrame));
-    outputDMs.append(new OutputPanelDisplayManager(outputs[5], ui->nLEDsSpinBox6, ui->nPatternsSpinBox6, ui->output6PatternLabelsFrame, ui->output6PatternsFrame));
-    onLEDOutputSizeChange(outputs[0]->sizeInBytes());
+    //TODO connect spin boxes to onSizeChange()
+    outputDMs.append(new OutputPanelDisplayManager(&(controller[0]), ui->nLEDsSpinBox1, ui->nPatternsSpinBox1, ui->output1PatternLabelsFrame, ui->output1PatternsFrame));
+    outputDMs.append(new OutputPanelDisplayManager(&(controller[1]), ui->nLEDsSpinBox2, ui->nPatternsSpinBox2, ui->output2PatternLabelsFrame, ui->output2PatternsFrame));
+    outputDMs.append(new OutputPanelDisplayManager(&(controller[2]), ui->nLEDsSpinBox3, ui->nPatternsSpinBox3, ui->output3PatternLabelsFrame, ui->output3PatternsFrame));
+    outputDMs.append(new OutputPanelDisplayManager(&(controller[3]), ui->nLEDsSpinBox4, ui->nPatternsSpinBox4, ui->output4PatternLabelsFrame, ui->output4PatternsFrame));
+    outputDMs.append(new OutputPanelDisplayManager(&(controller[4]), ui->nLEDsSpinBox5, ui->nPatternsSpinBox5, ui->output5PatternLabelsFrame, ui->output5PatternsFrame));
+    outputDMs.append(new OutputPanelDisplayManager(&(controller[5]), ui->nLEDsSpinBox6, ui->nPatternsSpinBox6, ui->output6PatternLabelsFrame, ui->output6PatternsFrame));
+    connect(outputDMs[0], &OutputPanelDisplayManager::sizeChanged, this, &MainWindow::onMemoryUsedChanged);
+    connect(outputDMs[1], &OutputPanelDisplayManager::sizeChanged, this, &MainWindow::onMemoryUsedChanged);
+    connect(outputDMs[2], &OutputPanelDisplayManager::sizeChanged, this, &MainWindow::onMemoryUsedChanged);
+    connect(outputDMs[3], &OutputPanelDisplayManager::sizeChanged, this, &MainWindow::onMemoryUsedChanged);
+    connect(outputDMs[4], &OutputPanelDisplayManager::sizeChanged, this, &MainWindow::onMemoryUsedChanged);
+    connect(outputDMs[5], &OutputPanelDisplayManager::sizeChanged, this, &MainWindow::onMemoryUsedChanged);
+    onMemoryUsedChanged();
     ColorPicker::loadColors();
+    ui->rcInComboBox1->setCurrentIndex(controller.getRCAction(0));
+    ui->rcInComboBox2->setCurrentIndex(controller.getRCAction(1));
+    ui->rcInComboBox3->setCurrentIndex(controller.getRCAction(2));
+    ui->rcInComboBox4->setCurrentIndex(controller.getRCAction(3));
+    ui->rcInComboBox5->setCurrentIndex(controller.getRCAction(4));
+    ui->rcInComboBox6->setCurrentIndex(controller.getRCAction(5));
 }
 
 MainWindow::~MainWindow()
 {
-    for (int i = 0; i < outputs.size(); ++i) {
-        delete outputs[i];
-    }
     for (int i = 0; i < outputDMs.size(); ++i) {
         delete outputDMs[i];
     }
@@ -100,15 +106,11 @@ void MainWindow::on_actionExit_triggered()
     close();
 }
 
-void MainWindow::onLEDOutputSizeChange(int newSize)
+void MainWindow::onMemoryUsedChanged(void)
 {
-    Q_UNUSED(newSize)
-    int sizeUsed = 0;
-    for (auto &&i : outputs) {
-        sizeUsed += i->sizeInBytes();
-    }
-    memoryLabel->setText(QString("Memory used: %1").arg(sizeUsed));
+    memoryLabel->setText(QString("Memory used: %1").arg(controller.sizeInBytes()));
 }
+
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     ColorPicker::saveColors();

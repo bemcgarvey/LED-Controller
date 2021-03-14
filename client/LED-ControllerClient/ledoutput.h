@@ -2,12 +2,10 @@
 #define LEDOUTPUT_H
 
 #include <QVector>
-#include <QObject>
 #include "ledpattern.h"
 
-class LEDOutput : public QObject
+class LEDOutput
 {
-    Q_OBJECT
 public:
     LEDOutput();
     LEDOutput(int leds, int patterns);
@@ -22,8 +20,6 @@ private:
     QVector<LEDPattern> patterns;
     int numLEDs;
     int numPatterns;
-signals:
-    void sizeChanged(int newSize);
 };
 
 #endif // LEDOUTPUT_H

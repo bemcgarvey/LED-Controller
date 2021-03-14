@@ -26,6 +26,8 @@ private:
 private slots:
     void on_nPatternSpinBoxChange(int value);
     void on_nLEDsSpinBoxChange(int value);
+signals:
+    void sizeChanged(void);
 };
 
 #endif // OUTPUTPANELDISPLAYMANAGER_H

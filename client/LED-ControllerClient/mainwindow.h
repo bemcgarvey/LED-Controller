@@ -6,6 +6,7 @@
 #include <QSerialPort>
 #include "ledoutput.h"
 #include "outputpaneldisplaymanager.h"
+#include "ledcontroller.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -26,20 +27,15 @@ private:
     QLabel *memoryLabel;
     QSerialPort *port;
     char buffer[64];
-    const int numOutputs = 6;
-    QVector<LEDOutput *> outputs;
+    LEDController controller;
     QVector<OutputPanelDisplayManager *> outputDMs;
-    //LEDOutputConfig output1;
-    //OutputPanelDisplayManager *output1DM;
-    //LEDOutputConfig *output1Config;
 private slots:
     void updatePortMenu(void);
     void comPortSelected(void);
     void onReadyRead(void);
     void on_actionExit_triggered();
-    void onLEDOutputSizeChange(int newSize);
+    void onMemoryUsedChanged(void);
     void on_actionAbout_triggered();
-
 protected:
     void closeEvent(QCloseEvent *event) override;
 };

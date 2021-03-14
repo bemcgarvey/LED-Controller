@@ -618,7 +618,7 @@
                   <number>0</number>
                  </property>
                  <item>
-                  <widget class="LEDPatternDisplay" name="patternAFrame">
+                  <widget class="PatternDisplay" name="patternAFrame">
                    <property name="frameShape">
                     <enum>QFrame::Box</enum>
                    </property>
@@ -631,7 +631,7 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="LEDPatternDisplay" name="patternBFrame">
+                  <widget class="PatternDisplay" name="patternBFrame">
                    <property name="frameShape">
                     <enum>QFrame::Box</enum>
                    </property>
@@ -644,7 +644,7 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="LEDPatternDisplay" name="patternCFrame">
+                  <widget class="PatternDisplay" name="patternCFrame">
                    <property name="frameShape">
                     <enum>QFrame::Box</enum>
                    </property>
@@ -851,7 +851,7 @@
                   <number>0</number>
                  </property>
                  <item>
-                  <widget class="LEDPatternDisplay" name="patternAFrame_2">
+                  <widget class="PatternDisplay" name="patternAFrame_2">
                    <property name="frameShape">
                     <enum>QFrame::Box</enum>
                    </property>
@@ -864,7 +864,7 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="LEDPatternDisplay" name="patternBFrame_2">
+                  <widget class="PatternDisplay" name="patternBFrame_2">
                    <property name="frameShape">
                     <enum>QFrame::Box</enum>
                    </property>
@@ -877,7 +877,7 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="LEDPatternDisplay" name="patternCFrame_2">
+                  <widget class="PatternDisplay" name="patternCFrame_2">
                    <property name="frameShape">
                     <enum>QFrame::Box</enum>
                    </property>
@@ -1084,7 +1084,7 @@
                   <number>0</number>
                  </property>
                  <item>
-                  <widget class="LEDPatternDisplay" name="patternAFrame_3">
+                  <widget class="PatternDisplay" name="patternAFrame_3">
                    <property name="frameShape">
                     <enum>QFrame::Box</enum>
                    </property>
@@ -1097,7 +1097,7 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="LEDPatternDisplay" name="patternBFrame_3">
+                  <widget class="PatternDisplay" name="patternBFrame_3">
                    <property name="frameShape">
                     <enum>QFrame::Box</enum>
                    </property>
@@ -1110,7 +1110,7 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="LEDPatternDisplay" name="patternCFrame_3">
+                  <widget class="PatternDisplay" name="patternCFrame_3">
                    <property name="frameShape">
                     <enum>QFrame::Box</enum>
                    </property>
@@ -1317,7 +1317,7 @@
                   <number>0</number>
                  </property>
                  <item>
-                  <widget class="LEDPatternDisplay" name="patternAFrame_4">
+                  <widget class="PatternDisplay" name="patternAFrame_4">
                    <property name="frameShape">
                     <enum>QFrame::Box</enum>
                    </property>
@@ -1330,7 +1330,7 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="LEDPatternDisplay" name="patternBFrame_4">
+                  <widget class="PatternDisplay" name="patternBFrame_4">
                    <property name="frameShape">
                     <enum>QFrame::Box</enum>
                    </property>
@@ -1343,7 +1343,7 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="LEDPatternDisplay" name="patternCFrame_4">
+                  <widget class="PatternDisplay" name="patternCFrame_4">
                    <property name="frameShape">
                     <enum>QFrame::Box</enum>
                    </property>
@@ -1550,7 +1550,7 @@
                   <number>0</number>
                  </property>
                  <item>
-                  <widget class="LEDPatternDisplay" name="patternAFrame_5">
+                  <widget class="PatternDisplay" name="patternAFrame_5">
                    <property name="frameShape">
                     <enum>QFrame::Box</enum>
                    </property>
@@ -1563,7 +1563,7 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="LEDPatternDisplay" name="patternBFrame_5">
+                  <widget class="PatternDisplay" name="patternBFrame_5">
                    <property name="frameShape">
                     <enum>QFrame::Box</enum>
                    </property>
@@ -1576,7 +1576,7 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="LEDPatternDisplay" name="patternCFrame_5">
+                  <widget class="PatternDisplay" name="patternCFrame_5">
                    <property name="frameShape">
                     <enum>QFrame::Box</enum>
                    </property>
@@ -1783,7 +1783,7 @@
                   <number>0</number>
                  </property>
                  <item>
-                  <widget class="LEDPatternDisplay" name="patternAFrame_6">
+                  <widget class="PatternDisplay" name="patternAFrame_6">
                    <property name="frameShape">
                     <enum>QFrame::Box</enum>
                    </property>
@@ -1796,7 +1796,7 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="LEDPatternDisplay" name="patternBFrame_6">
+                  <widget class="PatternDisplay" name="patternBFrame_6">
                    <property name="frameShape">
                     <enum>QFrame::Box</enum>
                    </property>
@@ -1809,7 +1809,7 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="LEDPatternDisplay" name="patternCFrame_6">
+                  <widget class="PatternDisplay" name="patternCFrame_6">
                    <property name="frameShape">
                     <enum>QFrame::Box</enum>
                    </property>
@@ -1908,12 +1908,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>LEDPatternDisplay</class>
+   <class>PatternDisplay</class>
    <extends>QFrame</extends>
-   <header>ledpatterndisplay.h</header>
+   <header>patterndisplay.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>
  <connections/>
+ <slots>
+  <slot>onSpinBoxChanged(int)</slot>
+ </slots>
 </ui>

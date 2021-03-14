@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
-    <widget class="LEDPatternDisplay" name="patternDisplay">
+    <widget class="PatternDisplay" name="patternDisplay">
      <property name="maximumSize">
       <size>
        <width>16777215</width>
@@ -168,9 +168,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>LEDPatternDisplay</class>
+   <class>PatternDisplay</class>
    <extends>QFrame</extends>
-   <header>ledpatterndisplay.h</header>
+   <header>patterndisplay.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

@@ -47,10 +47,12 @@ void OutputPanelDisplayManager::on_nPatternSpinBoxChange(int value)
         patternLabels[i]->setVisible(false);
         patternDisplays[i]->setVisible(false);
     }
+    emit sizeChanged();
 }
 
 void OutputPanelDisplayManager::on_nLEDsSpinBoxChange(int value)
 {
     outputConfig->setNumLEDs(value);
     patternsFrame->update();
+    emit sizeChanged();
 }

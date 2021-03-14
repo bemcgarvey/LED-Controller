@@ -14,6 +14,8 @@ public:
     LEDOutput& operator[](int i);
     int getRCAction(int i);
     void setRCAction(int i, int action);
+    int getNumOutputs() const;
+    int getMaxMemory() const;
 private:
     int numOutputs;
     QVector<LEDOutput> outputs;
