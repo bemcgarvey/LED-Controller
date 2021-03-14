@@ -118,6 +118,7 @@ void LEDPatternDisplay::resizeEvent(QResizeEvent *event)
 
 //TODO Scrolling should stop when right most led displayed
 //Disable buttons when scrolled to one side
+//Scroll in window sized jumps? or add >> and << buttons that do that?
 
 void LEDPatternDisplay::onLeftButton()
 {

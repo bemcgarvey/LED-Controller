@@ -38,6 +38,8 @@ private slots:
     void onReadyRead(void);
     void on_actionExit_triggered();
     void onLEDOutputSizeChange(int newSize);
+    void on_actionAbout_triggered();
+
 protected:
     void closeEvent(QCloseEvent *event) override;
 };

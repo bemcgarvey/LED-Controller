@@ -4,6 +4,10 @@
 #include <QMessageBox>
 #include <QCloseEvent>
 #include "colorpicker.h"
+#include "aboutdialog.h"
+
+//TODO implement Open and Save
+//TODO implement Read and Write from device
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -109,4 +113,11 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
     ColorPicker::saveColors();
     event->accept();
+}
+
+void MainWindow::on_actionAbout_triggered()
+{
+    AboutDialog *dlg = new AboutDialog(this);
+    dlg->exec();
+    delete dlg;
 }

@@ -27,50 +27,28 @@
        <number>3</number>
       </property>
       <layout class="QGridLayout" name="gridLayout">
-       <property name="rightMargin">
-        <number>5</number>
-       </property>
-       <item row="2" column="0">
-        <widget class="QComboBox" name="comboBox_2">
-         <item>
-          <property name="text">
-           <string>New Item</string>
-          </property>
-         </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>RC Input</string>
+         </property>
         </widget>
        </item>
-       <item row="4" column="1">
-        <widget class="QLabel" name="label_10">
-         <property name="text">
-          <string>TextLabel</string>
+       <item row="8" column="0" colspan="2">
+        <widget class="Line" name="line">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
          </property>
         </widget>
        </item>
        <item row="5" column="0">
-        <widget class="QComboBox" name="comboBox_5"/>
-       </item>
-       <item row="3" column="0">
-        <widget class="QComboBox" name="comboBox_3"/>
-       </item>
-       <item row="6" column="1">
-        <widget class="QLabel" name="label_47">
-         <property name="text">
-          <string>TextLabel</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLabel" name="label_2">
-         <property name="text">
-          <string>&lt;1150</string>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="0">
-        <widget class="QComboBox" name="comboBox_6"/>
-       </item>
-       <item row="1" column="0">
-        <widget class="QComboBox" name="comboBox">
+        <widget class="QComboBox" name="rcInComboBox5">
          <item>
           <property name="text">
            <string>Do Nothing</string>
@@ -116,38 +94,123 @@
          </property>
         </spacer>
        </item>
-       <item row="3" column="1">
-        <widget class="QLabel" name="label_9">
+       <item row="1" column="1">
+        <widget class="QLabel" name="label_2">
          <property name="text">
-          <string>TextLabel</string>
+          <string>&lt;1150</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="label">
+       <item row="6" column="0">
+        <widget class="QComboBox" name="rcInComboBox6">
+         <item>
+          <property name="text">
+           <string>Do Nothing</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Off</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Pattern A</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Pattern B</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Pattern C</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Next Pattern</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QLabel" name="label_10">
          <property name="text">
-          <string>RC Input</string>
+          <string>1551-1750</string>
          </property>
         </widget>
        </item>
-       <item row="2" column="1">
-        <widget class="QLabel" name="label_3">
-         <property name="text">
-          <string>1151-1350</string>
-         </property>
+       <item row="4" column="0">
+        <widget class="QComboBox" name="rcInComboBox4">
+         <item>
+          <property name="text">
+           <string>Do Nothing</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Off</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Pattern A</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Pattern B</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Pattern C</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Next Pattern</string>
+          </property>
+         </item>
         </widget>
        </item>
        <item row="5" column="1">
         <widget class="QLabel" name="label_11">
          <property name="text">
-          <string>TextLabel</string>
+          <string>1751-1950</string>
          </property>
         </widget>
        </item>
-       <item row="4" column="0">
-        <widget class="QComboBox" name="comboBox_4"/>
+       <item row="3" column="1">
+        <widget class="QLabel" name="label_9">
+         <property name="text">
+          <string>1351-1550</string>
+         </property>
+        </widget>
        </item>
-       <item row="10" column="0">
+       <item row="9" column="0">
+        <spacer name="verticalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="6" column="1">
+        <widget class="QLabel" name="label_47">
+         <property name="text">
+          <string>&gt;1950</string>
+         </property>
+        </widget>
+       </item>
+       <item row="13" column="0">
         <spacer name="verticalSpacer_2">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -160,17 +223,133 @@
          </property>
         </spacer>
        </item>
-       <item row="8" column="0" colspan="2">
-        <widget class="QPushButton" name="pushButton">
+       <item row="3" column="0">
+        <widget class="QComboBox" name="rcInComboBox3">
+         <item>
+          <property name="text">
+           <string>Do Nothing</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Off</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Pattern A</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Pattern B</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Pattern C</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Next Pattern</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QComboBox" name="rcInComboBox1">
+         <item>
+          <property name="text">
+           <string>Do Nothing</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Off</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Pattern A</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Pattern B</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Pattern C</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Next Pattern</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="11" column="0" colspan="2">
+        <widget class="QPushButton" name="readPushButton">
          <property name="text">
           <string>Read</string>
          </property>
         </widget>
        </item>
-       <item row="9" column="0" colspan="2">
-        <widget class="QPushButton" name="pushButton_2">
+       <item row="2" column="1">
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>1151-1350</string>
+         </property>
+        </widget>
+       </item>
+       <item row="12" column="0" colspan="2">
+        <widget class="QPushButton" name="writePushButton">
          <property name="text">
           <string>Write</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QComboBox" name="rcInComboBox2">
+         <item>
+          <property name="text">
+           <string>Do Nothing</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Off</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Pattern A</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Pattern B</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Pattern C</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Next Pattern</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="10" column="0">
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>Device</string>
          </property>
         </widget>
        </item>
@@ -193,7 +372,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>588</width>
+         <width>584</width>
          <height>656</height>
         </rect>
        </property>
