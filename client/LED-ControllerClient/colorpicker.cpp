@@ -3,7 +3,7 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QSettings>
-#include "ledpatterndisplay.h"
+#include "patterndisplay.h"
 
 QVector<QColor> ColorPicker::colors(36, Qt::black);
 bool ColorPicker::colorsLoaded = false;
@@ -141,7 +141,7 @@ void ColorPicker::resizeEvent(QResizeEvent *event)
 
 void ColorPicker::onPatternSelectionChange(int value)
 {
-    LEDPatternDisplay *pat = dynamic_cast<LEDPatternDisplay *>(sender());
+    PatternDisplay *pat = dynamic_cast<PatternDisplay *>(sender());
     if (pat) {
         QColor c = colors[selectedColor];
         pat->setColor(value, c.red(), c.green(), c.blue());

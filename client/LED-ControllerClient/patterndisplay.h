@@ -5,12 +5,12 @@
 #include <QPushButton>
 #include "ledpattern.h"
 
-class LEDPatternDisplay : public QFrame
+class PatternDisplay : public QFrame
 {
     Q_OBJECT
 public:
-    LEDPatternDisplay(QWidget *parent = nullptr);
-    ~LEDPatternDisplay();
+    PatternDisplay(QWidget *parent = nullptr);
+    ~PatternDisplay();
     void setPattern(LEDPattern *p);
     bool isEditable() const;
     void setEditable(bool value);

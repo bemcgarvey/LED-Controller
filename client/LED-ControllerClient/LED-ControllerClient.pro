@@ -12,25 +12,27 @@ SOURCES += \
     aboutdialog.cpp \
     colorpicker.cpp \
     editpatterndialog.cpp \
-    ledoutputconfig.cpp \
+    ledcontroller.cpp \
+    ledoutput.cpp \
     ledpattern.cpp \
-    ledpatterndisplay.cpp \
     ledrgb.cpp \
     main.cpp \
     mainwindow.cpp \
     outputpaneldisplaymanager.cpp \
+    patterndisplay.cpp \
     version.cpp
 
 HEADERS += \
     aboutdialog.h \
     colorpicker.h \
     editpatterndialog.h \
-    ledoutputconfig.h \
+    ledcontroller.h \
+    ledoutput.h \
     ledpattern.h \
-    ledpatterndisplay.h \
     ledrgb.h \
     mainwindow.h \
     outputpaneldisplaymanager.h \
+    patterndisplay.h \
     version.h
 
 FORMS += \

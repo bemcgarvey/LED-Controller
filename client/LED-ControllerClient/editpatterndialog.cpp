@@ -18,7 +18,7 @@ EditPatternDialog::EditPatternDialog(QWidget *parent, LEDPattern *pat) :
         ui->nextPattternComboBox->setCurrentIndex(pattern->getNextPattern());
     }
     onColorChange(ui->colorPickerFrame->getColor());
-    connect(ui->patternDisplay, &LEDPatternDisplay::selectionChanged, ui->colorPickerFrame, &ColorPicker::onPatternSelectionChange);
+    connect(ui->patternDisplay, &PatternDisplay::selectionChanged, ui->colorPickerFrame, &ColorPicker::onPatternSelectionChange);
     connect(ui->colorPickerFrame, &ColorPicker::colorChanged, this, &EditPatternDialog::onColorChange);
 }
 

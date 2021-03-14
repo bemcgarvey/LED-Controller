@@ -1,16 +1,16 @@
-#ifndef LEDOUTPUTCONFIG_H
-#define LEDOUTPUTCONFIG_H
+#ifndef LEDOUTPUT_H
+#define LEDOUTPUT_H
 
 #include <QVector>
 #include <QObject>
 #include "ledpattern.h"
 
-class LEDOutputConfig : public QObject
+class LEDOutput : public QObject
 {
     Q_OBJECT
 public:
-    LEDOutputConfig();
-    LEDOutputConfig(int leds, int patterns);
+    LEDOutput();
+    LEDOutput(int leds, int patterns);
     int getNumLEDs() const;
     void setNumLEDs(int value);
     int sizeInBytes(void);
@@ -26,4 +26,4 @@ signals:
     void sizeChanged(int newSize);
 };
 
-#endif // LEDOUTPUTCONFIG_H
+#endif // LEDOUTPUT_H

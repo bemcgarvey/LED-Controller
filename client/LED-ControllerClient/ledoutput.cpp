@@ -1,25 +1,25 @@
-#include "ledoutputconfig.h"
+#include "ledoutput.h"
 
-LEDOutputConfig::LEDOutputConfig() :
+LEDOutput::LEDOutput() :
     QObject()
 {
     setNumLEDs(0);
     setNumPatterns(1);
 }
 
-LEDOutputConfig::LEDOutputConfig(int nleds, int nPatterns) :
+LEDOutput::LEDOutput(int nleds, int nPatterns) :
     QObject()
 {
     setNumLEDs(nleds);
     setNumPatterns(nPatterns);
 }
 
-int LEDOutputConfig::getNumLEDs() const
+int LEDOutput::getNumLEDs() const
 {
     return numLEDs;
 }
 
-void LEDOutputConfig::setNumLEDs(int value)
+void LEDOutput::setNumLEDs(int value)
 {
     numLEDs = value;
     for (auto&& i : patterns) {
@@ -28,7 +28,7 @@ void LEDOutputConfig::setNumLEDs(int value)
     emit sizeChanged(sizeInBytes());
 }
 
-int LEDOutputConfig::sizeInBytes()
+int LEDOutput::sizeInBytes()
 {
     int size = 2;
     for (auto&& i : patterns) {
@@ -37,7 +37,7 @@ int LEDOutputConfig::sizeInBytes()
     return size;
 }
 
-int LEDOutputConfig::toByteVector(QVector<uint8_t> &vec)
+int LEDOutput::toByteVector(QVector<uint8_t> &vec)
 {
     vec.append(numLEDs);
     vec.append(numPatterns);
@@ -47,12 +47,12 @@ int LEDOutputConfig::toByteVector(QVector<uint8_t> &vec)
     return sizeInBytes();
 }
 
-int LEDOutputConfig::getNumPatterns() const
+int LEDOutput::getNumPatterns() const
 {
     return numPatterns;
 }
 
-void LEDOutputConfig::setNumPatterns(int value)
+void LEDOutput::setNumPatterns(int value)
 {
     numPatterns = value;
     patterns.resize(numPatterns);
@@ -62,7 +62,7 @@ void LEDOutputConfig::setNumPatterns(int value)
     emit sizeChanged(sizeInBytes());
 }
 
-LEDPattern &LEDOutputConfig::operator[](int i)
+LEDPattern &LEDOutput::operator[](int i)
 {
     return patterns[i];
 }

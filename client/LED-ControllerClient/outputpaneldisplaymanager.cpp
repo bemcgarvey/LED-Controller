@@ -1,6 +1,6 @@
 #include "outputpaneldisplaymanager.h"
 
-OutputPanelDisplayManager::OutputPanelDisplayManager(LEDOutputConfig *model, QSpinBox *nLED, QSpinBox *nPattern, QFrame *labels, QFrame *patterns) :
+OutputPanelDisplayManager::OutputPanelDisplayManager(LEDOutput *model, QSpinBox *nLED, QSpinBox *nPattern, QFrame *labels, QFrame *patterns) :
     QObject()
 {
     outputConfig = model;
@@ -10,7 +10,7 @@ OutputPanelDisplayManager::OutputPanelDisplayManager(LEDOutputConfig *model, QSp
     for (auto&& i : labels->findChildren<QLabel *>()) {
         patternLabels.append(i);
     }
-    for (auto&& i : patterns->findChildren<LEDPatternDisplay *>()) {
+    for (auto&& i : patterns->findChildren<PatternDisplay *>()) {
         patternDisplays.append(i);
     }
     nLEDSpinBox->setValue(outputConfig->getNumLEDs());
@@ -28,7 +28,7 @@ OutputPanelDisplayManager::OutputPanelDisplayManager(LEDOutputConfig *model, QSp
     connect(nLEDSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), this, &OutputPanelDisplayManager::on_nLEDsSpinBoxChange);
 }
 
-void OutputPanelDisplayManager::setModel(LEDOutputConfig *model)
+void OutputPanelDisplayManager::setModel(LEDOutput *model)
 {
     outputConfig = model;
 

@@ -1,19 +1,19 @@
 #include "editpatterndialog.h"
-#include "ledpatterndisplay.h"
+#include "patterndisplay.h"
 #include <QBrush>
 #include <QMessageBox>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QHBoxLayout>
 
-LEDPatternDisplay::LEDPatternDisplay(QWidget *parent) :
+PatternDisplay::PatternDisplay(QWidget *parent) :
     QFrame(parent), pattern(nullptr), editable(false)
 {
 
     leftButton = new QPushButton("<", this);
     rightButton = new QPushButton(">", this);
-    connect(leftButton, &QPushButton::pressed, this, &LEDPatternDisplay::onLeftButton);
-    connect(rightButton, &QPushButton::pressed, this, &LEDPatternDisplay::onRightButton);
+    connect(leftButton, &QPushButton::pressed, this, &PatternDisplay::onLeftButton);
+    connect(rightButton, &QPushButton::pressed, this, &PatternDisplay::onRightButton);
     QHBoxLayout *hBox = new QHBoxLayout(this);
     hBox->setMargin(0);
     leftButton->setMaximumWidth(20);
@@ -30,16 +30,16 @@ LEDPatternDisplay::LEDPatternDisplay(QWidget *parent) :
     selection = -1;
 }
 
-LEDPatternDisplay::~LEDPatternDisplay() {
+PatternDisplay::~PatternDisplay() {
 
 }
 
-void LEDPatternDisplay::setPattern(LEDPattern *p)
+void PatternDisplay::setPattern(LEDPattern *p)
 {
     pattern = p;
 }
 
-void LEDPatternDisplay::mousePressEvent(QMouseEvent *event)
+void PatternDisplay::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton && editable) {
         int newSelection = ((event->x() - 20) / (ledSize + 5)) + leftIndex;
@@ -51,7 +51,7 @@ void LEDPatternDisplay::mousePressEvent(QMouseEvent *event)
     }
 }
 
-void LEDPatternDisplay::mouseDoubleClickEvent(QMouseEvent *event)
+void PatternDisplay::mouseDoubleClickEvent(QMouseEvent *event)
 {
     Q_UNUSED(event);
     if (!editable) {
@@ -62,7 +62,7 @@ void LEDPatternDisplay::mouseDoubleClickEvent(QMouseEvent *event)
     }
 }
 
-void LEDPatternDisplay::paintEvent(QPaintEvent *event)
+void PatternDisplay::paintEvent(QPaintEvent *event)
 {
     QFrame::paintEvent(event);
     if (pattern == nullptr) {
@@ -86,29 +86,29 @@ void LEDPatternDisplay::paintEvent(QPaintEvent *event)
     }
 }
 
-bool LEDPatternDisplay::isEditable() const
+bool PatternDisplay::isEditable() const
 {
     return editable;
 }
 
-void LEDPatternDisplay::setEditable(bool value)
+void PatternDisplay::setEditable(bool value)
 {
     editable = value;
 }
 
-void LEDPatternDisplay::setSelectionColor(int r, int g, int b)
+void PatternDisplay::setSelectionColor(int r, int g, int b)
 {
     (*pattern)[selection] = LEDrgb(r, g, b);
 }
 
-void LEDPatternDisplay::setColor(int index, int r, int g, int b)
+void PatternDisplay::setColor(int index, int r, int g, int b)
 {
     (*pattern)[index] = LEDrgb(r, g, b);
 }
 
 
 
-void LEDPatternDisplay::resizeEvent(QResizeEvent *event)
+void PatternDisplay::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event);
     length = width();
@@ -120,7 +120,7 @@ void LEDPatternDisplay::resizeEvent(QResizeEvent *event)
 //Disable buttons when scrolled to one side
 //Scroll in window sized jumps? or add >> and << buttons that do that?
 
-void LEDPatternDisplay::onLeftButton()
+void PatternDisplay::onLeftButton()
 {
     if (leftIndex > 0) {
         --leftIndex;
@@ -128,7 +128,7 @@ void LEDPatternDisplay::onLeftButton()
     }
 }
 
-void LEDPatternDisplay::onRightButton()
+void PatternDisplay::onRightButton()
 {
     ++leftIndex;
     update();

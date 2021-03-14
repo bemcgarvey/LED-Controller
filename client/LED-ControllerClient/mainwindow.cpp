@@ -23,8 +23,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->statusbar->addWidget(memoryLabel);
     connect(ui->menuPort, &QMenu::aboutToShow, this, &MainWindow::updatePortMenu);
     for (int i = 0; i < numOutputs; ++i) {
-        outputs.append(new LEDOutputConfig(0, 1));
-        connect(outputs[i], &LEDOutputConfig::sizeChanged, this, &MainWindow::onLEDOutputSizeChange);
+        outputs.append(new LEDOutput(0, 1));
+        connect(outputs[i], &LEDOutput::sizeChanged, this, &MainWindow::onLEDOutputSizeChange);
     }
     outputDMs.append(new OutputPanelDisplayManager(outputs[0], ui->nLEDsSpinBox1, ui->nPatternsSpinBox1, ui->output1PatternLabelsFrame, ui->output1PatternsFrame));
     outputDMs.append(new OutputPanelDisplayManager(outputs[1], ui->nLEDsSpinBox2, ui->nPatternsSpinBox2, ui->output2PatternLabelsFrame, ui->output2PatternsFrame));

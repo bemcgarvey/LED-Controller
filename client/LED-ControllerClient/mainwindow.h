@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QLabel>
 #include <QSerialPort>
-#include "ledoutputconfig.h"
+#include "ledoutput.h"
 #include "outputpaneldisplaymanager.h"
 
 QT_BEGIN_NAMESPACE
@@ -27,7 +27,7 @@ private:
     QSerialPort *port;
     char buffer[64];
     const int numOutputs = 6;
-    QVector<LEDOutputConfig *> outputs;
+    QVector<LEDOutput *> outputs;
     QVector<OutputPanelDisplayManager *> outputDMs;
     //LEDOutputConfig output1;
     //OutputPanelDisplayManager *output1DM;

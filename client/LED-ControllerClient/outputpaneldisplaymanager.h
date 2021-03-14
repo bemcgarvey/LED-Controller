@@ -1,8 +1,8 @@
 #ifndef OUTPUTPANELDISPLAYMANAGER_H
 #define OUTPUTPANELDISPLAYMANAGER_H
 
-#include "ledoutputconfig.h"
-#include "ledpatterndisplay.h"
+#include "ledoutput.h"
+#include "patterndisplay.h"
 
 #include <QLabel>
 #include <QObject>
@@ -13,15 +13,15 @@ class OutputPanelDisplayManager : public QObject
 {
     Q_OBJECT
 public:
-    OutputPanelDisplayManager(LEDOutputConfig *model,  QSpinBox *nLED, QSpinBox *nPattern, QFrame *labels, QFrame *patterns);
-    void setModel(LEDOutputConfig *model);
+    OutputPanelDisplayManager(LEDOutput *model,  QSpinBox *nLED, QSpinBox *nPattern, QFrame *labels, QFrame *patterns);
+    void setModel(LEDOutput *model);
 private:
-    LEDOutputConfig *config;
+    LEDOutput *config;
     QSpinBox *nLEDSpinBox;
     QSpinBox *nPatternsSpinBox;
-    QVector<LEDPatternDisplay *> patternDisplays;
+    QVector<PatternDisplay *> patternDisplays;
     QVector<QLabel *> patternLabels;
-    LEDOutputConfig *outputConfig;
+    LEDOutput *outputConfig;
     QFrame *patternsFrame;
 private slots:
     void on_nPatternSpinBoxChange(int value);
