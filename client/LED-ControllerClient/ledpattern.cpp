@@ -31,8 +31,9 @@ int LEDPattern::sizeInBytes()
 int LEDPattern::toByteVector(QVector<uint8_t> &vec)
 {
     vec.append(numLEDs);
-    vec.append(onTime & 0xff);
+    //BUG when onTime == -1 this is not right
     vec.append((onTime >> 8) & 0xff);
+    vec.append(onTime & 0xff);
     vec.append(nextPattern);
     for (auto&& i : leds) {
         i.toByteVector(vec);
@@ -43,8 +44,10 @@ int LEDPattern::toByteVector(QVector<uint8_t> &vec)
 int LEDPattern::fromByteVector(const QVector<uint8_t> &vec, int &pos)
 {
     numLEDs = vec[pos++];
+    //BUG when onTime == -1 this is not right
     onTime = vec[pos++];
-    onTime |= (vec[pos++] << 8);
+    onTime <<= 8;
+    onTime += vec[pos++];
     nextPattern = vec[pos++];
     if (leds.size() != numLEDs) {
         leds.resize(numLEDs); //Should be unnecassary but just to be safe

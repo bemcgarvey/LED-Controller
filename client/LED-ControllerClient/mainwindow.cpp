@@ -4,13 +4,14 @@
 #include <QMessageBox>
 #include <QCloseEvent>
 #include <QFileDialog>
+#include <QSettings>
 #include "colorpicker.h"
 #include "aboutdialog.h"
-#include <QDebug>
+#include "version.h"
 
 //TODO implement device read/write
-//TODO write version to file as header
-//TODO save last directory (or file?) in settings
+
+//TODO check all member functions.  Add const where appropriate.
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -73,6 +74,12 @@ bool MainWindow::save()
             writeBuffer[i] = bytes[i];
         }
         uint16_t size = bytes.size();
+        const uint32_t magic = 0x4D630301;
+        file.write(reinterpret_cast<const char *>(&magic), 4);
+        char majorVersion = Version::clientMajorVersion;
+        char minorVersion = Version::clientMinorVersion;
+        file.write(&majorVersion, 1);
+        file.write(&minorVersion, 1);
         file.write(reinterpret_cast<char *>(&size), 2);
         file.write(writeBuffer, bytes.size());
         file.flush();
@@ -88,6 +95,17 @@ bool MainWindow::open(QString fileName)
 {
     QFile file(fileName);
     if (file.open(QIODevice::ReadOnly)) {
+        uint32_t magic;
+        file.read(reinterpret_cast<char *>(&magic), 4);
+        if (magic != 0x4D630301) {
+            QMessageBox::critical(this, "LED-Controller", "Invalid file format");
+            file.close();
+            return false;
+        }
+        char majorVersion;
+        char minorVersion;
+        file.read(&majorVersion, 1);
+        file.read(&minorVersion, 1);  //Can use version if format changes later
         uint16_t size;
         file.read(reinterpret_cast<char *>(&size), 2);
         QVector<uint8_t> data;
@@ -195,6 +213,8 @@ void MainWindow::on_actionSave_As_triggered()
             QMessageBox::critical(this, "LED Controller", "Error saving file.  Changes are not saved.");
         } else {
             modified = false;
+            QSettings settings;
+            settings.setValue("lastfile", fileName);
         }
     }
 }
@@ -214,11 +234,14 @@ void MainWindow::on_actionSave_triggered()
 
 void MainWindow::on_actionOpen_triggered()
 {
-    QString openFileName = QFileDialog::getOpenFileName(this, "Open File", fileName, "LED files (*.led)");
+    QSettings settings;
+    QString lastFileName = settings.value("lastfile", "").toString();
+    QString openFileName = QFileDialog::getOpenFileName(this, "Open File", lastFileName, "LED files (*.led)");
     if (openFileName.length() > 0) {
         if (open(openFileName)) {
             modified = false;
             fileName = openFileName;
+            settings.setValue("lastfile", fileName);
         } else {
             QMessageBox::critical(this, "LED Controller", "Could not open file.");
         }

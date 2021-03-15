@@ -11,6 +11,8 @@ EditPatternDialog::EditPatternDialog(QWidget *parent, LEDPattern *pat) :
         ui->patternDisplay->setPattern(&tempPattern);
         ui->patternDisplay->setEditable(true);
         if (pattern->getOnTime() == -1) {
+            //FIXME need to work on how the ontime interacts with the checkbox.
+            //Maybe disable spinbox when checked? and set to -1 (need to change limits to do this)
             ui->onCheckBox->setChecked(true);
         } else {
             ui->onTimeSpinBox->setValue(pattern->getOnTime() / 10.0);
