@@ -74,7 +74,7 @@ bool MainWindow::save()
             writeBuffer[i] = bytes[i];
         }
         uint16_t size = bytes.size();
-        const uint32_t magic = 0x4D630301;
+        const uint32_t magic = 0x4D630302;
         file.write(reinterpret_cast<const char *>(&magic), 4);
         char majorVersion = Version::clientMajorVersion;
         char minorVersion = Version::clientMinorVersion;
@@ -97,7 +97,7 @@ bool MainWindow::open(QString fileName)
     if (file.open(QIODevice::ReadOnly)) {
         uint32_t magic;
         file.read(reinterpret_cast<char *>(&magic), 4);
-        if (magic != 0x4D630301) {
+        if (magic != 0x4D630302) {
             QMessageBox::critical(this, "LED-Controller", "Invalid file format");
             file.close();
             return false;
