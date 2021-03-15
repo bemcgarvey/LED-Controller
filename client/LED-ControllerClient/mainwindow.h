@@ -43,6 +43,10 @@ private slots:
     void on_actionSave_As_triggered();
     void on_actionSave_triggered();
     void on_actionOpen_triggered();
+    void on_writePushButton_clicked();
+    void on_readPushButton_clicked();
+public slots:
+    void onTestRequest(LEDPattern *pat, int output);
 protected:
     void closeEvent(QCloseEvent *event) override;
 };

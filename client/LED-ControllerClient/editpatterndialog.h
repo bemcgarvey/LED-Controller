@@ -21,11 +21,13 @@ private slots:
     void onButtonBoxAccepted();
     void onColorChange(QColor c);
     void on_onCheckBox_clicked(bool checked);
-
+    void on_testPushButton_clicked();
 private:
     Ui::EditPatternDialog *ui;
     LEDPattern *pattern;
     LEDPattern tempPattern;
+signals:
+    void testPattern(LEDPattern *pat, int output);
 };
 
 #endif // EDITPATTERNDIALOG_H

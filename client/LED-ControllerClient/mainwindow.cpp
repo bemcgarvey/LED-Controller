@@ -8,6 +8,7 @@
 #include "colorpicker.h"
 #include "aboutdialog.h"
 #include "version.h"
+#include <QDebug>
 
 //TODO implement device read/write
 
@@ -160,7 +161,7 @@ void MainWindow::comPortSelected()
         port->setParity(QSerialPort::NoParity);
         port->setStopBits(QSerialPort::OneStop);
         portLabel->setText(action->text());
-        connectedLabel->setText("Connected");
+        //connectedLabel->setText("Connected");
         port->clear();  //clear out extra bytes from device power on
         connect(port, &QSerialPort::readyRead, this, &MainWindow::onReadyRead);
     } else {
@@ -246,4 +247,20 @@ void MainWindow::on_actionOpen_triggered()
             QMessageBox::critical(this, "LED Controller", "Could not open file.");
         }
     }
+}
+
+void MainWindow::on_writePushButton_clicked()
+{
+
+}
+
+void MainWindow::on_readPushButton_clicked()
+{
+
+}
+
+void MainWindow::onTestRequest(LEDPattern *pat, int output)
+{
+    //TODO implement test pattern
+    qDebug() << "Test Request: " << output << ":" << pat->getNumLEDs();
 }

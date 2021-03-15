@@ -5,6 +5,7 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QHBoxLayout>
+#include "mainwindow.h"
 
 PatternDisplay::PatternDisplay(QWidget *parent) :
     QFrame(parent), pattern(nullptr), editable(false)
@@ -56,6 +57,8 @@ void PatternDisplay::mouseDoubleClickEvent(QMouseEvent *event)
     Q_UNUSED(event);
     if (!editable) {
         EditPatternDialog *dlg = new EditPatternDialog(this, pattern);
+        MainWindow *mw = dynamic_cast<MainWindow *>(nativeParentWidget());
+        connect(dlg, &EditPatternDialog::testPattern, mw, &MainWindow::onTestRequest);
         dlg->exec();
         delete dlg;
         update();

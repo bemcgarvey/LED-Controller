@@ -1,8 +1,6 @@
 #include "editpatterndialog.h"
 #include "ui_editpatterndialog.h"
 
-//TODO add a test button to send pattern to a selected output
-
 EditPatternDialog::EditPatternDialog(QWidget *parent, LEDPattern *pat) :
     QDialog(parent), ui(new Ui::EditPatternDialog), pattern(nullptr)
 {
@@ -60,4 +58,9 @@ void EditPatternDialog::onColorChange(QColor c)
 void EditPatternDialog::on_onCheckBox_clicked(bool checked)
 {
         ui->onTimeSpinBox->setEnabled(!checked);
+}
+
+void EditPatternDialog::on_testPushButton_clicked()
+{
+    emit testPattern(&tempPattern, ui->testOutputComboBox->currentIndex());
 }
