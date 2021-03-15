@@ -1,6 +1,8 @@
 #include "editpatterndialog.h"
 #include "ui_editpatterndialog.h"
 
+//TODO add a test button to send pattern to a selected output
+
 EditPatternDialog::EditPatternDialog(QWidget *parent, LEDPattern *pat) :
     QDialog(parent), ui(new Ui::EditPatternDialog), pattern(nullptr)
 {
@@ -11,10 +13,11 @@ EditPatternDialog::EditPatternDialog(QWidget *parent, LEDPattern *pat) :
         ui->patternDisplay->setPattern(&tempPattern);
         ui->patternDisplay->setEditable(true);
         if (pattern->getOnTime() == -1) {
-            //FIXME need to work on how the ontime interacts with the checkbox.
-            //Maybe disable spinbox when checked? and set to -1 (need to change limits to do this)
+            ui->onTimeSpinBox->setEnabled(false);
             ui->onCheckBox->setChecked(true);
         } else {
+            ui->onTimeSpinBox->setEnabled(true);
+            ui->onCheckBox->setChecked(false);
             ui->onTimeSpinBox->setValue(pattern->getOnTime() / 10.0);
         }
         ui->nextPattternComboBox->setCurrentIndex(pattern->getNextPattern());
@@ -53,3 +56,8 @@ void EditPatternDialog::onColorChange(QColor c)
     ui->blueLabel->setText(QString("Blue:%1").arg(c.blue()));
 }
 
+
+void EditPatternDialog::on_onCheckBox_clicked(bool checked)
+{
+        ui->onTimeSpinBox->setEnabled(!checked);
+}

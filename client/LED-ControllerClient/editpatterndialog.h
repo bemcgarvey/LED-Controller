@@ -20,6 +20,7 @@ private slots:
     void onButtonBoxRejected();
     void onButtonBoxAccepted();
     void onColorChange(QColor c);
+    void on_onCheckBox_clicked(bool checked);
 
 private:
     Ui::EditPatternDialog *ui;
