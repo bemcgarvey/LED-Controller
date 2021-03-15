@@ -7,8 +7,8 @@ class LEDController
 {
 public:
     LEDController();
-    int toByteVector(QVector<uint8_t>& vec);
-    bool fromByteVector(const QVector<uint8_t>& vec, const int startPos);
+    int toByteVector(QVector<uint8_t> &vec);
+    bool fromByteVector(const QVector<uint8_t> &vec);
     enum RCActions {RC_DO_NOTHING = 0, RC_OFF, RC_PATTERN_A, RC_PATTERN_B, RC_PATTERN_C, RC_NEXT_PATTERN};
     int sizeInBytes(void);
     LEDOutput& operator[](int i);

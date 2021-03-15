@@ -14,7 +14,7 @@ class OutputPanelDisplayManager : public QObject
     Q_OBJECT
 public:
     OutputPanelDisplayManager(LEDOutput *model,  QSpinBox *nLED, QSpinBox *nPattern, QFrame *labels, QFrame *patterns);
-    void setModel(LEDOutput *model);
+    void updateControls(void);
 private:
     LEDOutput *config;
     QSpinBox *nLEDSpinBox;

@@ -40,6 +40,21 @@ int LEDPattern::toByteVector(QVector<uint8_t> &vec)
     return sizeInBytes();
 }
 
+int LEDPattern::fromByteVector(const QVector<uint8_t> &vec, int &pos)
+{
+    numLEDs = vec[pos++];
+    onTime = vec[pos++];
+    onTime |= (vec[pos++] << 8);
+    nextPattern = vec[pos++];
+    if (leds.size() != numLEDs) {
+        leds.resize(numLEDs); //Should be unnecassary but just to be safe
+    }
+    for (int i = 0; i < numLEDs; ++i) {
+        leds[i].fromByteVector(vec, pos);
+    }
+    return sizeInBytes();
+}
+
 LEDrgb &LEDPattern::operator[](int i)
 {
     return leds[i];

@@ -13,6 +13,13 @@ OutputPanelDisplayManager::OutputPanelDisplayManager(LEDOutput *model, QSpinBox 
     for (auto&& i : patterns->findChildren<PatternDisplay *>()) {
         patternDisplays.append(i);
     }
+    updateControls();
+    connect(nPatternsSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), this, &OutputPanelDisplayManager::on_nPatternSpinBoxChange);
+    connect(nLEDSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), this, &OutputPanelDisplayManager::on_nLEDsSpinBoxChange);
+}
+
+void OutputPanelDisplayManager::updateControls()
+{
     nLEDSpinBox->setValue(outputConfig->getNumLEDs());
     nPatternsSpinBox->setValue(outputConfig->getNumPatterns());
     for (int i = 0; i < nPatternsSpinBox->value(); ++i) {
@@ -24,15 +31,6 @@ OutputPanelDisplayManager::OutputPanelDisplayManager(LEDOutput *model, QSpinBox 
         patternLabels[i]->setVisible(false);
         patternDisplays[i]->setVisible(false);
     }
-    connect(nPatternsSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), this, &OutputPanelDisplayManager::on_nPatternSpinBoxChange);
-    connect(nLEDSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), this, &OutputPanelDisplayManager::on_nLEDsSpinBoxChange);
-}
-
-void OutputPanelDisplayManager::setModel(LEDOutput *model)
-{
-    outputConfig = model;
-
-    //TODO update display for new model
 }
 
 void OutputPanelDisplayManager::on_nPatternSpinBoxChange(int value)

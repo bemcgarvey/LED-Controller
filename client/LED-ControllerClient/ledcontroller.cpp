@@ -24,15 +24,22 @@ int LEDController::toByteVector(QVector<uint8_t> &vec)
     return sizeInBytes();
 }
 
-bool LEDController::fromByteVector(const QVector<uint8_t> &vec, const int startPos)
+bool LEDController::fromByteVector(const QVector<uint8_t> &vec)
 {
-
+    numOutputs = vec[0];
+    int pos = 1;
+    for (int i = 0; i < numOutputs; ++i) {
+        outputs[i].fromByteVector(vec, pos);
+    }
+    for (int i = 0; i < 6; ++i) {
+        actions[i] = static_cast<RCActions>(vec[pos++]);
+    }
     return true;
 }
 
 int LEDController::sizeInBytes()
 {
-    int size = 8;
+    int size = 7;
     for (auto&& i : outputs) {
         size += i.sizeInBytes();
     }

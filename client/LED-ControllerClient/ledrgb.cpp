@@ -73,3 +73,11 @@ int LEDrgb::toByteVector(QVector<uint8_t> &vec)
     vec.append(blue);
     return sizeInBytes();
 }
+
+int LEDrgb::fromByteVector(const QVector<uint8_t> &vec, int &pos)
+{
+    green = vec[pos++];
+    red = vec[pos++];
+    blue = vec[pos++];
+    return 3;
+}

@@ -3,15 +3,18 @@
 #include <QSerialPortInfo>
 #include <QMessageBox>
 #include <QCloseEvent>
+#include <QFileDialog>
 #include "colorpicker.h"
 #include "aboutdialog.h"
+#include <QDebug>
 
-//TODO implement Open and Save
-//TODO implement Read and Write from device
+//TODO implement device read/write
+//TODO write version to file as header
+//TODO save last directory (or file?) in settings
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow), port(nullptr)
+    , ui(new Ui::MainWindow), port(nullptr), modified(true), fileName("")
 {
     ui->setupUi(this);
     portLabel = new QLabel("----");
@@ -22,7 +25,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->statusbar->addWidget(new QLabel("     "));
     ui->statusbar->addWidget(memoryLabel);
     connect(ui->menuPort, &QMenu::aboutToShow, this, &MainWindow::updatePortMenu);
-    //TODO connect spin boxes to onSizeChange()
     outputDMs.append(new OutputPanelDisplayManager(&(controller[0]), ui->nLEDsSpinBox1, ui->nPatternsSpinBox1, ui->output1PatternLabelsFrame, ui->output1PatternsFrame));
     outputDMs.append(new OutputPanelDisplayManager(&(controller[1]), ui->nLEDsSpinBox2, ui->nPatternsSpinBox2, ui->output2PatternLabelsFrame, ui->output2PatternsFrame));
     outputDMs.append(new OutputPanelDisplayManager(&(controller[2]), ui->nLEDsSpinBox3, ui->nPatternsSpinBox3, ui->output3PatternLabelsFrame, ui->output3PatternsFrame));
@@ -51,6 +53,66 @@ MainWindow::~MainWindow()
         delete outputDMs[i];
     }
     delete ui;
+}
+
+bool MainWindow::save()
+{
+    controller.setRCAction(0, ui->rcInComboBox1->currentIndex());
+    controller.setRCAction(1, ui->rcInComboBox2->currentIndex());
+    controller.setRCAction(2, ui->rcInComboBox3->currentIndex());
+    controller.setRCAction(3, ui->rcInComboBox4->currentIndex());
+    controller.setRCAction(4, ui->rcInComboBox5->currentIndex());
+    controller.setRCAction(5, ui->rcInComboBox6->currentIndex());
+    QFile file(fileName);
+    if (file.open(QIODevice::WriteOnly)) {
+        QVector<uint8_t> bytes;
+        controller.toByteVector(bytes);
+        char *writeBuffer;
+        writeBuffer = new char[bytes.size()];
+        for (int i = 0; i < bytes.size(); ++i) {
+            writeBuffer[i] = bytes[i];
+        }
+        uint16_t size = bytes.size();
+        file.write(reinterpret_cast<char *>(&size), 2);
+        file.write(writeBuffer, bytes.size());
+        file.flush();
+        file.close();
+        delete[] writeBuffer;
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool MainWindow::open(QString fileName)
+{
+    QFile file(fileName);
+    if (file.open(QIODevice::ReadOnly)) {
+        uint16_t size;
+        file.read(reinterpret_cast<char *>(&size), 2);
+        QVector<uint8_t> data;
+        char *readBuffer;
+        readBuffer = new char[size];
+        file.read(readBuffer, size);
+        for (int i = 0; i < size; ++i) {
+            data.append(readBuffer[i]);
+        }
+        controller.fromByteVector(data);
+        file.close();
+        delete[] readBuffer;
+        ui->rcInComboBox1->setCurrentIndex(controller.getRCAction(0));
+        ui->rcInComboBox2->setCurrentIndex(controller.getRCAction(1));
+        ui->rcInComboBox3->setCurrentIndex(controller.getRCAction(2));
+        ui->rcInComboBox4->setCurrentIndex(controller.getRCAction(3));
+        ui->rcInComboBox5->setCurrentIndex(controller.getRCAction(4));
+        ui->rcInComboBox6->setCurrentIndex(controller.getRCAction(5));
+        for (auto&& i : outputDMs) {
+            i->updateControls();
+        }
+        return true;
+    } else {
+        return false;
+    }
 }
 
 void MainWindow::updatePortMenu()
@@ -122,4 +184,43 @@ void MainWindow::on_actionAbout_triggered()
     AboutDialog *dlg = new AboutDialog(this);
     dlg->exec();
     delete dlg;
+}
+
+void MainWindow::on_actionSave_As_triggered()
+{
+    QString saveFileName = QFileDialog::getSaveFileName(this, "Save As", fileName, "LED files (*.led)");
+    if (saveFileName.length() > 0) {
+        fileName = saveFileName;
+        if (!save()) {
+            QMessageBox::critical(this, "LED Controller", "Error saving file.  Changes are not saved.");
+        } else {
+            modified = false;
+        }
+    }
+}
+
+void MainWindow::on_actionSave_triggered()
+{
+    if (fileName.length() > 0) {
+        if (!save()) {
+            QMessageBox::critical(this, "LED Controller", "Error saving file.  Changes are not saved.");
+        } else {
+            modified = false;
+        }
+    } else {
+        on_actionSave_As_triggered();
+    }
+}
+
+void MainWindow::on_actionOpen_triggered()
+{
+    QString openFileName = QFileDialog::getOpenFileName(this, "Open File", fileName, "LED files (*.led)");
+    if (openFileName.length() > 0) {
+        if (open(openFileName)) {
+            modified = false;
+            fileName = openFileName;
+        } else {
+            QMessageBox::critical(this, "LED Controller", "Could not open file.");
+        }
+    }
 }

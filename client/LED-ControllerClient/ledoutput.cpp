@@ -44,6 +44,17 @@ int LEDOutput::toByteVector(QVector<uint8_t> &vec)
     return sizeInBytes();
 }
 
+int LEDOutput::fromByteVector(const QVector<uint8_t> &vec, int &pos)
+{
+    numLEDs = vec[pos++];
+    numPatterns = vec[pos++];
+    setNumPatterns(numPatterns);
+    for (int i = 0; i < numPatterns; ++i) {
+        patterns[i].fromByteVector(vec, pos);
+    }
+    return sizeInBytes();
+}
+
 int LEDOutput::getNumPatterns() const
 {
     return numPatterns;

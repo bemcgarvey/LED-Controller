@@ -29,6 +29,10 @@ private:
     char buffer[64];
     LEDController controller;
     QVector<OutputPanelDisplayManager *> outputDMs;
+    bool modified;
+    QString fileName;
+    bool save(void);
+    bool open(QString fileName);
 private slots:
     void updatePortMenu(void);
     void comPortSelected(void);
@@ -36,6 +40,9 @@ private slots:
     void on_actionExit_triggered();
     void onMemoryUsedChanged(void);
     void on_actionAbout_triggered();
+    void on_actionSave_As_triggered();
+    void on_actionSave_triggered();
+    void on_actionOpen_triggered();
 protected:
     void closeEvent(QCloseEvent *event) override;
 };

@@ -13,6 +13,7 @@ public:
     void setNumLEDs(int value);
     int sizeInBytes(void);
     int toByteVector(QVector<uint8_t>& vec);
+    int fromByteVector(const QVector<uint8_t> &vec, int &pos);
     int getNumPatterns() const;
     void setNumPatterns(int value);
     LEDPattern& operator[](int i);
