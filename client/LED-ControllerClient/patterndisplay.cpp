@@ -7,6 +7,8 @@
 #include <QHBoxLayout>
 #include "mainwindow.h"
 
+//Implement drag and drop
+
 PatternDisplay::PatternDisplay(QWidget *parent) :
     QFrame(parent), pattern(nullptr), editable(false)
 {

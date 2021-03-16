@@ -27,6 +27,7 @@ private:
     QLabel *memoryLabel;
     QSerialPort *port;
     char *pRxBuffer;
+    uint16_t rxSize;
     LEDController controller;
     QVector<OutputPanelDisplayManager *> outputDMs;
     bool modified;
@@ -38,6 +39,8 @@ private:
     int bytesNeeded;
     char *bufferPos;
     char tempBuffer[4];
+    enum DeviceCommands {CMD_READ = 0x80, CMD_WRITE = 0x81, CMD_TEST = 0x82};
+    enum DeviceResponse {ACK = 0x01, NACK = 0x00};
 private slots:
     void updatePortMenu(void);
     void comPortSelected(void);
@@ -50,6 +53,7 @@ private slots:
     void on_actionOpen_triggered();
     void on_writePushButton_clicked();
     void on_readPushButton_clicked();
+    void on_connectPushButton_clicked();
 public slots:
     void onTestRequest(LEDPattern *pat, int output);
 protected:

@@ -16,12 +16,24 @@
 #include "version.h"
 
 enum rxState {
-    RX_IDLE, WAIT_START1, WAIT_START2, WAIT_COMMAND, WAIT_DATA
+    RX_IDLE, WAIT_START1, WAIT_START2, WAIT_COMMAND, WAIT_DATA_SIZE, WAIT_DATA
+};
+
+enum SerialCommands {
+    CMD_READ = 0x80, CMD_WRITE = 0x81, CMD_TEST = 0x82
+};
+
+enum SerialRespnses {
+    ACK = 0x01, NACK = 0x00
 };
 volatile enum rxState state;
 volatile int bytesNeeded;
 volatile enum rxState lastCommand;
-volatile uint8_t txBuf[4];
+volatile uint8_t *rxDestination;
+volatile uint8_t tempRxBuf[2];
+volatile uint8_t txHeader[4];
+volatile uint8_t txHeaderBytes;
+volatile uint8_t *txHeaderPos;
 volatile uint16_t txBytes;
 volatile uint8_t *txSource;
 
@@ -71,31 +83,74 @@ void __interrupt(irq(U1RX), base(8)) U1_RX_ISR() {
                 break;
             case WAIT_START2:
                 if (rx == 0x63) {
-                    txBuf[0] = VERSION_MAJOR;
-                    txBuf[1] = VERSION_MINOR;
-                    txBuf[2] = (uint8_t)MAX_MEMORY;
-                    txBuf[3] = (uint8_t)(MAX_MEMORY >> 8);
-                    txBytes = 4;
-                    txSource = txBuf;
+                    txHeader[0] = VERSION_MAJOR;
+                    txHeader[1] = VERSION_MINOR;
+                    txHeader[2] = (uint8_t) MAX_MEMORY;
+                    txHeader[3] = (uint8_t) (MAX_MEMORY >> 8);
+                    txHeaderBytes = 4;
+                    txHeaderPos = txHeader;
+                    txBytes = 0;
                     txStart();
-                    state = WAIT_START1;
+                    state = WAIT_COMMAND;
                 } else {
                     state = WAIT_START1;
                 }
                 break;
+            case WAIT_COMMAND:
+                if (rx == CMD_WRITE) {
+                    state = WAIT_DATA_SIZE;
+                    lastCommand = rx;
+                    bytesNeeded = 2;
+                    rxDestination = tempRxBuf;
+                } else if (rx == CMD_READ) {
+                    txSource = controller.bytes;
+                    txHeaderBytes = 2;
+                    *((uint16_t *)txHeader) = calculateSize();
+                    txBytes = *((uint16_t *)txHeader);
+                    txHeaderPos = txHeader;
+                    txStart();
+                    state = WAIT_COMMAND;  //TODO change to WAIT_TMT?? Don't accept commands while transmitting?
+                } else if (rx == CMD_TEST) {
+
+                } else {
+                    state = WAIT_COMMAND;
+                }
+                break;
+            case WAIT_DATA_SIZE:
+                *rxDestination = rx;
+                ++rxDestination;
+                --bytesNeeded;
+                if (bytesNeeded == 0) {
+                    rxDestination = controller.bytes;
+                    bytesNeeded = *((uint8_t *) tempRxBuf);
+                    state = WAIT_DATA;
+                }
+            case WAIT_DATA:
+                *rxDestination = rx;
+                ++rxDestination;
+                --bytesNeeded;
+                if (bytesNeeded == 0) {
+                    state = WAIT_COMMAND;
+                }
         }
     }
 }
 
 void __interrupt(irq(U1TX), base(8)) U1_TX_ISR() {
-    while (txBytes > 0 && PIR3bits.U1TXIF == 1) {
-        U1TXB = *txSource;
-        --txBytes;
-        ++txSource;
+    while (txHeaderBytes > 0 && PIR3bits.U1TXIF) {
+        U1TXB = *txHeaderPos;
+        ++txHeaderPos;
+        --txHeaderBytes;
     }
-    if (txBytes == 0) {
-        txStop();
-        txSource = NULL;
-        ledOn();
+    if (txHeaderBytes == 0) {
+        while (txBytes > 0 && PIR3bits.U1TXIF == 1) {
+            U1TXB = *txSource;
+            --txBytes;
+            ++txSource;
+        }
+        if (txBytes == 0) {
+            txStop();
+            txSource = NULL;
+        }
     }
 }

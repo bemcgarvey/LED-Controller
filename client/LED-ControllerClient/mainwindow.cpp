@@ -10,9 +10,8 @@
 #include "version.h"
 #include <QDebug>
 
-//TODO implement device read/write
-//TODO implement modified check on close
 //TODO check all member functions.  Add const where appropriate.
+//TODO Application icons
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -163,7 +162,7 @@ void MainWindow::comPortSelected()
         port->setParity(QSerialPort::NoParity);
         port->setStopBits(QSerialPort::OneStop);
         portLabel->setText(action->text());
-        ui->readPushButton->setEnabled(true);
+        ui->connectPushButton->setEnabled(true);
         port->clear();  //clear out extra bytes from device power on
         connect(port, &QSerialPort::readyRead, this, &MainWindow::onReadyRead);
     } else {
@@ -180,6 +179,7 @@ void MainWindow::onReadyRead(void) {
         //qDebug() << port->bytesAvailable() << ":" << bytesNeeded;
         switch (state) {
         case IDLE:
+            port->clear(QSerialPort::Input);
             break;
         case WAIT_VERSION:
             received = port->read(bufferPos, bytesNeeded);
@@ -202,24 +202,70 @@ void MainWindow::onReadyRead(void) {
                 controller.setMaxMemory(mem);
                 bytesNeeded = 0;
                 bufferPos = nullptr;
-
-                connectedLabel->setText("Connected");  //Remove
+                connectedLabel->setText("Connected");
+                ui->readPushButton->setEnabled(true);
                 ui->writePushButton->setEnabled(true);
                 onMemoryUsedChanged();
-
                 state = IDLE;   //This will change to WAIT_CONFIG_SIZE
             }
             break;
         case WAIT_CONFIG_SIZE:
+            received = port->read(bufferPos, bytesNeeded);
+            bytesNeeded -= received;
+            bufferPos += received;
+            if (bytesNeeded == 0) {
+                rxSize = tempBuffer[0];
+                rxSize |= (static_cast<uint16_t>(tempBuffer[1])) << 8;
+                bytesNeeded = rxSize; // + 1;  //extra byte for checksum
+                pRxBuffer = new char[bytesNeeded];
+                bufferPos = pRxBuffer;
+                state = WAIT_CONFIG;
+            }
             break;
         case WAIT_CONFIG:
+            received = port->read(bufferPos, bytesNeeded);
+            bytesNeeded -= received;
+            bufferPos += received;
             if (bytesNeeded == 0) {
-                connectedLabel->setText("Connected");
-                ui->writePushButton->setEnabled(true);
-                onMemoryUsedChanged();
+                uint8_t sum = 0;
+                for (int i = 0; i < rxSize; ++i) {
+                    sum += pRxBuffer[i];
+                }
+                if (true) {  //TODO implement checksum //(sum ^ pRxBuffer[rxSize]) == 0) {
+                    QVector<uint8_t> vec;
+                    for (int i = 0; i < rxSize; ++i) {
+                        vec.append(pRxBuffer[i]);
+                    }
+                    //TODO - roll this code and code from open() and constructor?? into a function
+                    controller.fromByteVector(vec);
+                    ui->rcInComboBox1->setCurrentIndex(controller.getRCAction(0));
+                    ui->rcInComboBox2->setCurrentIndex(controller.getRCAction(1));
+                    ui->rcInComboBox3->setCurrentIndex(controller.getRCAction(2));
+                    ui->rcInComboBox4->setCurrentIndex(controller.getRCAction(3));
+                    ui->rcInComboBox5->setCurrentIndex(controller.getRCAction(4));
+                    ui->rcInComboBox6->setCurrentIndex(controller.getRCAction(5));
+                    for (auto&& i : outputDMs) {
+                        i->updateControls();
+                    }
+                } else {
+                    QMessageBox::critical(this, "LED-Controller", "Error reading device");
+                }
+                delete[] pRxBuffer;
+                state = IDLE;
             }
             break;
         case WAIT_ACK:
+            received = port->read(bufferPos, bytesNeeded);
+            bytesNeeded -= received;
+            bufferPos += received;
+            if (bytesNeeded == 0) {
+                if (tempBuffer[0] == ACK) {
+                    QMessageBox::information(this, "LED-Controller", "Operation completed successfully");
+                } else {
+                    QMessageBox::critical(this, "LED-Controller", "Operation failed");
+                }
+                state = IDLE;
+            }
             break;
         }
     }
@@ -243,6 +289,7 @@ void MainWindow::onMemoryUsedChanged(void)
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
+    //TODO check for modified
     ColorPicker::saveColors();
     event->accept();
 }
@@ -300,20 +347,45 @@ void MainWindow::on_actionOpen_triggered()
 
 void MainWindow::on_writePushButton_clicked()
 {
-
+    QVector<uint8_t> vec;
+    controller.toByteVector(vec);
+    uint16_t size = vec.size();
+    char cmd = CMD_WRITE;
+    state = WAIT_ACK;
+    bytesNeeded = 1;
+    bufferPos = tempBuffer;
+    port->write(&cmd, 1);
+    port->write(reinterpret_cast<char *>(&size), 2);
+    char sum = 0;
+    for (int i = 0; i < vec.size(); ++i) {
+        char byte;
+        byte = vec[i];
+        port->write(&byte, 1);
+        sum += byte;
+    }
+    port->write(&sum, 1);
 }
 
 void MainWindow::on_readPushButton_clicked()
 {
     bytesNeeded = 2;
     bufferPos = tempBuffer;
-    state = WAIT_VERSION;
-    char txBuff[] = {0x4d, 0x63};
-    port->write(txBuff, 2);
+    state = WAIT_CONFIG_SIZE;
+    char txBuff = CMD_READ;
+    port->write(&txBuff, 1);
 }
 
 void MainWindow::onTestRequest(LEDPattern *pat, int output)
 {
     //TODO implement test pattern
     qDebug() << "Test Request: " << output << ":" << pat->getNumLEDs();
+}
+
+void MainWindow::on_connectPushButton_clicked()
+{
+    bytesNeeded = 2;
+    bufferPos = tempBuffer;
+    state = WAIT_VERSION;
+    char txBuff[] = {0x4d, 0x63};
+    port->write(txBuff, 2);
 }
