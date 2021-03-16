@@ -15,11 +15,11 @@ LEDController::LEDController()
 int LEDController::toByteVector(QVector<uint8_t> &vec)
 {
     vec.append(numOutputs);
-    for (auto&& i : outputs) {
-        i.toByteVector(vec);
-    }
     for (int i = 0; i < 6; ++i) {
         vec.append(static_cast<uint8_t>(actions[i]));
+    }
+    for (auto&& i : outputs) {
+        i.toByteVector(vec);
     }
     return sizeInBytes();
 }
@@ -28,12 +28,13 @@ bool LEDController::fromByteVector(const QVector<uint8_t> &vec)
 {
     numOutputs = vec[0];
     int pos = 1;
-    for (int i = 0; i < numOutputs; ++i) {
-        outputs[i].fromByteVector(vec, pos);
-    }
     for (int i = 0; i < 6; ++i) {
         actions[i] = static_cast<RCActions>(vec[pos++]);
     }
+    for (int i = 0; i < numOutputs; ++i) {
+        outputs[i].fromByteVector(vec, pos);
+    }
+
     return true;
 }
 

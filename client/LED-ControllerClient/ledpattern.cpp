@@ -32,8 +32,8 @@ int LEDPattern::toByteVector(QVector<uint8_t> &vec)
 {
     vec.append(numLEDs);
     int16_t ot = onTime;
-    vec.append(static_cast<uint8_t>((ot >> 8) & 0xff));
     vec.append(static_cast<uint8_t>(ot & 0xff));
+    vec.append(static_cast<uint8_t>((ot >> 8) & 0xff));
     vec.append(nextPattern);
     for (auto&& i : leds) {
         i.toByteVector(vec);
@@ -46,8 +46,7 @@ int LEDPattern::fromByteVector(const QVector<uint8_t> &vec, int &pos)
     numLEDs = vec[pos++];
     int16_t ot;
     ot = vec[pos++];
-    ot <<= 8;
-    ot += vec[pos++];
+    ot |= (static_cast<int16_t>(vec[pos++])) << 8;
     onTime = ot;
     nextPattern = vec[pos++];
     if (leds.size() != numLEDs) {
