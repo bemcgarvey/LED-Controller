@@ -26,13 +26,18 @@ private:
     QLabel *connectedLabel;
     QLabel *memoryLabel;
     QSerialPort *port;
-    char buffer[64];
+    char *pRxBuffer;
     LEDController controller;
     QVector<OutputPanelDisplayManager *> outputDMs;
     bool modified;
     QString fileName;
     bool save(void);
     bool open(QString fileName);
+    enum RxState {IDLE, WAIT_VERSION, WAIT_MEM_SIZE, WAIT_CONFIG_SIZE, WAIT_CONFIG, WAIT_ACK};
+    RxState state;
+    int bytesNeeded;
+    char *bufferPos;
+    char tempBuffer[4];
 private slots:
     void updatePortMenu(void);
     void comPortSelected(void);

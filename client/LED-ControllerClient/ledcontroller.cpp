@@ -66,6 +66,11 @@ int LEDController::getMaxMemory() const
     return maxMemory;
 }
 
+void LEDController::setMaxMemory(int value)
+{
+    maxMemory = value;
+}
+
 int LEDController::getNumOutputs() const
 {
     return numOutputs;

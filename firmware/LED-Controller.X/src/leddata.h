@@ -10,6 +10,7 @@
 
 #include <stdint.h>
 
+#define MAX_MEMORY 3600
 extern uint8_t str1A[12];
 extern uint8_t offStr[12];
 

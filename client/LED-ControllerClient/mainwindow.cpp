@@ -11,12 +11,14 @@
 #include <QDebug>
 
 //TODO implement device read/write
-
+//TODO implement modified check on close
 //TODO check all member functions.  Add const where appropriate.
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow), port(nullptr), modified(true), fileName("")
+    , ui(new Ui::MainWindow), port(nullptr), pRxBuffer(nullptr)
+    , modified(true), fileName(""), state(IDLE), bytesNeeded(0)
+    , bufferPos(nullptr)
 {
     ui->setupUi(this);
     portLabel = new QLabel("----");
@@ -161,7 +163,7 @@ void MainWindow::comPortSelected()
         port->setParity(QSerialPort::NoParity);
         port->setStopBits(QSerialPort::OneStop);
         portLabel->setText(action->text());
-        //connectedLabel->setText("Connected");
+        ui->readPushButton->setEnabled(true);
         port->clear();  //clear out extra bytes from device power on
         connect(port, &QSerialPort::readyRead, this, &MainWindow::onReadyRead);
     } else {
@@ -173,13 +175,54 @@ void MainWindow::comPortSelected()
 }
 
 void MainWindow::onReadyRead(void) {
-    int bytesReceived;
-    if (port->bytesAvailable() < 3) {
-        return;
+    int received;
+    while (port->bytesAvailable() > 0) {
+        //qDebug() << port->bytesAvailable() << ":" << bytesNeeded;
+        switch (state) {
+        case IDLE:
+            break;
+        case WAIT_VERSION:
+            received = port->read(bufferPos, bytesNeeded);
+            bytesNeeded -= received;
+            bufferPos += received;
+            if (bytesNeeded == 0) {
+                Version::firmwareMajorVersion = tempBuffer[0];
+                Version::firmwareMinorVersion = tempBuffer[1];
+                bytesNeeded = 2;
+                state = WAIT_MEM_SIZE;
+            }
+            break;
+        case WAIT_MEM_SIZE:
+            received = port->read(bufferPos, bytesNeeded);
+            bytesNeeded -= received;
+            bufferPos += received;
+            if (bytesNeeded == 0) {
+                uint16_t mem = tempBuffer[2];
+                mem |= (static_cast<uint16_t>(tempBuffer[3])) << 8;
+                controller.setMaxMemory(mem);
+                bytesNeeded = 0;
+                bufferPos = nullptr;
+
+                connectedLabel->setText("Connected");  //Remove
+                ui->writePushButton->setEnabled(true);
+                onMemoryUsedChanged();
+
+                state = IDLE;   //This will change to WAIT_CONFIG_SIZE
+            }
+            break;
+        case WAIT_CONFIG_SIZE:
+            break;
+        case WAIT_CONFIG:
+            if (bytesNeeded == 0) {
+                connectedLabel->setText("Connected");
+                ui->writePushButton->setEnabled(true);
+                onMemoryUsedChanged();
+            }
+            break;
+        case WAIT_ACK:
+            break;
+        }
     }
-    bytesReceived = static_cast<int>(port->read(buffer, 64));
-    buffer[bytesReceived] = '\0';
-    ui->statusbar->showMessage(buffer, 2000);
 }
 
 void MainWindow::on_actionExit_triggered()
@@ -189,7 +232,13 @@ void MainWindow::on_actionExit_triggered()
 
 void MainWindow::onMemoryUsedChanged(void)
 {
-    memoryLabel->setText(QString("Memory used: %1").arg(controller.sizeInBytes()));
+    if (controller.getMaxMemory() > 0) {
+        memoryLabel->setText(QString("Memory used: %1 of %2").arg(controller.sizeInBytes())
+                             .arg(controller.getMaxMemory()));
+    } else {
+        memoryLabel->setText(QString("Memory used: %1 of ...")
+                             .arg(controller.sizeInBytes()));
+    }
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -256,7 +305,11 @@ void MainWindow::on_writePushButton_clicked()
 
 void MainWindow::on_readPushButton_clicked()
 {
-
+    bytesNeeded = 2;
+    bufferPos = tempBuffer;
+    state = WAIT_VERSION;
+    char txBuff[] = {0x4d, 0x63};
+    port->write(txBuff, 2);
 }
 
 void MainWindow::onTestRequest(LEDPattern *pat, int output)

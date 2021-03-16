@@ -12,7 +12,7 @@
 #define	SERIAL_H
 
 void initSerial(void);
-void txBytes(void *buf, int nBytes);
+//void txBytes(void *buf, int nBytes);
 
 #endif	/* SERIAL_H */
 

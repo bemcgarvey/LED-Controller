@@ -293,6 +293,9 @@
        </item>
        <item row="11" column="0" colspan="2">
         <widget class="QPushButton" name="readPushButton">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>Read</string>
          </property>
@@ -307,6 +310,9 @@
        </item>
        <item row="12" column="0" colspan="2">
         <widget class="QPushButton" name="writePushButton">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>Write</string>
          </property>
