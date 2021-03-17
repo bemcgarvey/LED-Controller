@@ -39,7 +39,7 @@ void initSystemTimer(void) {
     T0CON0bits.EN = 1;  
 }
 
-void __interrupt(irq(TMR0), base(8)) Timer0_ISR() {
+void __interrupt(irq(TMR0), low_priority, base(8)) Timer0_ISR() {
     static uint8_t count = 0;
     ++count;
     if (count == 10) {

@@ -20,7 +20,7 @@ int currentPWMus(void) {
     return (int)lastPWM;
 }
 
-void __interrupt(irq(TMR1G), base(8)) Capture_ISR() {
+void __interrupt(irq(TMR1G), high_priority, base(8)) Capture_ISR() {
     currentPWMInput = *((uint16_t *) &TMR1L);
     TMR1H = 0;
     TMR1L = 0;
