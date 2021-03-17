@@ -24,10 +24,10 @@ enum SerialCommands {
 };
 
 enum SerialRespnses {
-    ACK = 0x01, NACK = 0x00
+    ACK = 0x06, NACK = 0x15
 };
 volatile enum rxState state;
-volatile int bytesNeeded;
+volatile uint16_t bytesNeeded;
 volatile enum SerialCommands lastCommand;  //TODO is this needed?
 volatile uint8_t *rxDestination;
 volatile uint8_t tempRxBuf[2];
@@ -116,7 +116,7 @@ void __interrupt(irq(U1RX), low_priority, base(8)) U1_RX_ISR() {
                     txHeaderPos = txHeader;
                     sendChecksum = 1;
                     txStart();
-                    state = WAIT_COMMAND;  //TODO change to WAIT_TMT?? Don't accept commands while transmitting?
+                    state = WAIT_COMMAND;
                 } else if (rx == CMD_TEST) {
 
                 } else if (rx == 0x4d) {
@@ -132,10 +132,11 @@ void __interrupt(irq(U1RX), low_priority, base(8)) U1_RX_ISR() {
                 if (bytesNeeded == 0) {
                     U1RXCHK = 0;
                     rxDestination = controller.bytes;
-                    bytesNeeded = *((uint8_t *) tempRxBuf);
+                    bytesNeeded = *((uint16_t *) tempRxBuf);
                     ++bytesNeeded;  //Extra byte for checksum
                     state = WAIT_DATA;
                 }
+                break;
             case WAIT_DATA:
                 if (bytesNeeded > 1) {
                     *rxDestination = rx;
@@ -145,13 +146,18 @@ void __interrupt(irq(U1RX), low_priority, base(8)) U1_RX_ISR() {
                 ++rxDestination;
                 --bytesNeeded;
                 if (bytesNeeded == 0) {
-                    if (U1RXCHK == 0) {
-                        //ACK
+                    if (U1RXCHK == 1) {  //Last carry should result in a 1
+                        U1TXB = ACK;
+                        calculatePointers();  //TODO move to main loop
+                        copyToROM(); //may need to wait for tx to finish
                     } else {
-                        //NACK
+                        U1TXB = NACK;
+                        copyFromROM();  //TODO move to main loop
+                        calculatePointers();
                     }
                     state = WAIT_COMMAND;
                 }
+                break;
         }
     }
 }

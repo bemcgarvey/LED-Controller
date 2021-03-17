@@ -48,7 +48,7 @@ void calculatePointers(void) {
     }
 }
 
-const Controller controllerROM __at(0x8000) = {
+const Controller controllerROM __at(0xf000) = {
     6,  //numOutputs
     0, 0, 0, 0, 0, 0,  //actions
     0, 1, /*output 1*/ 0, 0xff, 0xff, 0, //Pattern 1

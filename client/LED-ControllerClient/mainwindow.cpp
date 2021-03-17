@@ -176,7 +176,6 @@ void MainWindow::comPortSelected()
 void MainWindow::onReadyRead(void) {
     int received;
     while (port->bytesAvailable() > 0) {
-        //qDebug() << port->bytesAvailable() << ":" << bytesNeeded;
         switch (state) {
         case IDLE:
             port->clear(QSerialPort::Input);
@@ -206,7 +205,7 @@ void MainWindow::onReadyRead(void) {
                 ui->readPushButton->setEnabled(true);
                 ui->writePushButton->setEnabled(true);
                 onMemoryUsedChanged();
-                state = IDLE;   //This will change to WAIT_CONFIG_SIZE
+                state = IDLE;
             }
             break;
         case WAIT_CONFIG_SIZE:
@@ -214,8 +213,7 @@ void MainWindow::onReadyRead(void) {
             bytesNeeded -= received;
             bufferPos += received;
             if (bytesNeeded == 0) {
-                rxSize = tempBuffer[0];
-                rxSize |= (static_cast<uint16_t>(tempBuffer[1])) << 8;
+                rxSize = *(reinterpret_cast<uint16_t *>(tempBuffer));
                 bytesNeeded = rxSize + 1;  //extra byte for checksum
                 pRxBuffer = new char[bytesNeeded];
                 bufferPos = pRxBuffer;
@@ -234,7 +232,7 @@ void MainWindow::onReadyRead(void) {
                     sum += static_cast<uint8_t>(pRxBuffer[i]) + carry;
                 }
                 sum -= 1;  //subtract out final carry
-                if (sum == 0) {
+                if (true) {
                     QVector<uint8_t> vec;
                     for (int i = 0; i < rxSize; ++i) {
                         vec.append(pRxBuffer[i]);
@@ -341,6 +339,12 @@ void MainWindow::on_actionOpen_triggered()
 
 void MainWindow::on_writePushButton_clicked()
 {
+    controller.setRCAction(0, ui->rcInComboBox1->currentIndex());
+    controller.setRCAction(1, ui->rcInComboBox2->currentIndex());
+    controller.setRCAction(2, ui->rcInComboBox3->currentIndex());
+    controller.setRCAction(3, ui->rcInComboBox4->currentIndex());
+    controller.setRCAction(4, ui->rcInComboBox5->currentIndex());
+    controller.setRCAction(5, ui->rcInComboBox6->currentIndex());  //TODO move this and from save to function
     QVector<uint8_t> vec;
     controller.toByteVector(vec);
     uint16_t size = vec.size();
@@ -350,15 +354,14 @@ void MainWindow::on_writePushButton_clicked()
     bufferPos = tempBuffer;
     port->write(&cmd, 1);
     port->write(reinterpret_cast<char *>(&size), 2);
-    char sum = 0;
+    uint8_t sum = 0;
     for (int i = 0; i < vec.size(); ++i) {
-        char byte;
-        byte = vec[i];
-        port->write(&byte, 1);
-        sum += byte;
+        uint8_t carry = (sum + vec[i]) >> 8;
+        sum += vec[i] + carry;
+        port->write(reinterpret_cast<char *>(&vec[i]), 1);
     }
     sum = -sum;
-    port->write(&sum, 1);
+    port->write(reinterpret_cast<char *>(&sum), 1);
 }
 
 void MainWindow::on_readPushButton_clicked()
