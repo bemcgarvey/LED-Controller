@@ -34,13 +34,14 @@ private:
     QString fileName;
     bool save(void);
     bool open(QString fileName);
+    void updateControls(void);
     enum RxState {IDLE, WAIT_VERSION, WAIT_MEM_SIZE, WAIT_CONFIG_SIZE, WAIT_CONFIG, WAIT_ACK};
     RxState state;
     int bytesNeeded;
     char *bufferPos;
     char tempBuffer[4];
     enum DeviceCommands {CMD_READ = 0x80, CMD_WRITE = 0x81, CMD_TEST = 0x82};
-    enum DeviceResponse {ACK = 0x01, NACK = 0x00};
+    enum DeviceResponse {ACK = 0x06, NACK = 0x15};
 private slots:
     void updatePortMenu(void);
     void comPortSelected(void);

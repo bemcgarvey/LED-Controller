@@ -42,12 +42,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(outputDMs[5], &OutputPanelDisplayManager::sizeChanged, this, &MainWindow::onMemoryUsedChanged);
     onMemoryUsedChanged();
     ColorPicker::loadColors();
-    ui->rcInComboBox1->setCurrentIndex(controller.getRCAction(0));
-    ui->rcInComboBox2->setCurrentIndex(controller.getRCAction(1));
-    ui->rcInComboBox3->setCurrentIndex(controller.getRCAction(2));
-    ui->rcInComboBox4->setCurrentIndex(controller.getRCAction(3));
-    ui->rcInComboBox5->setCurrentIndex(controller.getRCAction(4));
-    ui->rcInComboBox6->setCurrentIndex(controller.getRCAction(5));
+    updateControls();
 }
 
 MainWindow::~MainWindow()
@@ -120,18 +115,23 @@ bool MainWindow::open(QString fileName)
         controller.fromByteVector(data);
         file.close();
         delete[] readBuffer;
-        ui->rcInComboBox1->setCurrentIndex(controller.getRCAction(0));
-        ui->rcInComboBox2->setCurrentIndex(controller.getRCAction(1));
-        ui->rcInComboBox3->setCurrentIndex(controller.getRCAction(2));
-        ui->rcInComboBox4->setCurrentIndex(controller.getRCAction(3));
-        ui->rcInComboBox5->setCurrentIndex(controller.getRCAction(4));
-        ui->rcInComboBox6->setCurrentIndex(controller.getRCAction(5));
-        for (auto&& i : outputDMs) {
-            i->updateControls();
-        }
+        updateControls();
         return true;
     } else {
         return false;
+    }
+}
+
+void MainWindow::updateControls()
+{
+    ui->rcInComboBox1->setCurrentIndex(controller.getRCAction(0));
+    ui->rcInComboBox2->setCurrentIndex(controller.getRCAction(1));
+    ui->rcInComboBox3->setCurrentIndex(controller.getRCAction(2));
+    ui->rcInComboBox4->setCurrentIndex(controller.getRCAction(3));
+    ui->rcInComboBox5->setCurrentIndex(controller.getRCAction(4));
+    ui->rcInComboBox6->setCurrentIndex(controller.getRCAction(5));
+    for (auto&& i : outputDMs) {
+        i->updateControls();
     }
 }
 
@@ -216,7 +216,7 @@ void MainWindow::onReadyRead(void) {
             if (bytesNeeded == 0) {
                 rxSize = tempBuffer[0];
                 rxSize |= (static_cast<uint16_t>(tempBuffer[1])) << 8;
-                bytesNeeded = rxSize; // + 1;  //extra byte for checksum
+                bytesNeeded = rxSize + 1;  //extra byte for checksum
                 pRxBuffer = new char[bytesNeeded];
                 bufferPos = pRxBuffer;
                 state = WAIT_CONFIG;
@@ -227,26 +227,20 @@ void MainWindow::onReadyRead(void) {
             bytesNeeded -= received;
             bufferPos += received;
             if (bytesNeeded == 0) {
+                //Checksum algorithm - add bytes with carry
                 uint8_t sum = 0;
-                for (int i = 0; i < rxSize; ++i) {
-                    sum += pRxBuffer[i];
+                for (int i = 0; i <= rxSize; ++i) {
+                    uint8_t carry = (sum + static_cast<uint8_t>(pRxBuffer[i])) >> 8;
+                    sum += static_cast<uint8_t>(pRxBuffer[i]) + carry;
                 }
-                if (true) {  //TODO implement checksum //(sum ^ pRxBuffer[rxSize]) == 0) {
+                sum -= 1;  //subtract out final carry
+                if (sum == 0) {
                     QVector<uint8_t> vec;
                     for (int i = 0; i < rxSize; ++i) {
                         vec.append(pRxBuffer[i]);
                     }
-                    //TODO - roll this code and code from open() and constructor?? into a function
                     controller.fromByteVector(vec);
-                    ui->rcInComboBox1->setCurrentIndex(controller.getRCAction(0));
-                    ui->rcInComboBox2->setCurrentIndex(controller.getRCAction(1));
-                    ui->rcInComboBox3->setCurrentIndex(controller.getRCAction(2));
-                    ui->rcInComboBox4->setCurrentIndex(controller.getRCAction(3));
-                    ui->rcInComboBox5->setCurrentIndex(controller.getRCAction(4));
-                    ui->rcInComboBox6->setCurrentIndex(controller.getRCAction(5));
-                    for (auto&& i : outputDMs) {
-                        i->updateControls();
-                    }
+                    updateControls();
                 } else {
                     QMessageBox::critical(this, "LED-Controller", "Error reading device");
                 }
@@ -363,6 +357,7 @@ void MainWindow::on_writePushButton_clicked()
         port->write(&byte, 1);
         sum += byte;
     }
+    sum = -sum;
     port->write(&sum, 1);
 }
 

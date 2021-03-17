@@ -20,7 +20,7 @@ enum rxState {
 };
 
 enum SerialCommands {
-    CMD_READ = 0x80, CMD_WRITE = 0x81, CMD_TEST = 0x82
+    CMD_NONE = 0, CMD_READ = 0x80, CMD_WRITE = 0x81, CMD_TEST = 0x82
 };
 
 enum SerialRespnses {
@@ -28,7 +28,7 @@ enum SerialRespnses {
 };
 volatile enum rxState state;
 volatile int bytesNeeded;
-volatile enum rxState lastCommand;
+volatile enum SerialCommands lastCommand;  //TODO is this needed?
 volatile uint8_t *rxDestination;
 volatile uint8_t tempRxBuf[2];
 volatile uint8_t txHeader[4];
@@ -36,6 +36,7 @@ volatile uint8_t txHeaderBytes;
 volatile uint8_t *txHeaderPos;
 volatile uint16_t txBytes;
 volatile uint8_t *txSource;
+volatile uint8_t sendChecksum;
 
 #define txStart() (PIE3bits.U1TXIE = 1)
 #define txStop()  (PIE3bits.U1TXIE = 0)
@@ -49,11 +50,13 @@ void initSerial(void) {
     PIE3bits.U1RXIE = 1;
     IPR3bits.U1RXIP = 0;
     IPR3bits.U1TXIP = 0;
+    U1CON2bits.C0EN = 1; //enable checksum
+    sendChecksum = 0;
     U1CON1bits.ON = 1;
     U1CON0bits.TXEN = 1;
     state = WAIT_START1;
     bytesNeeded = 1;
-    lastCommand = RX_IDLE;
+    lastCommand = CMD_NONE;
     txBytes = 0;
     txSource = NULL;
     U1CON0bits.RXEN = 1;
@@ -69,7 +72,7 @@ void initSerial(void) {
 //    }
 //}
 
-void __interrupt(irq(U1RX), base(8)) U1_RX_ISR() {
+void __interrupt(irq(U1RX), low_priority, base(8)) U1_RX_ISR() {
     uint8_t rx;
     while (PIR3bits.U1RXIF) {
         rx = U1RXB;
@@ -83,6 +86,7 @@ void __interrupt(irq(U1RX), base(8)) U1_RX_ISR() {
                 break;
             case WAIT_START2:
                 if (rx == 0x63) {
+                    lastCommand = CMD_NONE;
                     txHeader[0] = VERSION_MAJOR;
                     txHeader[1] = VERSION_MINOR;
                     txHeader[2] = (uint8_t) MAX_MEMORY;
@@ -90,6 +94,7 @@ void __interrupt(irq(U1RX), base(8)) U1_RX_ISR() {
                     txHeaderBytes = 4;
                     txHeaderPos = txHeader;
                     txBytes = 0;
+                    sendChecksum = 0;
                     txStart();
                     state = WAIT_COMMAND;
                 } else {
@@ -99,19 +104,23 @@ void __interrupt(irq(U1RX), base(8)) U1_RX_ISR() {
             case WAIT_COMMAND:
                 if (rx == CMD_WRITE) {
                     state = WAIT_DATA_SIZE;
-                    lastCommand = rx;
+                    lastCommand = CMD_WRITE;
                     bytesNeeded = 2;
                     rxDestination = tempRxBuf;
                 } else if (rx == CMD_READ) {
+                    lastCommand = CMD_READ;
                     txSource = controller.bytes;
                     txHeaderBytes = 2;
                     *((uint16_t *)txHeader) = calculateSize();
                     txBytes = *((uint16_t *)txHeader);
                     txHeaderPos = txHeader;
+                    sendChecksum = 1;
                     txStart();
                     state = WAIT_COMMAND;  //TODO change to WAIT_TMT?? Don't accept commands while transmitting?
                 } else if (rx == CMD_TEST) {
 
+                } else if (rx == 0x4d) {
+                    state = WAIT_START2;
                 } else {
                     state = WAIT_COMMAND;
                 }
@@ -121,26 +130,40 @@ void __interrupt(irq(U1RX), base(8)) U1_RX_ISR() {
                 ++rxDestination;
                 --bytesNeeded;
                 if (bytesNeeded == 0) {
+                    U1RXCHK = 0;
                     rxDestination = controller.bytes;
                     bytesNeeded = *((uint8_t *) tempRxBuf);
+                    ++bytesNeeded;  //Extra byte for checksum
                     state = WAIT_DATA;
                 }
             case WAIT_DATA:
-                *rxDestination = rx;
+                if (bytesNeeded > 1) {
+                    *rxDestination = rx;
+                } else {
+                    *tempRxBuf = rx;
+                }
                 ++rxDestination;
                 --bytesNeeded;
                 if (bytesNeeded == 0) {
+                    if (U1RXCHK == 0) {
+                        //ACK
+                    } else {
+                        //NACK
+                    }
                     state = WAIT_COMMAND;
                 }
         }
     }
 }
 
-void __interrupt(irq(U1TX), base(8)) U1_TX_ISR() {
+void __interrupt(irq(U1TX), low_priority, base(8)) U1_TX_ISR() {
     while (txHeaderBytes > 0 && PIR3bits.U1TXIF) {
         U1TXB = *txHeaderPos;
         ++txHeaderPos;
         --txHeaderBytes;
+        if (txHeaderBytes == 0) {
+            U1TXCHK = 0;  //clear checksum
+        }
     }
     if (txHeaderBytes == 0) {
         while (txBytes > 0 && PIR3bits.U1TXIF == 1) {
@@ -149,8 +172,14 @@ void __interrupt(irq(U1TX), base(8)) U1_TX_ISR() {
             ++txSource;
         }
         if (txBytes == 0) {
-            txStop();
-            txSource = NULL;
+            if (sendChecksum && PIR3bits.U1TXIF == 1) {
+                U1TXB = -U1TXCHK;
+                sendChecksum = 0;
+            }
+            if (!sendChecksum) {
+                txStop();
+                txSource = NULL;
+            }
         }
     }
 }
