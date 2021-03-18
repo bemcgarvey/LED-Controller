@@ -21,6 +21,7 @@ void initControllerMemory(void) {
         for (int i = 0; i < sizeof (fallbackControllerROM); ++i) {
             controller.bytes[i] = fallbackControllerROM[i];
         }
+        ledOn();
     } else {
         copyFromROM();
     }

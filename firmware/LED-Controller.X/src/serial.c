@@ -20,7 +20,8 @@ enum rxState {
 };
 
 enum SerialCommands {
-    CMD_NONE = 0, CMD_READ = 0x80, CMD_WRITE = 0x81, CMD_TEST = 0x82
+    CMD_NONE = 0, CMD_READ = 0x80, CMD_WRITE = 0x81, CMD_TEST = 0x82, CMD_RESET = 0x8f
+            , CMD_START1 = 0x4d, CMD_START2 = 0x63
 };
 
 enum SerialRespnses {
@@ -28,10 +29,10 @@ enum SerialRespnses {
 };
 volatile enum rxState state;
 volatile uint16_t bytesNeeded;
-volatile enum SerialCommands lastCommand;  //TODO is this needed?
+volatile enum SerialCommands lastCommand; //TODO is this needed?
 volatile uint8_t *rxDestination;
 volatile uint8_t tempRxBuf[2];
-volatile uint8_t txHeader[4];
+volatile uint8_t txHeader[6];
 volatile uint8_t txHeaderBytes;
 volatile uint8_t *txHeaderPos;
 volatile uint16_t txBytes;
@@ -62,7 +63,6 @@ void initSerial(void) {
     U1CON0bits.RXEN = 1;
 }
 
-
 void __interrupt(irq(U1RX), low_priority, base(8)) U1_RX_ISR() {
     uint8_t rx;
     while (PIR3bits.U1RXIF) {
@@ -71,18 +71,20 @@ void __interrupt(irq(U1RX), low_priority, base(8)) U1_RX_ISR() {
             case RX_IDLE:
                 break;
             case WAIT_START1:
-                if (rx == 0x4d) {
+                if (rx == CMD_START1) {
                     state = WAIT_START2;
                 }
                 break;
             case WAIT_START2:
-                if (rx == 0x63) {
+                if (rx == CMD_START2) {
                     lastCommand = CMD_NONE;
-                    txHeader[0] = VERSION_MAJOR;
-                    txHeader[1] = VERSION_MINOR;
-                    txHeader[2] = (uint8_t) MAX_MEMORY;
-                    txHeader[3] = (uint8_t) (MAX_MEMORY >> 8);
-                    txHeaderBytes = 4;
+                    txHeader[0] = CMD_START1;
+                    txHeader[1] = CMD_START2;
+                    txHeader[2] = VERSION_MAJOR;
+                    txHeader[3] = VERSION_MINOR;
+                    txHeader[4] = (uint8_t) MAX_MEMORY;
+                    txHeader[5] = (uint8_t) (MAX_MEMORY >> 8);
+                    txHeaderBytes = 6;
                     txHeaderPos = txHeader;
                     txBytes = 0;
                     sendChecksum = 0;
@@ -93,27 +95,36 @@ void __interrupt(irq(U1RX), low_priority, base(8)) U1_RX_ISR() {
                 }
                 break;
             case WAIT_COMMAND:
-                if (rx == CMD_WRITE) {
-                    state = WAIT_DATA_SIZE;
-                    lastCommand = CMD_WRITE;
-                    bytesNeeded = 2;
-                    rxDestination = tempRxBuf;
-                } else if (rx == CMD_READ) {
-                    lastCommand = CMD_READ;
-                    txSource = controller.bytes;
-                    txHeaderBytes = 2;
-                    *((uint16_t *)txHeader) = calculateSize();
-                    txBytes = *((uint16_t *)txHeader);
-                    txHeaderPos = txHeader;
-                    sendChecksum = 1;
-                    txStart();
-                    state = WAIT_COMMAND;
-                } else if (rx == CMD_TEST) {
+                switch (rx) {
+                    case CMD_WRITE:
+                        state = WAIT_DATA_SIZE;
+                        lastCommand = CMD_WRITE;
+                        bytesNeeded = 2;
+                        rxDestination = tempRxBuf;
+                        break;
+                    case CMD_READ:
+                        lastCommand = CMD_READ;
+                        txSource = controller.bytes;
+                        txHeaderBytes = 2;
+                        *((uint16_t *) txHeader) = calculateSize();
+                        txBytes = *((uint16_t *) txHeader);
+                        txHeaderPos = txHeader;
+                        sendChecksum = 1;
+                        txStart();
+                        state = WAIT_COMMAND;
+                        break;
+                    case CMD_TEST:
+                        break;
 
-                } else if (rx == 0x4d) {
-                    state = WAIT_START2;
-                } else {
-                    state = WAIT_COMMAND;
+                    case 0x4d:
+                        state = WAIT_START2;
+                        break;
+                    case CMD_RESET:
+                        Reset();
+                        break;
+                    default:
+                        state = WAIT_COMMAND;
+                        break;
                 }
                 break;
             case WAIT_DATA_SIZE:
@@ -124,19 +135,19 @@ void __interrupt(irq(U1RX), low_priority, base(8)) U1_RX_ISR() {
                     U1RXCHK = 0;
                     rxDestination = controller.bytes;
                     bytesNeeded = *((uint16_t *) tempRxBuf);
-                    ++bytesNeeded;  //Extra byte for checksum
+                    ++bytesNeeded; //Extra byte for checksum
                     state = WAIT_DATA;
                 }
                 break;
             case WAIT_DATA:
-                if (bytesNeeded > 1) {  //don't store checksum
+                if (bytesNeeded > 1) { //don't store checksum
                     *rxDestination = rx;
                 }
                 ++rxDestination;
                 --bytesNeeded;
                 if (bytesNeeded == 0) {
-                    if (U1RXCHK == 1) {  //Last carry should result in a 1
-                        if (copyToROM(*(uint16_t*)tempRxBuf) != 0) {
+                    if (U1RXCHK == 1) { //Last carry should result in a 1
+                        if (copyToROM(*(uint16_t*) tempRxBuf) != 0) {
                             U1TXB = ACK;
                         } else {
                             U1TXB = NACK;
@@ -159,7 +170,7 @@ void __interrupt(irq(U1TX), low_priority, base(8)) U1_TX_ISR() {
         ++txHeaderPos;
         --txHeaderBytes;
         if (txHeaderBytes == 0) {
-            U1TXCHK = 0;  //clear checksum
+            U1TXCHK = 0; //clear checksum
         }
     }
     if (txHeaderBytes == 0) {

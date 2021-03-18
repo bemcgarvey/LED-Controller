@@ -13,8 +13,6 @@
 //TODO check all member functions.  Add const where appropriate.
 //TODO remove all qDebug()'s
 //TODO Application icons
-//TODO When Connect button is pressed disable Read and Write until connect completes
-//TODO Add a Reset button (and command) for device.
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -58,12 +56,7 @@ MainWindow::~MainWindow()
 
 bool MainWindow::save()
 {
-    controller.setRCAction(0, ui->rcInComboBox1->currentIndex());
-    controller.setRCAction(1, ui->rcInComboBox2->currentIndex());
-    controller.setRCAction(2, ui->rcInComboBox3->currentIndex());
-    controller.setRCAction(3, ui->rcInComboBox4->currentIndex());
-    controller.setRCAction(4, ui->rcInComboBox5->currentIndex());
-    controller.setRCAction(5, ui->rcInComboBox6->currentIndex());
+    getActionControls();
     QFile file(fileName);
     if (file.open(QIODevice::WriteOnly)) {
         QVector<uint8_t> bytes;
@@ -138,6 +131,16 @@ void MainWindow::updateControls()
     }
 }
 
+void MainWindow::getActionControls()
+{
+    controller.setRCAction(0, ui->rcInComboBox1->currentIndex());
+    controller.setRCAction(1, ui->rcInComboBox2->currentIndex());
+    controller.setRCAction(2, ui->rcInComboBox3->currentIndex());
+    controller.setRCAction(3, ui->rcInComboBox4->currentIndex());
+    controller.setRCAction(4, ui->rcInComboBox5->currentIndex());
+    controller.setRCAction(5, ui->rcInComboBox6->currentIndex());
+}
+
 void MainWindow::updatePortMenu()
 {
     QList<QSerialPortInfo> portList = QSerialPortInfo::availablePorts();
@@ -183,30 +186,26 @@ void MainWindow::onReadyRead(void) {
         case IDLE:
             port->clear(QSerialPort::Input);
             break;
-        case WAIT_VERSION:  //TODO combine with WAIT_MEM_SIZE
+        case WAIT_VERSION:
             received = port->read(bufferPos, bytesNeeded);
             bytesNeeded -= received;
             bufferPos += received;
             if (bytesNeeded == 0) {
-                Version::firmwareMajorVersion = tempBuffer[0];
-                Version::firmwareMinorVersion = tempBuffer[1];
-                bytesNeeded = 2;
-                state = WAIT_MEM_SIZE;
-            }
-            break;
-        case WAIT_MEM_SIZE:
-            received = port->read(bufferPos, bytesNeeded);
-            bytesNeeded -= received;
-            bufferPos += received;
-            if (bytesNeeded == 0) {
-                uint16_t mem = tempBuffer[2];
-                mem |= (static_cast<uint16_t>(tempBuffer[3])) << 8;
+                if (tempBuffer[0] != CMD_START1 || tempBuffer[1] != CMD_START2) {
+                    state = IDLE;
+                    ui->statusbar->showMessage("Unable to connect", 1000);
+                    return;
+                }
+                Version::firmwareMajorVersion = tempBuffer[2];
+                Version::firmwareMinorVersion = tempBuffer[3];
+                uint16_t mem = *(reinterpret_cast<uint16_t*>(&tempBuffer[4]));
                 controller.setMaxMemory(mem);
                 bytesNeeded = 0;
                 bufferPos = nullptr;
                 connectedLabel->setText("Connected");
                 ui->readPushButton->setEnabled(true);
                 ui->writePushButton->setEnabled(true);
+                ui->resetPushButton->setEnabled(true);
                 onMemoryUsedChanged();
                 state = IDLE;
             }
@@ -230,18 +229,20 @@ void MainWindow::onReadyRead(void) {
             if (bytesNeeded == 0) {
                 //Checksum algorithm - add bytes with carry
                 uint8_t sum = 0;
-                for (int i = 0; i <= rxSize; ++i) {
-                    uint8_t carry = (sum + static_cast<uint8_t>(pRxBuffer[i])) >> 8;
-                    sum += static_cast<uint8_t>(pRxBuffer[i]) + carry;
+                for (int i = 0; i < rxSize; ++i) {
+                    uint8_t carry = ((sum + (uint8_t)pRxBuffer[i]) >> 8) & 1;
+                    sum += (uint8_t)pRxBuffer[i] + carry;
                 }
-                sum -= 1;  //subtract out final carry
-                if (true) {
+                sum += (rxSize / 256);  //No idea why this is needed
+                sum += pRxBuffer[rxSize];
+                if (sum == 0) {
                     QVector<uint8_t> vec;
                     for (int i = 0; i < rxSize; ++i) {
                         vec.append(pRxBuffer[i]);
                     }
                     controller.fromByteVector(vec);
                     updateControls();
+                    ui->statusbar->showMessage("Read successful", 1000);
                 } else {
                     QMessageBox::critical(this, "LED-Controller", "Error reading device");
                 }
@@ -342,12 +343,7 @@ void MainWindow::on_actionOpen_triggered()
 
 void MainWindow::on_writePushButton_clicked()
 {
-    controller.setRCAction(0, ui->rcInComboBox1->currentIndex());
-    controller.setRCAction(1, ui->rcInComboBox2->currentIndex());
-    controller.setRCAction(2, ui->rcInComboBox3->currentIndex());
-    controller.setRCAction(3, ui->rcInComboBox4->currentIndex());
-    controller.setRCAction(4, ui->rcInComboBox5->currentIndex());
-    controller.setRCAction(5, ui->rcInComboBox6->currentIndex());  //TODO move this and from save to function
+    getActionControls();
     QVector<uint8_t> vec;
     controller.toByteVector(vec);
     uint16_t size = vec.size();
@@ -384,9 +380,25 @@ void MainWindow::onTestRequest(LEDPattern *pat, int output)
 
 void MainWindow::on_connectPushButton_clicked()
 {
-    bytesNeeded = 2;
+    ui->readPushButton->setEnabled(false);
+    ui->writePushButton->setEnabled(false);
+    ui->resetPushButton->setEnabled(false);
+    connectedLabel->setText("Not Connected");
+    port->clear();
+    bytesNeeded = 6;
+    tempBuffer[0] = tempBuffer[1] = 0;
     bufferPos = tempBuffer;
     state = WAIT_VERSION;
-    char txBuff[] = {0x4d, 0x63};
+    char txBuff[] = {CMD_START1, CMD_START2};
     port->write(txBuff, 2);
+}
+
+void MainWindow::on_resetPushButton_clicked()
+{
+    ui->readPushButton->setEnabled(false);
+    ui->writePushButton->setEnabled(false);
+    ui->resetPushButton->setEnabled(false);
+    connectedLabel->setText("Not Connected");
+    char cmd = CMD_RESET;
+    port->write(&cmd, 1);
 }
