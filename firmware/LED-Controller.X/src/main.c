@@ -29,7 +29,7 @@ void main(void) {
     unsigned int currentTime = 0;
     INTCON0bits.GIEH = 1;
     INTCON0bits.GIEL = 1;
-    ledOn();
+    ledOn();  //TODO add some sort of error status - flash led if invalid ROM?
     while (1) {
         if (currentTime != systemTime) {
             currentTime = systemTime;

@@ -1,27 +1,42 @@
 #include <xc.h>
 #include "leddata.h"
+#include "system.h"
 
 Controller controller;
 Output* outputs[6];
 LEDPattern* patterns[18];
+const uint8_t fallbackControllerROM[] = {
+    6, //numOutputs
+    0, 0, 0, 0, 0, 0, //actions
+    0, 1, /*output 1*/ 0, 0xff, 0xff, 0, //Pattern 1
+    0, 1, /*output 2*/ 0, 0xff, 0xff, 0, //Pattern 1
+    0, 1, /*output 3*/ 0, 0xff, 0xff, 0, //Pattern 1
+    0, 1, /*output 4*/ 0, 0xff, 0xff, 0, //Pattern 1
+    0, 1, /*output 5*/ 0, 0xff, 0xff, 0, //Pattern 1
+    0, 1, /*output 6*/ 0, 0xff, 0xff, 0, //Pattern 1
+};
 
 void initControllerMemory(void) {
-    copyFromROM();
+    if (!validateROM()) {
+        for (int i = 0; i < sizeof (fallbackControllerROM); ++i) {
+            controller.bytes[i] = fallbackControllerROM[i];
+        }
+    } else {
+        copyFromROM();
+    }
     calculatePointers();
 }
 
-char copyToROM(void) {
-    uint16_t size;
+char copyToROM(uint16_t size) {
     int bytesRemaining;
-    calculatePointers();
-    size = calculateSize();
-    bytesRemaining = (int)size;
-    if (size > MAX_MEMORY) {
-        return 0;
-    }
-    INTCON0bits.GIE = 0;  //Disable interrupts for the duration of the copy
+    bytesRemaining = (int) size;
+    INTCON0bits.GIE = 0; //Disable interrupts for the duration of the copy
     uint8_t *src = controller.bytes;
-    uint32_t dest = (uint32_t)controllerROM.bytes;
+    uint32_t dest = (uint32_t) & controllerROM;
+    uint16_t checksum = 0;
+    for (int i = 0; i < size; ++i) {
+        checksum += controller.bytes[i];
+    }
     while (bytesRemaining > 0) {
         //Erase page
         NVMCON1bits.REG = 0b10;
@@ -34,15 +49,37 @@ char copyToROM(void) {
         NVMCON2 = 0xaa;
         NVMCON1bits.WR = 1;
         NVMCON1bits.FREE = 0;
-        for (int i  = 0; i < 128; ++i) {
-            TABLAT = *src;
-            if (i < 127) {
-                asm("TBLWT*+");
-            } else { 
-                asm("TBLWT*");
+        if (bytesRemaining == size) {
+            //First page include size and checksum
+            TABLAT = size & 0xff;
+            asm("TBLWT*+");
+            TABLAT = (size >> 8) & 0xff;
+            asm("TBLWT*+");
+            TABLAT = checksum & 0xff;
+            asm("TBLWT*+");
+            TABLAT = (checksum >> 8) & 0xff;
+            asm("TBLWT*+");
+            for (int i = 0; i < 124; ++i) {
+                TABLAT = *src;
+                if (i < 123) {
+                    asm("TBLWT*+");
+                } else {
+                    asm("TBLWT*");
+                }
+                ++src;
+                --bytesRemaining;
             }
-            ++src;
-            --bytesRemaining;
+        } else {
+            for (int i = 0; i < 128; ++i) {
+                TABLAT = *src;
+                if (i < 127) {
+                    asm("TBLWT*+");
+                } else {
+                    asm("TBLWT*");
+                }
+                ++src;
+                --bytesRemaining;
+            }
         }
         NVMCON1bits.WREN = 1;
         NVMCON2 = 0x55;
@@ -53,7 +90,7 @@ char copyToROM(void) {
     NVMCON1bits.WREN = 0;
     INTCON0bits.GIE = 1;
     for (int i = 0; i < size; ++i) {
-        if (controller.bytes[i] != controllerROM.bytes[i]) {
+        if (controller.bytes[i] != controllerROM.controller.bytes[i]) {
             return 0;
         }
     }
@@ -62,7 +99,7 @@ char copyToROM(void) {
 
 void copyFromROM(void) {
     for (int i = 0; i < MAX_MEMORY; ++i) {
-        controller.bytes[i] = controllerROM.bytes[i];
+        controller.bytes[i] = controllerROM.controller.bytes[i];
     }
 }
 
@@ -83,24 +120,42 @@ void calculatePointers(void) {
     uint8_t *pc = controller.bytes;
     pc += 7;
     for (int i = 0; i < 6; ++i) {
-        Output *op = (Output *)pc;
+        Output *op = (Output *) pc;
         outputs[i] = op;
         pc += 2;
         for (int p = 0; p < op->numPatterns; ++p) {
-            LEDPattern *pp = (LEDPattern *)pc;
+            LEDPattern *pp = (LEDPattern *) pc;
             patterns[i * 3 + p] = pp;
             pc += 4 + (pp->numLEDs * 3);
         }
     }
 }
 
-const Controller controllerROM __at(0xe000) = {
-    6,  //numOutputs
-    0, 0, 0, 0, 0, 0,  //actions
-    0, 1, /*output 1*/ 0, 0xff, 0xff, 0, //Pattern 1
-    0, 1, /*output 2*/ 0, 0xff, 0xff, 0, //Pattern 1
-    0, 1, /*output 3*/ 0, 0xff, 0xff, 0, //Pattern 1
-    0, 1, /*output 4*/ 0, 0xff, 0xff, 0, //Pattern 1
-    0, 1, /*output 5*/ 0, 0xff, 0xff, 0, //Pattern 1
-    0, 1, /*output 6*/ 0, 0xff, 0xff, 0, //Pattern 1
+char validateROM(void) {
+    if (controllerROM.size > MAX_MEMORY) {
+        return 0;
+    }
+    uint16_t check = 0;
+    for (int i = 0; i < controllerROM.size; ++i) {
+        check += controllerROM.controller.bytes[i];
+    }
+    if (check != controllerROM.checksum) {
+        return 0;
+    }
+    return 1;
+}
+
+const ControllerROM controllerROM __at(0xe000) = {
+    43, 3072,
+    {
+        6, //numOutputs
+        0, 0, 0, 0, 0, 0, //actions
+        0, 1, /*output 1*/ 0, 0xff, 0xff, 0, //Pattern 1
+        0, 1, /*output 2*/ 0, 0xff, 0xff, 0, //Pattern 1
+        0, 1, /*output 3*/ 0, 0xff, 0xff, 0, //Pattern 1
+        0, 1, /*output 4*/ 0, 0xff, 0xff, 0, //Pattern 1
+        0, 1, /*output 5*/ 0, 0xff, 0xff, 0, //Pattern 1
+        0, 1, /*output 6*/ 0, 0xff, 0xff, 0
+    } //Pattern 1
 };
+

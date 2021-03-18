@@ -42,16 +42,24 @@ typedef union {
     ControllerConfig config;
 } Controller;
 
+typedef struct {
+    uint16_t size;
+    uint16_t checksum;
+    Controller controller;
+} ControllerROM;
+
 extern Controller controller;
-extern const Controller controllerROM;
+extern const ControllerROM controllerROM;
+extern const uint8_t fallbackControllerROM[];
 extern Output* outputs[6];
 extern LEDPattern* patterns[18];
 
 void initControllerMemory(void);
-char copyToROM(void);
+char copyToROM(uint16_t size);
 void copyFromROM(void);
 uint16_t calculateSize(void);
 void calculatePointers(void);
+char validateROM(void);
 
 #endif	/* LEDDATA_H */
 

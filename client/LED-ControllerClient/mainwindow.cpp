@@ -11,7 +11,10 @@
 #include <QDebug>
 
 //TODO check all member functions.  Add const where appropriate.
+//TODO remove all qDebug()'s
 //TODO Application icons
+//TODO When Connect button is pressed disable Read and Write until connect completes
+//TODO Add a Reset button (and command) for device.
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -180,7 +183,7 @@ void MainWindow::onReadyRead(void) {
         case IDLE:
             port->clear(QSerialPort::Input);
             break;
-        case WAIT_VERSION:
+        case WAIT_VERSION:  //TODO combine with WAIT_MEM_SIZE
             received = port->read(bufferPos, bytesNeeded);
             bytesNeeded -= received;
             bufferPos += received;

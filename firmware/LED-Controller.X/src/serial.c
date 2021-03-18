@@ -129,16 +129,14 @@ void __interrupt(irq(U1RX), low_priority, base(8)) U1_RX_ISR() {
                 }
                 break;
             case WAIT_DATA:
-                if (bytesNeeded > 1) {
+                if (bytesNeeded > 1) {  //don't store checksum
                     *rxDestination = rx;
-                } else {
-                    *tempRxBuf = rx;
                 }
                 ++rxDestination;
                 --bytesNeeded;
                 if (bytesNeeded == 0) {
                     if (U1RXCHK == 1) {  //Last carry should result in a 1
-                        if (copyToROM() != 0) {
+                        if (copyToROM(*(uint16_t*)tempRxBuf) != 0) {
                             U1TXB = ACK;
                         } else {
                             U1TXB = NACK;
