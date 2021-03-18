@@ -48,7 +48,7 @@ extern Output* outputs[6];
 extern LEDPattern* patterns[18];
 
 void initControllerMemory(void);
-void copyToROM(void);
+char copyToROM(void);
 void copyFromROM(void);
 uint16_t calculateSize(void);
 void calculatePointers(void);

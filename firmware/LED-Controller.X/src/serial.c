@@ -62,15 +62,6 @@ void initSerial(void) {
     U1CON0bits.RXEN = 1;
 }
 
-//void txBytes(void *buf, int nBytes) {
-//    uint8_t *p = (uint8_t *) buf;
-//    while (nBytes > 0) {
-//        while (PIR3bits.U1TXIF == 0);
-//        U1TXB = *p;
-//        ++p;
-//        --nBytes;
-//    }
-//}
 
 void __interrupt(irq(U1RX), low_priority, base(8)) U1_RX_ISR() {
     uint8_t rx;
@@ -147,14 +138,16 @@ void __interrupt(irq(U1RX), low_priority, base(8)) U1_RX_ISR() {
                 --bytesNeeded;
                 if (bytesNeeded == 0) {
                     if (U1RXCHK == 1) {  //Last carry should result in a 1
-                        U1TXB = ACK;
-                        calculatePointers();  //TODO move to main loop
-                        copyToROM(); //may need to wait for tx to finish
+                        if (copyToROM() != 0) {
+                            U1TXB = ACK;
+                        } else {
+                            U1TXB = NACK;
+                        }
                     } else {
                         U1TXB = NACK;
-                        copyFromROM();  //TODO move to main loop
-                        calculatePointers();
+                        copyFromROM();
                     }
+                    calculatePointers();
                     state = WAIT_COMMAND;
                 }
                 break;

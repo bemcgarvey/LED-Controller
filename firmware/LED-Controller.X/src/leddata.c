@@ -10,8 +10,54 @@ void initControllerMemory(void) {
     calculatePointers();
 }
 
-void copyToROM(void) {
-    
+char copyToROM(void) {
+    uint16_t size;
+    int bytesRemaining;
+    calculatePointers();
+    size = calculateSize();
+    bytesRemaining = (int)size;
+    if (size > MAX_MEMORY) {
+        return 0;
+    }
+    INTCON0bits.GIE = 0;  //Disable interrupts for the duration of the copy
+    uint8_t *src = controller.bytes;
+    uint32_t dest = (uint32_t)controllerROM.bytes;
+    while (bytesRemaining > 0) {
+        //Erase page
+        NVMCON1bits.REG = 0b10;
+        NVMCON1bits.FREE = 1;
+        TBLPTRU = (dest & 0xff0000) >> 16;
+        TBLPTRH = (dest & 0x00ff00) >> 8;
+        TBLPTRL = (dest & 0x0000ff);
+        NVMCON1bits.WREN = 1;
+        NVMCON2 = 0x55;
+        NVMCON2 = 0xaa;
+        NVMCON1bits.WR = 1;
+        NVMCON1bits.FREE = 0;
+        for (int i  = 0; i < 128; ++i) {
+            TABLAT = *src;
+            if (i < 127) {
+                asm("TBLWT*+");
+            } else { 
+                asm("TBLWT*");
+            }
+            ++src;
+            --bytesRemaining;
+        }
+        NVMCON1bits.WREN = 1;
+        NVMCON2 = 0x55;
+        NVMCON2 = 0xaa;
+        NVMCON1bits.WR = 1;
+        dest += 128;
+    }
+    NVMCON1bits.WREN = 0;
+    INTCON0bits.GIE = 1;
+    for (int i = 0; i < size; ++i) {
+        if (controller.bytes[i] != controllerROM.bytes[i]) {
+            return 0;
+        }
+    }
+    return 1;
 }
 
 void copyFromROM(void) {
@@ -48,7 +94,7 @@ void calculatePointers(void) {
     }
 }
 
-const Controller controllerROM __at(0xf000) = {
+const Controller controllerROM __at(0xe000) = {
     6,  //numOutputs
     0, 0, 0, 0, 0, 0,  //actions
     0, 1, /*output 1*/ 0, 0xff, 0xff, 0, //Pattern 1
