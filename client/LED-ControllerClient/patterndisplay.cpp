@@ -5,6 +5,7 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QHBoxLayout>
+#include <QVBoxLayout>
 #include "mainwindow.h"
 
 //Implement drag and drop
@@ -14,20 +15,40 @@ PatternDisplay::PatternDisplay(QWidget *parent) :
 {
 
     leftButton = new QPushButton("<", this);
+    leftSpeedButton = new QPushButton("<<", this);
     rightButton = new QPushButton(">", this);
+    rightSpeedButton = new QPushButton(">>", this);
     connect(leftButton, &QPushButton::pressed, this, &PatternDisplay::onLeftButton);
+    connect(leftSpeedButton, &QPushButton::pressed, this, &PatternDisplay::onLeftSpeedButton);
+    connect(rightSpeedButton, &QPushButton::pressed, this, &PatternDisplay::onRightSpeedButton);
     connect(rightButton, &QPushButton::pressed, this, &PatternDisplay::onRightButton);
     QHBoxLayout *hBox = new QHBoxLayout(this);
+    QVBoxLayout *vBoxLeft = new QVBoxLayout();
+    QVBoxLayout *vBoxRight = new QVBoxLayout();
     hBox->setMargin(0);
     leftButton->setMaximumWidth(20);
+    leftSpeedButton->setMaximumWidth(20);
     rightButton->setMaximumWidth(20);
+    rightSpeedButton->setMaximumWidth(20);
     leftButton->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Expanding);
+    leftSpeedButton->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Expanding);
     rightButton->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Expanding);
+    rightSpeedButton->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Expanding);
     leftButton->setAutoRepeat(true);
     rightButton->setAutoRepeat(true);
-    hBox->addWidget(leftButton);
+    leftSpeedButton->setAutoRepeat(true);
+    rightSpeedButton->setAutoRepeat(true);
+    vBoxLeft->addWidget(leftButton);
+    vBoxLeft->addWidget(leftSpeedButton);
+    vBoxLeft->setSpacing(0);
+    vBoxLeft->setMargin(0);
+    vBoxRight->addWidget(rightButton);
+    vBoxRight->addWidget(rightSpeedButton);
+    vBoxRight->setSpacing(0);
+    vBoxRight->setMargin(0);
+    hBox->addLayout(vBoxLeft);
     hBox->insertStretch(-1, 1);
-    hBox->addWidget(rightButton);
+    hBox->addLayout(vBoxRight);
     setLayout(hBox);
     leftIndex = 0;
     selection = -1;
@@ -89,6 +110,20 @@ void PatternDisplay::paintEvent(QPaintEvent *event)
         painter.drawEllipse(20 + (ledSize + 5) * i, 2, ledSize, ledSize);
         painter.drawText(20 + (ledSize + 5) * i, vHeight - 2, QString::number(leftIndex + i + 1));
     }
+    if (leftIndex == 0) {
+        leftButton->setEnabled(false);
+        leftSpeedButton->setEnabled(false);
+    } else {
+        leftButton->setEnabled(true);
+        leftSpeedButton->setEnabled(true);
+    }
+    if (pattern->getNumLEDs() - leftIndex > ledsAcross) {
+        rightButton->setEnabled(true);
+        rightSpeedButton->setEnabled(true);
+    } else {
+        rightButton->setEnabled(false);
+        rightSpeedButton->setEnabled(false);
+    }
 }
 
 bool PatternDisplay::isEditable() const
@@ -119,22 +154,38 @@ void PatternDisplay::resizeEvent(QResizeEvent *event)
     length = width();
     vHeight = height();
     ledSize = vHeight / 2;
+    ledsAcross = (length - 40) / (ledSize + 5);
 }
 
-//TODO Scrolling should stop when right most led displayed
-//Disable buttons when scrolled to one side
-//Scroll in window sized jumps? or add >> and << buttons that do that?
+//TODO make some nice button icons
 
 void PatternDisplay::onLeftButton()
-{
-    if (leftIndex > 0) {
-        --leftIndex;
-        update();
-    }
+{  
+    --leftIndex;
+    update();
+
 }
 
 void PatternDisplay::onRightButton()
 {
     ++leftIndex;
+    update();
+}
+
+void PatternDisplay::onLeftSpeedButton()
+{
+    leftIndex -= (ledsAcross - 1);
+    if (leftIndex < 0) {
+        leftIndex = 0;
+    }
+    update();
+}
+
+void PatternDisplay::onRightSpeedButton()
+{
+    leftIndex += (ledsAcross - 1);
+    if (pattern->getNumLEDs() - leftIndex <= ledsAcross) {
+        leftIndex = pattern->getNumLEDs() - ledsAcross;
+    }
     update();
 }

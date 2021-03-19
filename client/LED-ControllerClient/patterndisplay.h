@@ -25,16 +25,20 @@ private:
     LEDPattern *pattern;
     QPushButton *leftButton;
     QPushButton *rightButton;
+    QPushButton *leftSpeedButton;
+    QPushButton *rightSpeedButton;
     bool editable;
     int length;
     int vHeight;
     int ledSize;
     int leftIndex;
     int selection;
+    int ledsAcross;
 private slots:
     void onLeftButton(void);
     void onRightButton(void);
-
+    void onLeftSpeedButton(void);
+    void onRightSpeedButton(void);
 signals:
     void selectionChanged(int value);
 };
