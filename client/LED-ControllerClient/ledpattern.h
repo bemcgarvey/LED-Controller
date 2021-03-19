@@ -13,6 +13,8 @@ public:
     int getNumLEDs(void) const;
     int sizeInBytes(void) const;
     int toByteVector(QVector<uint8_t>& vec) const;
+    void toByteArray(QByteArray &array) const;
+    void fromByteArray(const QByteArray &array);
     int fromByteVector(const QVector<uint8_t> &vec, int &pos);
     LEDrgb& operator[](int i);
     int getOnTime() const;

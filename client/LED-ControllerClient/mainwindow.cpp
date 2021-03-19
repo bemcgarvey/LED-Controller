@@ -12,6 +12,7 @@
 
 //TODO remove all qDebug()'s
 //TODO Application icons
+//BUG Strange scrolling behavior when using right speed button because focus changes to a spin button???
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)

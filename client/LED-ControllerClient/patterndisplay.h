@@ -2,6 +2,7 @@
 #define LEDPATTERNDISPLAY_H
 
 #include <QFrame>
+#include <QPoint>
 #include <QPushButton>
 #include "ledpattern.h"
 
@@ -21,6 +22,9 @@ protected:
     void mouseDoubleClickEvent(QMouseEvent *event) override;
     void paintEvent(QPaintEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void dragEnterEvent(QDragEnterEvent *event) override;
+    void dropEvent(QDropEvent *event) override;
 private:
     LEDPattern *pattern;
     QPushButton *leftButton;
@@ -34,13 +38,16 @@ private:
     int leftIndex;
     int selection;
     int ledsAcross;
+    QPoint dragStartPos;
+    bool dragSource;
+    QPixmap *dragPixmap;
 private slots:
     void onLeftButton(void);
     void onRightButton(void);
     void onLeftSpeedButton(void);
     void onRightSpeedButton(void);
 signals:
-    void selectionChanged(int value);
+    void selectionChanged(int value);    
 };
 
 #endif // LEDPATTERNDISPLAY_H

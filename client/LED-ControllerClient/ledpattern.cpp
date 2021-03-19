@@ -1,4 +1,5 @@
 #include "ledpattern.h"
+#include <QtDebug>
 
 LEDPattern::LEDPattern() :
     numLEDs(0), onTime(-1), nextPattern(0), leds(0)
@@ -39,6 +40,29 @@ int LEDPattern::toByteVector(QVector<uint8_t> &vec) const
         i.toByteVector(vec);
     }
     return sizeInBytes();
+}
+
+void LEDPattern::toByteArray(QByteArray &array) const
+{
+    //Used for drag-and-drop only
+    array.append(numLEDs);
+    //Only drag leds.  Don't include other settings
+    for (auto&& i : leds) {
+        array.append(i.getRed());
+        array.append(i.getGreen());
+        array.append(i.getBlue());
+    }
+}
+
+void LEDPattern::fromByteArray(const QByteArray &array)
+{
+    //Used for drag-and-drop only
+    int pos = 1;
+    for (int i = 0; i < numLEDs && i < array[0]; ++i) {
+        leds[i].setRed(static_cast<uint8_t>(array[pos++]));
+        leds[i].setGreen(static_cast<uint8_t>(array[pos++]));
+        leds[i].setBlue(static_cast<uint8_t>(array[pos++]));
+    }
 }
 
 int LEDPattern::fromByteVector(const QVector<uint8_t> &vec, int &pos)

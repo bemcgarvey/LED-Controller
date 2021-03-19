@@ -6,12 +6,13 @@
 #include <QPainter>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QApplication>
+#include <QDrag>
+#include <QMimeData>
 #include "mainwindow.h"
 
-//Implement drag and drop
-
 PatternDisplay::PatternDisplay(QWidget *parent) :
-    QFrame(parent), pattern(nullptr), editable(false)
+    QFrame(parent), pattern(nullptr), editable(false), dragPixmap(nullptr)
 {
 
     leftButton = new QPushButton("<", this);
@@ -52,6 +53,8 @@ PatternDisplay::PatternDisplay(QWidget *parent) :
     setLayout(hBox);
     leftIndex = 0;
     selection = -1;
+    setAcceptDrops(true);
+    dragSource = false;
 }
 
 PatternDisplay::~PatternDisplay() {
@@ -65,13 +68,16 @@ void PatternDisplay::setPattern(LEDPattern *p)
 
 void PatternDisplay::mousePressEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton && editable) {
-        int newSelection = ((event->x() - 20) / (ledSize + 5)) + leftIndex;
-        if (newSelection < pattern->getNumLEDs()) {
-            selection = newSelection;
-            update();
-            emit selectionChanged(selection);
+    if (event->button() == Qt::LeftButton) {
+        if (editable) {
+            int newSelection = ((event->x() - 20) / (ledSize + 5)) + leftIndex;
+            if (newSelection < pattern->getNumLEDs()) {
+                selection = newSelection;
+                update();
+                emit selectionChanged(selection);
+            }
         }
+        dragStartPos = event->pos();
     }
 }
 
@@ -92,6 +98,12 @@ void PatternDisplay::paintEvent(QPaintEvent *event)
     if (pattern == nullptr) {
         return;
     }
+    if (dragPixmap) {
+        delete dragPixmap;
+    }
+    dragPixmap = new QPixmap(length, vHeight);
+    dragPixmap->fill(Qt::transparent);
+    QPainter dpPainter(dragPixmap);
     QPainter painter(this);
     QFont font;
     font.setPixelSize(vHeight / 2 - 5);
@@ -105,7 +117,9 @@ void PatternDisplay::paintEvent(QPaintEvent *event)
         }
         brush.setColor((*pattern)[i + leftIndex].rgb());
         painter.setBrush(brush);
+        dpPainter.setBrush(brush);
         painter.drawEllipse(20 + (ledSize + 5) * i, 2, ledSize, ledSize);
+        dpPainter.drawEllipse(20 + (ledSize + 5) * i, 2, ledSize, ledSize);
         painter.drawText(20 + (ledSize + 5) * i, vHeight - 2, QString::number(leftIndex + i + 1));
     }
     if (leftIndex == 0) {
@@ -132,6 +146,11 @@ bool PatternDisplay::isEditable() const
 void PatternDisplay::setEditable(bool value)
 {
     editable = value;
+    if (editable) {
+        setAcceptDrops(false);
+    } else {
+        setAcceptDrops(true);
+    }
 }
 
 void PatternDisplay::setSelectionColor(int r, int g, int b)
@@ -185,5 +204,48 @@ void PatternDisplay::onRightSpeedButton()
     if (pattern->getNumLEDs() - leftIndex <= ledsAcross) {
         leftIndex = pattern->getNumLEDs() - ledsAcross;
     }
+    update();
+}
+
+void PatternDisplay::mouseMoveEvent(QMouseEvent *event)
+{
+    if (editable) {
+        return;
+    }
+    if (!(event->buttons() & Qt::LeftButton)) {
+        return;
+    }
+    if ((event->pos() - dragStartPos).manhattanLength() < QApplication::startDragDistance()) {
+        return;
+    }
+    QDrag *drag = new QDrag(this);
+    QMimeData *mimeData = new QMimeData;
+    QByteArray bytes;
+    pattern->toByteArray(bytes);
+    mimeData->setData("application/x-led_pattern", bytes);
+    drag->setMimeData(mimeData);
+    drag->setPixmap(*dragPixmap);
+    drag->setHotSpot(QPoint(20, 0));
+    dragSource = true;
+    Qt::DropAction dropAction = drag->exec(Qt::CopyAction);
+    if (dropAction != Qt::IgnoreAction) {
+        MainWindow *mw = dynamic_cast<MainWindow *>(nativeParentWidget());
+        mw->onModified();
+    }
+    dragSource = false;
+}
+
+
+void PatternDisplay::dragEnterEvent(QDragEnterEvent *event)
+{
+    if (event->mimeData()->hasFormat("application/x-led_pattern") && !dragSource) {
+        event->acceptProposedAction();
+    }
+}
+
+void PatternDisplay::dropEvent(QDropEvent *event)
+{
+    pattern->fromByteArray(event->mimeData()->data("application/x-led_pattern"));
+    event->acceptProposedAction();
     update();
 }
