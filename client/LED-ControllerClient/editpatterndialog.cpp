@@ -1,4 +1,5 @@
 #include "editpatterndialog.h"
+#include "mainwindow.h"
 #include "ui_editpatterndialog.h"
 
 EditPatternDialog::EditPatternDialog(QWidget *parent, LEDPattern *pat) :
@@ -37,13 +38,17 @@ void EditPatternDialog::onButtonBoxRejected()
 
 void EditPatternDialog::onButtonBoxAccepted()
 {
-    *pattern = tempPattern;
-    pattern->setNextPattern(ui->nextPattternComboBox->currentIndex());
+    tempPattern.setNextPattern(ui->nextPattternComboBox->currentIndex());
     if (ui->onCheckBox->isChecked()) {
-        pattern->setOnTime(-1);
+        tempPattern.setOnTime(-1);
     } else {
-        pattern->setOnTime(ui->onTimeSpinBox->value() * 10);
+        tempPattern.setOnTime(ui->onTimeSpinBox->value() * 10);
     }
+    if (*pattern != tempPattern) {
+        MainWindow *mw = dynamic_cast<MainWindow *>(nativeParentWidget());
+        mw->onModified();
+    }
+    *pattern = tempPattern;
     close();
 }
 
@@ -62,5 +67,6 @@ void EditPatternDialog::on_onCheckBox_clicked(bool checked)
 
 void EditPatternDialog::on_testPushButton_clicked()
 {
-    emit testPattern(&tempPattern, ui->testOutputComboBox->currentIndex());
+    MainWindow *mw = dynamic_cast<MainWindow *>(nativeParentWidget());
+    mw->onTestRequest(&tempPattern, ui->testOutputComboBox->currentIndex());
 }

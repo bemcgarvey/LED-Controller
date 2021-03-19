@@ -10,14 +10,13 @@
 #include "version.h"
 #include <QDebug>
 
-//TODO check all member functions.  Add const where appropriate.
 //TODO remove all qDebug()'s
 //TODO Application icons
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow), port(nullptr), pRxBuffer(nullptr)
-    , modified(true), fileName(""), state(IDLE), bytesNeeded(0)
+    , fileName(""), state(IDLE), bytesNeeded(0)
     , bufferPos(nullptr)
 {
     ui->setupUi(this);
@@ -44,6 +43,7 @@ MainWindow::MainWindow(QWidget *parent)
     onMemoryUsedChanged();
     ColorPicker::loadColors();
     updateControls();
+    modified = false;
 }
 
 MainWindow::~MainWindow()
@@ -78,6 +78,7 @@ bool MainWindow::save()
         file.flush();
         file.close();
         delete[] writeBuffer;
+        modified = false;
         return true;
     } else {
         return false;
@@ -112,6 +113,7 @@ bool MainWindow::open(QString fileName)
         file.close();
         delete[] readBuffer;
         updateControls();
+        modified = false;
         return true;
     } else {
         return false;
@@ -243,6 +245,7 @@ void MainWindow::onReadyRead(void) {
                     controller.fromByteVector(vec);
                     updateControls();
                     ui->statusbar->showMessage("Read successful", 1000);
+                    modified = true;
                 } else {
                     QMessageBox::critical(this, "LED-Controller", "Error reading device");
                 }
@@ -281,13 +284,22 @@ void MainWindow::onMemoryUsedChanged(void)
         memoryLabel->setText(QString("Memory used: %1 of ...")
                              .arg(controller.sizeInBytes()));
     }
+    modified = true;
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    //TODO check for modified
-    ColorPicker::saveColors();
-    event->accept();
+    if (modified) {
+        if (QMessageBox::warning(this, "LED-Controller"
+                                 , "You have unsaved changes. Are you sure you want to quite?"
+                                 , QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Ok) {
+
+            ColorPicker::saveColors();
+            event->accept();
+        } else {
+            event->ignore();
+        }
+    }
 }
 
 void MainWindow::on_actionAbout_triggered()
@@ -299,7 +311,9 @@ void MainWindow::on_actionAbout_triggered()
 
 void MainWindow::on_actionSave_As_triggered()
 {
-    QString saveFileName = QFileDialog::getSaveFileName(this, "Save As", fileName, "LED files (*.led)");
+    QSettings settings;
+    QString lastFileName = settings.value("lastfile", "").toString();
+    QString saveFileName = QFileDialog::getSaveFileName(this, "Save As", lastFileName, "LED files (*.led)");
     if (saveFileName.length() > 0) {
         fileName = saveFileName;
         if (!save()) {
@@ -376,6 +390,11 @@ void MainWindow::onTestRequest(LEDPattern *pat, int output)
 {
     //TODO implement test pattern
     qDebug() << "Test Request: " << output << ":" << pat->getNumLEDs();
+}
+
+void MainWindow::onModified()
+{
+    modified = true;
 }
 
 void MainWindow::on_connectPushButton_clicked()

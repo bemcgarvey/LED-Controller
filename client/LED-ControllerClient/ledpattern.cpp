@@ -73,6 +73,19 @@ void LEDPattern::setNextPattern(int value)
     nextPattern = value;
 }
 
+bool LEDPattern::operator!=(const LEDPattern &rhs)
+{
+    if (onTime != rhs.onTime || nextPattern != rhs.nextPattern || numLEDs != rhs.numLEDs) {
+        return true;
+    }
+    for (int i = 0; i < leds.size(); ++i) {
+        if (leds[i].rgb() != rhs.leds[i].rgb()) {
+            return true;
+        }
+    }
+    return false;
+}
+
 int LEDPattern::getOnTime() const
 {
     return onTime;

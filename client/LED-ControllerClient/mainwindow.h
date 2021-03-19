@@ -58,9 +58,9 @@ private slots:
     void on_readPushButton_clicked();
     void on_connectPushButton_clicked();
     void on_resetPushButton_clicked();
-
 public slots:
     void onTestRequest(LEDPattern *pat, int output);
+    void onModified(void);
 protected:
     void closeEvent(QCloseEvent *event) override;
 };

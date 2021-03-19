@@ -51,7 +51,7 @@ void LEDrgb::setColor(int c)
     red = c & 0xff;
 }
 
-int LEDrgb::rgb()
+int LEDrgb::rgb() const
 {
     int color = red;
     color <<= 8;

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>404</height>
+    <height>432</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -1941,8 +1941,106 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>rcInComboBox1</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onModified()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>50</x>
+     <y>72</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>2</x>
+     <y>101</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rcInComboBox2</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onModified()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>68</x>
+     <y>103</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>215</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rcInComboBox3</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onModified()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>42</x>
+     <y>130</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>6</x>
+     <y>156</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rcInComboBox4</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onModified()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>57</x>
+     <y>159</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>5</x>
+     <y>194</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rcInComboBox5</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onModified()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>85</x>
+     <y>188</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>7</x>
+     <y>236</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rcInComboBox6</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onModified()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>45</x>
+     <y>214</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>5</x>
+     <y>273</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
  <slots>
   <slot>onSpinBoxChanged(int)</slot>
+  <slot>onModified()</slot>
  </slots>
 </ui>

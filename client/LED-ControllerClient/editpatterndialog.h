@@ -26,8 +26,6 @@ private:
     Ui::EditPatternDialog *ui;
     LEDPattern *pattern;
     LEDPattern tempPattern;
-signals:
-    void testPattern(LEDPattern *pat, int output);
 };
 
 #endif // EDITPATTERNDIALOG_H
