@@ -18,17 +18,17 @@ void LEDPattern::setNumLEDs(int nleds)
     leds.resize(numLEDs);
 }
 
-int LEDPattern::getNumLEDs()
+int LEDPattern::getNumLEDs() const
 {
     return numLEDs;
 }
 
-int LEDPattern::sizeInBytes()
+int LEDPattern::sizeInBytes() const
 {
     return 4 + (numLEDs * LEDrgb::sizeInBytes());
 }
 
-int LEDPattern::toByteVector(QVector<uint8_t> &vec)
+int LEDPattern::toByteVector(QVector<uint8_t> &vec) const
 {
     vec.append(numLEDs);
     int16_t ot = onTime;
@@ -73,7 +73,7 @@ void LEDPattern::setNextPattern(int value)
     nextPattern = value;
 }
 
-bool LEDPattern::operator!=(const LEDPattern &rhs)
+bool LEDPattern::operator!=(const LEDPattern &rhs) const
 {
     if (onTime != rhs.onTime || nextPattern != rhs.nextPattern || numLEDs != rhs.numLEDs) {
         return true;

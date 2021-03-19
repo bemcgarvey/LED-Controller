@@ -17,7 +17,7 @@ public:
     void setColor(int c);
     int rgb(void) const;
     static int sizeInBytes(void);
-    int toByteVector(QVector<uint8_t> &vec);
+    int toByteVector(QVector<uint8_t> &vec) const;
     int fromByteVector(const QVector<uint8_t> &vec, int &pos);
 private:
     int red;

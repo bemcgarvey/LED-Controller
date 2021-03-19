@@ -11,8 +11,8 @@ public:
     LEDOutput(int leds, int patterns);
     int getNumLEDs() const;
     void setNumLEDs(int value);
-    int sizeInBytes(void);
-    int toByteVector(QVector<uint8_t>& vec);
+    int sizeInBytes(void) const;
+    int toByteVector(QVector<uint8_t>& vec) const;
     int fromByteVector(const QVector<uint8_t> &vec, int &pos);
     int getNumPatterns() const;
     void setNumPatterns(int value);

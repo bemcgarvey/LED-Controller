@@ -12,7 +12,7 @@ LEDController::LEDController()
     maxMemory = 0;
 }
 
-int LEDController::toByteVector(QVector<uint8_t> &vec)
+int LEDController::toByteVector(QVector<uint8_t> &vec) const
 {
     vec.append(numOutputs);
     for (int i = 0; i < 6; ++i) {
@@ -38,7 +38,7 @@ bool LEDController::fromByteVector(const QVector<uint8_t> &vec)
     return true;
 }
 
-int LEDController::sizeInBytes()
+int LEDController::sizeInBytes() const
 {
     int size = 7;
     for (auto&& i : outputs) {
@@ -52,7 +52,7 @@ LEDOutput &LEDController::operator[](int i)
     return outputs[i];
 }
 
-int LEDController::getRCAction(int i)
+int LEDController::getRCAction(int i) const
 {
     return static_cast<int>(actions[i]);
 }

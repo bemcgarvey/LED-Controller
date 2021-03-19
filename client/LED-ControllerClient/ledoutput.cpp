@@ -25,7 +25,7 @@ void LEDOutput::setNumLEDs(int value)
     }
 }
 
-int LEDOutput::sizeInBytes()
+int LEDOutput::sizeInBytes() const
 {
     int size = 2;
     for (auto&& i : patterns) {
@@ -34,7 +34,7 @@ int LEDOutput::sizeInBytes()
     return size;
 }
 
-int LEDOutput::toByteVector(QVector<uint8_t> &vec)
+int LEDOutput::toByteVector(QVector<uint8_t> &vec) const
 {
     vec.append(numLEDs);
     vec.append(numPatterns);

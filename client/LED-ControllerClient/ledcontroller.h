@@ -7,12 +7,12 @@ class LEDController
 {
 public:
     LEDController();
-    int toByteVector(QVector<uint8_t> &vec);
+    int toByteVector(QVector<uint8_t> &vec) const;
     bool fromByteVector(const QVector<uint8_t> &vec);
     enum RCActions {RC_DO_NOTHING = 0, RC_OFF, RC_PATTERN_A, RC_PATTERN_B, RC_PATTERN_C, RC_NEXT_PATTERN};
-    int sizeInBytes(void);
+    int sizeInBytes(void) const;
     LEDOutput& operator[](int i);
-    int getRCAction(int i);
+    int getRCAction(int i) const;
     void setRCAction(int i, int action);
     int getNumOutputs() const;
     int getMaxMemory() const;

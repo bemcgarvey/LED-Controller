@@ -66,7 +66,7 @@ int LEDrgb::sizeInBytes()
     return 3;
 }
 
-int LEDrgb::toByteVector(QVector<uint8_t> &vec)
+int LEDrgb::toByteVector(QVector<uint8_t> &vec) const
 {
     vec.append(green);
     vec.append(red);

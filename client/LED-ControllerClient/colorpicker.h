@@ -12,7 +12,7 @@ public:
     static void saveColors();
     QVector<QColor> getColors() const;
     void setColors(const QVector<QColor> &value);
-    QColor getColor(void);
+    QColor getColor(void) const;
 protected:
     void mouseDoubleClickEvent(QMouseEvent *event) override;
     void paintEvent(QPaintEvent *event) override;

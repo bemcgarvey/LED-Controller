@@ -112,7 +112,7 @@ void ColorPicker::setColors(const QVector<QColor> &value)
     colors = value;
 }
 
-QColor ColorPicker::getColor()
+QColor ColorPicker::getColor() const
 {
     return colors[selectedColor];
 }
