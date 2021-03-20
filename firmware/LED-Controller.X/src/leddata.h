@@ -53,11 +53,11 @@ extern const ControllerROM controllerROM;
 extern const uint8_t fallbackControllerROM[];
 extern Output* outputs[6];
 extern LEDPattern* patterns[18];
+extern uint16_t controllerSize;
 
 void initControllerMemory(void);
 char copyToROM(uint16_t size);
 void copyFromROM(void);
-uint16_t calculateSize(void);
 void calculatePointers(void);
 char validateROM(void);
 

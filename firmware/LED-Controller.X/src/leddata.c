@@ -5,6 +5,8 @@
 Controller controller;
 Output* outputs[6];
 LEDPattern* patterns[18];
+uint16_t controllerSize;
+
 const uint8_t fallbackControllerROM[] = {
     6, //numOutputs
     0, 0, 0, 0, 0, 0, //actions
@@ -21,6 +23,7 @@ void initControllerMemory(void) {
         for (int i = 0; i < sizeof (fallbackControllerROM); ++i) {
             controller.bytes[i] = fallbackControllerROM[i];
         }
+        controllerSize = sizeof (fallbackControllerROM);
         ledOn();
     } else {
         copyFromROM();
@@ -99,19 +102,10 @@ char copyToROM(uint16_t size) {
 }
 
 void copyFromROM(void) {
-    for (int i = 0; i < MAX_MEMORY; ++i) {
+    controllerSize = controllerROM.size;
+    for (int i = 0; i < controllerSize; ++i) {
         controller.bytes[i] = controllerROM.controller.bytes[i];
-    }
-}
-
-uint16_t calculateSize(void) {
-    uint16_t size = 7;
-    for (int i = 0; i < 6; ++i) {
-        size += 2;
-        size += outputs[i]->numPatterns * 4;
-        size += outputs[i]->numPatterns * outputs[i]->numLEDs * 3;
-    }
-    return size;
+    }   
 }
 
 void calculatePointers(void) {

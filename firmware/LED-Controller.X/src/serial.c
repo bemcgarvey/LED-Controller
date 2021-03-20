@@ -112,7 +112,7 @@ void __interrupt(irq(U1RX), low_priority, base(8)) U1_RX_ISR() {
                         lastCommand = CMD_READ;
                         txSource = controller.bytes;
                         txHeaderBytes = 2;
-                        *((uint16_t *) txHeader) = calculateSize();
+                        *((uint16_t *) txHeader) = controllerSize;
                         txBytes = *((uint16_t *) txHeader);
                         txHeaderPos = txHeader;
                         sendChecksum = 1;
@@ -160,7 +160,8 @@ void __interrupt(irq(U1RX), low_priority, base(8)) U1_RX_ISR() {
                             U1TXB = ACK;
                             doTest = (int8_t)tempRxBuf[2];
                         } else {
-                            if (copyToROM(*(uint16_t*) tempRxBuf) != 0) {
+                            controllerSize = *(uint16_t*) tempRxBuf;
+                            if (copyToROM(controllerSize) != 0) {
                                 U1TXB = ACK;
                             } else {
                                 U1TXB = NACK;

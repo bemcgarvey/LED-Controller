@@ -32,6 +32,9 @@ void main(void) {
     for (uint8_t i = 0; i < 6; ++i) {
         clearLEDs(i, 255);
     }
+    if (!serialConnected) {
+        
+    }
     while (1) {
         if (currentTime != systemTime) {
             currentTime = systemTime;
