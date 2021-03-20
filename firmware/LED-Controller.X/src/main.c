@@ -29,9 +29,9 @@ void main(void) {
     unsigned int currentTime = 0;
     INTCON0bits.GIEH = 1;
     INTCON0bits.GIEL = 1;
-    //ledOn();  //TODO add some sort of error status - flash led if invalid ROM?
-    //__delay_ms(500);
-    //ledOff();
+    for (uint8_t i = 0; i < 6; ++i) {
+        clearLEDs(i, 255);
+    }
     while (1) {
         if (currentTime != systemTime) {
             currentTime = systemTime;
@@ -39,6 +39,17 @@ void main(void) {
                 
                 //ledToggle();
             }
+        }
+        if (serialConnected) {
+            if (doTest != -1) {
+                clearLEDs((uint8_t)doTest, 255);
+                setLEDs((uint8_t)doTest, &controller.bytes[4], controller.bytes[0]);
+                doTest = -1;
+                copyFromROM();
+                calculatePointers();
+            }
+        } else {
+            
         }
     }
 

@@ -11,6 +11,9 @@
 #ifndef SERIAL_H
 #define	SERIAL_H
 
+extern char serialConnected;
+extern int8_t doTest;
+
 void initSerial(void);
 //void txBytes(void *buf, int nBytes);
 

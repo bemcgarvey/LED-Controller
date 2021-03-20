@@ -31,7 +31,6 @@ void ColorPicker::loadColors()
             }
             settings.endArray();
         } else {
-            //TODO choose decent starting colors
             colors[0] = Qt::white;
             colors[1] = Qt::red;
             colors[2] = Qt::green;
@@ -39,12 +38,6 @@ void ColorPicker::loadColors()
             colors[4] = Qt::yellow;
             colors[5] = Qt::magenta;
             colors[6] = Qt::cyan;
-            colors[7] = Qt::darkBlue;
-            colors[8] = Qt::darkCyan;
-            colors[9] = Qt::darkGreen;
-            colors[10] = Qt::darkMagenta;
-            colors[11] = Qt::darkRed;
-            colors[12] = Qt::darkYellow;
         }
         colorsLoaded = true;
     }

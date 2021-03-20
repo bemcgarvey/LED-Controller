@@ -15,13 +15,16 @@
 #include "leddata.h"
 #include "version.h"
 
+char serialConnected = 0;
+int8_t doTest = -1;
+
 enum rxState {
     RX_IDLE, WAIT_START1, WAIT_START2, WAIT_COMMAND, WAIT_DATA_SIZE, WAIT_DATA
 };
 
 enum SerialCommands {
     CMD_NONE = 0, CMD_READ = 0x80, CMD_WRITE = 0x81, CMD_TEST = 0x82, CMD_RESET = 0x8f
-            , CMD_START1 = 0x4d, CMD_START2 = 0x63
+    , CMD_START1 = 0x4d, CMD_START2 = 0x63
 };
 
 enum SerialRespnses {
@@ -31,7 +34,7 @@ volatile enum rxState state;
 volatile uint16_t bytesNeeded;
 volatile enum SerialCommands lastCommand; //TODO is this needed?
 volatile uint8_t *rxDestination;
-volatile uint8_t tempRxBuf[2];
+volatile uint8_t tempRxBuf[3];
 volatile uint8_t txHeader[6];
 volatile uint8_t txHeaderBytes;
 volatile uint8_t *txHeaderPos;
@@ -43,6 +46,8 @@ volatile uint8_t sendChecksum;
 #define txStop()  (PIE3bits.U1TXIE = 0)
 
 void initSerial(void) {
+    serialConnected = 0;
+    doTest = -1;
     U1CON1bits.ON = 0;
     U1CON0bits.BRGS = 1;
     U1CON0bits.MODE = 0b0000;
@@ -90,6 +95,7 @@ void __interrupt(irq(U1RX), low_priority, base(8)) U1_RX_ISR() {
                     sendChecksum = 0;
                     txStart();
                     state = WAIT_COMMAND;
+                    serialConnected = 1;
                 } else {
                     state = WAIT_START1;
                 }
@@ -114,9 +120,12 @@ void __interrupt(irq(U1RX), low_priority, base(8)) U1_RX_ISR() {
                         state = WAIT_COMMAND;
                         break;
                     case CMD_TEST:
+                        state = WAIT_DATA_SIZE;
+                        lastCommand = CMD_TEST;
+                        bytesNeeded = 3;
+                        rxDestination = tempRxBuf;
                         break;
-
-                    case 0x4d:
+                    case CMD_START1:
                         state = WAIT_START2;
                         break;
                     case CMD_RESET:
@@ -147,16 +156,23 @@ void __interrupt(irq(U1RX), low_priority, base(8)) U1_RX_ISR() {
                 --bytesNeeded;
                 if (bytesNeeded == 0) {
                     if (U1RXCHK == 1) { //Last carry should result in a 1
-                        if (copyToROM(*(uint16_t*) tempRxBuf) != 0) {
+                        if (lastCommand == CMD_TEST) {
                             U1TXB = ACK;
+                            doTest = (int8_t)tempRxBuf[2];
                         } else {
-                            U1TXB = NACK;
+                            if (copyToROM(*(uint16_t*) tempRxBuf) != 0) {
+                                U1TXB = ACK;
+                            } else {
+                                U1TXB = NACK;
+                            }
                         }
                     } else {
                         U1TXB = NACK;
                         copyFromROM();
                     }
-                    calculatePointers();
+                    if (lastCommand == CMD_WRITE) {
+                        calculatePointers();
+                    }
                     state = WAIT_COMMAND;
                 }
                 break;

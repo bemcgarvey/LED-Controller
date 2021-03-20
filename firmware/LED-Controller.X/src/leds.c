@@ -58,17 +58,17 @@ void transmitByte(uint8_t b) {
 
 void setLEDs(uint8_t output, uint8_t *rgb, uint8_t ledCount) {
     switch (output) {
-        case 1: CLC1GLS0 = 0x02;
+        case 0: CLC1GLS0 = 0x02;
             break;
-        case 2: CLC2GLS0 = 0x02;
+        case 1: CLC2GLS0 = 0x02;
             break;
-        case 3: RB3PPS = 0b011111; //SPI SDO
+        case 2: RB3PPS = 0b011111; //SPI SDO
             break;
-        case 4: RB2PPS = 0b011111; //SPI SDO
+        case 3: RB2PPS = 0b011111; //SPI SDO
             break;
-        case 5: RC6PPS = 0b011111; //SPI SDO
+        case 4: RC6PPS = 0b011111; //SPI SDO
             break;
-        case 6: RC5PPS = 0b011111; //SPI SDO
+        case 5: RC5PPS = 0b011111; //SPI SDO
             break;
         default: return;
     }
@@ -79,17 +79,55 @@ void setLEDs(uint8_t output, uint8_t *rgb, uint8_t ledCount) {
         --count;
     }
     switch (output) {
-        case 1: CLC1GLS0 = 0x00;
+        case 0: CLC1GLS0 = 0x00;
             break;
-        case 2: CLC2GLS0 = 0x00;
+        case 1: CLC2GLS0 = 0x00;
             break;
-        case 3: RB3PPS = 0;
+        case 2: RB3PPS = 0;
             break;
-        case 4: RB2PPS = 0;
+        case 3: RB2PPS = 0;
             break;
-        case 5: RC6PPS = 0;
+        case 4: RC6PPS = 0;
             break;
-        case 6: RC5PPS = 0;
+        case 5: RC5PPS = 0;
+            break;
+    }
+    __delay_us(50);  //reset
+}
+
+void clearLEDs(uint8_t output, uint8_t ledCount) {
+    switch (output) {
+        case 0: CLC1GLS0 = 0x02;
+            break;
+        case 1: CLC2GLS0 = 0x02;
+            break;
+        case 2: RB3PPS = 0b011111; //SPI SDO
+            break;
+        case 3: RB2PPS = 0b011111; //SPI SDO
+            break;
+        case 4: RC6PPS = 0b011111; //SPI SDO
+            break;
+        case 5: RC5PPS = 0b011111; //SPI SDO
+            break;
+        default: return;
+    }
+    int count = 3 * ledCount;
+    while (count > 0) {
+        transmitByte(0x00);
+        --count;
+    }
+    switch (output) {
+        case 0: CLC1GLS0 = 0x00;
+            break;
+        case 1: CLC2GLS0 = 0x00;
+            break;
+        case 2: RB3PPS = 0;
+            break;
+        case 3: RB2PPS = 0;
+            break;
+        case 4: RC6PPS = 0;
+            break;
+        case 5: RC5PPS = 0;
             break;
     }
     __delay_us(50);  //reset

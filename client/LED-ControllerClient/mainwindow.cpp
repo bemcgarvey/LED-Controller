@@ -8,11 +8,10 @@
 #include "colorpicker.h"
 #include "aboutdialog.h"
 #include "version.h"
-#include <QDebug>
 
-//TODO remove all qDebug()'s
 //TODO Application icons
 //BUG Strange scrolling behavior when using right speed button because focus changes to a spin button???
+//BUG Sometimes takes many attempts to connect but seems to be receiving from device
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -163,6 +162,7 @@ void MainWindow::comPortSelected()
     if (port != nullptr) {
         port->close();
         delete port;
+        port = nullptr;
     }
     port = new QSerialPort(action->text(), this);
     if (port->open(QIODevice::ReadWrite)) {
@@ -260,9 +260,9 @@ void MainWindow::onReadyRead(void) {
             bufferPos += received;
             if (bytesNeeded == 0) {
                 if (tempBuffer[0] == ACK) {
-                    QMessageBox::information(this, "LED-Controller", "Operation completed successfully");
+                    ui->statusbar->showMessage("Write to device successful", 2000);
                 } else {
-                    QMessageBox::critical(this, "LED-Controller", "Operation failed");
+                    QMessageBox::critical(this, "LED-Controller", "Write to device failed");
                 }
                 state = IDLE;
             }
@@ -389,8 +389,29 @@ void MainWindow::on_readPushButton_clicked()
 
 void MainWindow::onTestRequest(LEDPattern *pat, int output)
 {
-    //TODO implement test pattern
-    qDebug() << "Test Request: " << output << ":" << pat->getNumLEDs();
+    if (port == nullptr) {
+        QMessageBox::critical(this, "LED-Controller", "Not connected!");
+        return;
+    }
+    QVector<uint8_t> vec;
+    pat->toByteVector(vec);
+    char cmd = CMD_TEST;
+    state = WAIT_ACK;
+    bytesNeeded = 1;
+    bufferPos = tempBuffer;
+    port->write(&cmd, 1);
+    uint16_t size = vec.size();
+    port->write(reinterpret_cast<char *>(&size), 2);
+    char out = output;
+    port->write(&out, 1);
+    uint8_t sum = 0;
+    for (int i = 0; i < vec.size(); ++i) {
+        uint8_t carry = (sum + vec[i]) >> 8;
+        sum += vec[i] + carry;
+        port->write(reinterpret_cast<char *>(&vec[i]), 1);
+    }
+    sum = -sum;
+    port->write(reinterpret_cast<char *>(&sum), 1);
 }
 
 void MainWindow::onModified()
