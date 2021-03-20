@@ -10,8 +10,9 @@
 #include "version.h"
 
 //TODO Application icons
-//BUG Strange scrolling behavior when using right speed button because focus changes to a spin button???
+
 //BUG Sometimes takes many attempts to connect but seems to be receiving from device
+//   Could this be because serial adapter was set for 3.3V???
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -247,6 +248,9 @@ void MainWindow::onReadyRead(void) {
                     updateControls();
                     ui->statusbar->showMessage("Read successful", 1000);
                     modified = true;
+                    for (auto&& i : findChildren<PatternDisplay *>()) {
+                        i->update();
+                    }
                 } else {
                     QMessageBox::critical(this, "LED-Controller", "Error reading device");
                 }

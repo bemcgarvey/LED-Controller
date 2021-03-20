@@ -39,6 +39,10 @@ PatternDisplay::PatternDisplay(QWidget *parent) :
     rightButton->setAutoRepeat(true);
     leftSpeedButton->setAutoRepeat(true);
     rightSpeedButton->setAutoRepeat(true);
+    leftButton->setFocusPolicy(Qt::NoFocus);
+    rightButton->setFocusPolicy(Qt::NoFocus);
+    leftSpeedButton->setFocusPolicy(Qt::NoFocus);
+    rightSpeedButton->setFocusPolicy(Qt::NoFocus);
     vBoxLeft->addWidget(leftButton);
     vBoxLeft->addWidget(leftSpeedButton);
     vBoxLeft->setSpacing(0);
