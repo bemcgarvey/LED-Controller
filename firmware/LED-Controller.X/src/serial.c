@@ -169,10 +169,10 @@ void __interrupt(irq(U1RX), low_priority, base(8)) U1_RX_ISR() {
                         }
                     } else {
                         U1TXB = NACK;
-                        copyFromROM();
+                        copyFromROM();  //TODO move this to main
                     }
                     if (lastCommand == CMD_WRITE) {
-                        calculatePointers();
+                        calculatePointers(); //TODO move this to main (updateController flag or something like that)
                     }
                     state = WAIT_COMMAND;
                 }

@@ -13,16 +13,10 @@
 #define MAX_MEMORY 3584
 
 typedef struct {
-    uint8_t g;
-    uint8_t r;
-    uint8_t b;
-} LEDrgb;
-
-typedef struct {
     uint8_t numLEDs;
     int16_t onTime;
     uint8_t nextPattern;
-    LEDrgb rgbs;
+    uint8_t rgbs;
 } LEDPattern;
 
 typedef struct {

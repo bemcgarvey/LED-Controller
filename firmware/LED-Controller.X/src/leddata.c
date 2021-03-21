@@ -108,6 +108,9 @@ void copyFromROM(void) {
     }   
 }
 
+
+//TODO Find a better way to do the pattern pointers to avoid multiplication
+
 void calculatePointers(void) {
     for (int i = 0; i < 18; ++i) {
         patterns[i] = NULL;

@@ -92,7 +92,6 @@ void setLEDs(uint8_t output, uint8_t *rgb, uint8_t ledCount) {
         case 5: RC5PPS = 0;
             break;
     }
-    __delay_us(50);  //reset
 }
 
 void clearLEDs(uint8_t output, uint8_t ledCount) {
@@ -130,5 +129,4 @@ void clearLEDs(uint8_t output, uint8_t ledCount) {
         case 5: RC5PPS = 0;
             break;
     }
-    __delay_us(50);  //reset
 }

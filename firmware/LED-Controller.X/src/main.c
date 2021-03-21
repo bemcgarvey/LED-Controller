@@ -15,6 +15,7 @@
 #include "capture.h"
 #include "leddata.h"
 #include "timers.h"
+#include "actions.h"
 
 void main(void) {
     initOscillator();
@@ -27,34 +28,25 @@ void main(void) {
     initCapture();
     initSystemTimer();
     unsigned int currentTime = 0;
-    INTCON0bits.GIEH = 1;
-    INTCON0bits.GIEL = 1;
     for (uint8_t i = 0; i < 6; ++i) {
         clearLEDs(i, 255);
     }
-    if (!serialConnected) {
-        
-    }
+    initActions();
+    INTCON0bits.GIEH = 1;
+    INTCON0bits.GIEL = 1;
     while (1) {
-        if (currentTime != systemTime) {
-            currentTime = systemTime;
-            if (currentTime % 10 == 0) {
-                
-                //ledToggle();
-            }
-        }
         if (serialConnected) {
             if (doTest != -1) {
-                clearLEDs((uint8_t)doTest, 255);
-                setLEDs((uint8_t)doTest, &controller.bytes[4], controller.bytes[0]);
+                clearLEDs((uint8_t) doTest, 255);
+                __delay_us(50);
+                setLEDs((uint8_t) doTest, &controller.bytes[4], controller.bytes[0]);
                 doTest = -1;
                 copyFromROM();
                 calculatePointers();
             }
-        } else {
-            
+        } else if (currentTime != systemTime) {
+            currentTime = systemTime;
+            doTimeTick();
         }
     }
-
-    return;
 }
