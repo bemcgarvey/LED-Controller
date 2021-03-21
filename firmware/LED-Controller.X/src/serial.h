@@ -13,6 +13,8 @@
 
 extern char serialConnected;
 extern int8_t doTest;
+extern char updatePointers;
+extern char updateFromROM;
 
 void initSerial(void);
 //void txBytes(void *buf, int nBytes);

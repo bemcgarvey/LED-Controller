@@ -17,6 +17,8 @@
 
 char serialConnected = 0;
 int8_t doTest = -1;
+char updatePointers = 0;
+char updateFromROM = 0;
 
 enum rxState {
     RX_IDLE, WAIT_START1, WAIT_START2, WAIT_COMMAND, WAIT_DATA_SIZE, WAIT_DATA
@@ -30,9 +32,10 @@ enum SerialCommands {
 enum SerialRespnses {
     ACK = 0x06, NACK = 0x15
 };
+
 volatile enum rxState state;
 volatile uint16_t bytesNeeded;
-volatile enum SerialCommands lastCommand; //TODO is this needed?
+volatile enum SerialCommands lastCommand;
 volatile uint8_t *rxDestination;
 volatile uint8_t tempRxBuf[3];
 volatile uint8_t txHeader[6];
@@ -48,6 +51,8 @@ volatile uint8_t sendChecksum;
 void initSerial(void) {
     serialConnected = 0;
     doTest = -1;
+    updatePointers = 0;
+    updateFromROM = 0;
     U1CON1bits.ON = 0;
     U1CON0bits.BRGS = 1;
     U1CON0bits.MODE = 0b0000;
@@ -169,10 +174,10 @@ void __interrupt(irq(U1RX), low_priority, base(8)) U1_RX_ISR() {
                         }
                     } else {
                         U1TXB = NACK;
-                        copyFromROM();  //TODO move this to main
+                        updateFromROM = 1;
                     }
                     if (lastCommand == CMD_WRITE) {
-                        calculatePointers(); //TODO move this to main (updateController flag or something like that)
+                        updatePointers = 1;
                     }
                     state = WAIT_COMMAND;
                 }

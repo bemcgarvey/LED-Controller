@@ -44,6 +44,15 @@ void main(void) {
                 copyFromROM();
                 calculatePointers();
             }
+            if (updateFromROM) {  //TODO test these changes
+                updateFromROM = 0;
+                copyFromROM();
+                calculatePointers();
+            }
+            if (updatePointers) {
+                updatePointers = 0;
+                calculatePointers();
+            }
         } else if (currentTime != systemTime) {
             currentTime = systemTime;
             doTimeTick();
