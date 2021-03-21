@@ -11,9 +11,6 @@
 
 //TODO Application icons
 
-//BUG Sometimes takes many attempts to connect but seems to be receiving from device
-//   Could this be because serial adapter was set for 3.3V???
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow), port(nullptr), pRxBuffer(nullptr)
@@ -247,10 +244,10 @@ void MainWindow::onReadyRead(void) {
                     controller.fromByteVector(vec);
                     updateControls();
                     ui->statusbar->showMessage("Read successful", 1000);
-                    modified = true;
                     for (auto&& i : findChildren<PatternDisplay *>()) {
                         i->update();
                     }
+                    modified = false;
                 } else {
                     QMessageBox::critical(this, "LED-Controller", "Error reading device");
                 }
@@ -393,7 +390,7 @@ void MainWindow::on_readPushButton_clicked()
 
 void MainWindow::onTestRequest(LEDPattern *pat, int output)
 {
-    if (port == nullptr) {
+    if (!ui->writePushButton->isEnabled()) {
         QMessageBox::critical(this, "LED-Controller", "Not connected!");
         return;
     }
