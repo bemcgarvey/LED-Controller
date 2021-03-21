@@ -170,7 +170,7 @@ void MainWindow::comPortSelected()
         port->setStopBits(QSerialPort::OneStop);
         portLabel->setText(action->text());
         ui->connectPushButton->setEnabled(true);
-        port->clear();  //clear out extra bytes from device power on
+        port->clear(QSerialPort::AllDirections);  //clear out extra bytes from device power on
         connect(port, &QSerialPort::readyRead, this, &MainWindow::onReadyRead);
     } else {
         delete port;
@@ -194,6 +194,7 @@ void MainWindow::onReadyRead(void) {
             if (bytesNeeded == 0) {
                 if (tempBuffer[0] != CMD_START1 || tempBuffer[1] != CMD_START2) {
                     state = IDLE;
+                    port->clear(QSerialPort::AllDirections);
                     ui->statusbar->showMessage("Unable to connect", 1000);
                     return;
                 }
