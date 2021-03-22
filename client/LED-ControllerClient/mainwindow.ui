@@ -345,7 +345,7 @@
        <item row="1" column="1">
         <widget class="QLabel" name="label_2">
          <property name="text">
-          <string>&lt;1150</string>
+          <string>&lt;1151</string>
          </property>
         </widget>
        </item>

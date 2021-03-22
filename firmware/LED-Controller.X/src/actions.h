@@ -18,10 +18,14 @@ typedef struct {
 
 extern OutputAction actions[6];
 
+enum RCActions {RC_DO_NOTHING = 0, RC_OFF, RC_PATTERN_A, RC_PATTERN_B, RC_PATTERN_C, RC_NEXT_PATTERN};
+extern int8_t currentRCRange; 
+
 void initActions(void);
-void updateActions(uint8_t newPattern);
 void doTimeTick(void);
 void processAction(uint8_t out);
+int8_t decodeRCRange(void);
+void processRCAction(void);
 
 #endif	/* ACTIONS_H */
 

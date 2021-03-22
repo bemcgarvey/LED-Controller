@@ -3,8 +3,8 @@
 #include "capture.h"
 #include "timers.h"
 #include "system.h"
-
-uint16_t currentPWMInput = 0;
+ 
+volatile uint16_t currentPWMInput = 0;
 
 void initCapture(void) {
     currentPWMInput = 0;

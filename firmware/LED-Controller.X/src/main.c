@@ -44,7 +44,7 @@ void main(void) {
                 copyFromROM();
                 calculatePointers();
             }
-            if (updateFromROM) {  //TODO test these changes
+            if (updateFromROM) { //TODO test these changes
                 updateFromROM = 0;
                 copyFromROM();
                 calculatePointers();
@@ -53,9 +53,16 @@ void main(void) {
                 updatePointers = 0;
                 calculatePointers();
             }
-        } else if (currentTime != systemTime) {
-            currentTime = systemTime;
-            doTimeTick();
+        } else {
+            if (currentTime != systemTime) {
+                currentTime = systemTime;
+                doTimeTick();
+            }
+            int8_t range = decodeRCRange();
+            if (range != currentRCRange) {
+                currentRCRange = range;
+                processRCAction();
+            }
         }
     }
 }
