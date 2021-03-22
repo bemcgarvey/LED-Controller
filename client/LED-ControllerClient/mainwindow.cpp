@@ -5,6 +5,7 @@
 #include <QCloseEvent>
 #include <QFileDialog>
 #include <QSettings>
+#include <QTimer>
 #include "colorpicker.h"
 #include "aboutdialog.h"
 #include "version.h"
@@ -42,6 +43,8 @@ MainWindow::MainWindow(QWidget *parent)
     ColorPicker::loadColors();
     updateControls();
     modified = false;
+    timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, &MainWindow::onTimeout);
 }
 
 MainWindow::~MainWindow()
@@ -141,6 +144,16 @@ void MainWindow::getActionControls()
     controller.setRCAction(5, ui->rcInComboBox6->currentIndex());
 }
 
+void MainWindow::clearRCComboBoxStyle()
+{
+    ui->rcInComboBox1->setStyleSheet("");
+    ui->rcInComboBox2->setStyleSheet("");
+    ui->rcInComboBox3->setStyleSheet("");
+    ui->rcInComboBox4->setStyleSheet("");
+    ui->rcInComboBox5->setStyleSheet("");
+    ui->rcInComboBox6->setStyleSheet("");
+}
+
 void MainWindow::updatePortMenu()
 {
     QList<QSerialPortInfo> portList = QSerialPortInfo::availablePorts();
@@ -208,6 +221,7 @@ void MainWindow::onReadyRead(void) {
                 ui->readPushButton->setEnabled(true);
                 ui->writePushButton->setEnabled(true);
                 ui->resetPushButton->setEnabled(true);
+                ui->monitorRCPushButton->setEnabled(true);
                 onMemoryUsedChanged();
                 state = IDLE;
             }
@@ -267,6 +281,15 @@ void MainWindow::onReadyRead(void) {
                     QMessageBox::critical(this, "LED-Controller", "Write to device failed");
                 }
                 state = IDLE;
+            }
+            break;
+        case WAIT_RC_US:
+            received = port->read(bufferPos, bytesNeeded);
+            bytesNeeded -= received;
+            bufferPos += received;
+            if (bytesNeeded == 0) {
+                int rcMicroSeconds = *(reinterpret_cast<int16_t*>(tempBuffer));
+                showRCValue(rcMicroSeconds);
             }
             break;
         }
@@ -385,8 +408,8 @@ void MainWindow::on_readPushButton_clicked()
     bytesNeeded = 2;
     bufferPos = tempBuffer;
     state = WAIT_CONFIG_SIZE;
-    char txBuff = CMD_READ;
-    port->write(&txBuff, 1);
+    char cmd = CMD_READ;
+    port->write(&cmd, 1);
 }
 
 void MainWindow::onTestRequest(LEDPattern *pat, int output)
@@ -426,14 +449,15 @@ void MainWindow::on_connectPushButton_clicked()
     ui->readPushButton->setEnabled(false);
     ui->writePushButton->setEnabled(false);
     ui->resetPushButton->setEnabled(false);
+    ui->monitorRCPushButton->setEnabled(false);
     connectedLabel->setText("Not Connected");
     port->clear();
     bytesNeeded = 6;
     tempBuffer[0] = tempBuffer[1] = 0;
     bufferPos = tempBuffer;
     state = WAIT_VERSION;
-    char txBuff[] = {CMD_START1, CMD_START2};
-    port->write(txBuff, 2);
+    char cmd[] = {CMD_START1, CMD_START2};
+    port->write(cmd, 2);
 }
 
 void MainWindow::on_resetPushButton_clicked()
@@ -441,7 +465,54 @@ void MainWindow::on_resetPushButton_clicked()
     ui->readPushButton->setEnabled(false);
     ui->writePushButton->setEnabled(false);
     ui->resetPushButton->setEnabled(false);
+    ui->monitorRCPushButton->setEnabled(false);
     connectedLabel->setText("Not Connected");
     char cmd = CMD_RESET;
+    port->write(&cmd, 1);
+}
+
+void MainWindow::on_monitorRCPushButton_toggled(bool checked)
+{
+    if (checked) {
+        ui->connectPushButton->setEnabled(false);
+        ui->readPushButton->setEnabled(false);
+        ui->writePushButton->setEnabled(false);
+        ui->resetPushButton->setEnabled(false);
+        onTimeout();
+        timer->start(100);
+    } else {
+        timer->stop();
+        clearRCComboBoxStyle();
+        ui->connectPushButton->setEnabled(true);
+        ui->readPushButton->setEnabled(true);
+        ui->writePushButton->setEnabled(true);
+        ui->resetPushButton->setEnabled(true);
+    }
+}
+
+void MainWindow::showRCValue(int us)
+{
+    clearRCComboBoxStyle();
+    if (us < 1151) {
+        ui->rcInComboBox1->setStyleSheet("background-color: lightgreen");
+    } else if (us < 1351) {
+        ui->rcInComboBox2->setStyleSheet("background-color: lightgreen");
+    } else if (us < 1551) {
+        ui->rcInComboBox3->setStyleSheet("background-color: lightgreen");
+    } else if (us < 1751) {
+        ui->rcInComboBox4->setStyleSheet("background-color: lightgreen");
+    } else if (us < 1951) {
+        ui->rcInComboBox5->setStyleSheet("background-color: lightgreen");
+    } else {
+        ui->rcInComboBox6->setStyleSheet("background-color: lightgreen");
+    }
+}
+
+void MainWindow::onTimeout()
+{
+    bytesNeeded = 2;
+    bufferPos = tempBuffer;
+    state = WAIT_RC_US;
+    char cmd = CMD_MONITOR_RC;
     port->write(&cmd, 1);
 }

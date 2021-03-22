@@ -14,6 +14,7 @@
 #include "system.h"
 #include "leddata.h"
 #include "version.h"
+#include "capture.h"
 
 char serialConnected = 0;
 int8_t doTest = -1;
@@ -25,8 +26,8 @@ enum rxState {
 };
 
 enum SerialCommands {
-    CMD_NONE = 0, CMD_READ = 0x80, CMD_WRITE = 0x81, CMD_TEST = 0x82, CMD_RESET = 0x8f
-    , CMD_START1 = 0x4d, CMD_START2 = 0x63
+    CMD_NONE = 0, CMD_READ = 0x80, CMD_WRITE = 0x81, CMD_TEST = 0x82, CMD_MONITOR_RC = 0x83
+    , CMD_RESET = 0x8f, CMD_START1 = 0x4d, CMD_START2 = 0x63
 };
 
 enum SerialRespnses {
@@ -136,6 +137,17 @@ void __interrupt(irq(U1RX), low_priority, base(8)) U1_RX_ISR() {
                     case CMD_RESET:
                         Reset();
                         break;
+                    case CMD_MONITOR_RC:
+                        lastCommand = CMD_MONITOR_RC;
+                        txSource = NULL;
+                        txHeaderBytes = 2;
+                        *((int16_t *) txHeader) = (int16_t)currentPWMus();
+                        txBytes = 0;
+                        txHeaderPos = txHeader;
+                        sendChecksum = 0;
+                        txStart();
+                        state = WAIT_COMMAND;
+                        break;
                     default:
                         state = WAIT_COMMAND;
                         break;
@@ -163,7 +175,7 @@ void __interrupt(irq(U1RX), low_priority, base(8)) U1_RX_ISR() {
                     if (U1RXCHK == 1) { //Last carry should result in a 1
                         if (lastCommand == CMD_TEST) {
                             U1TXB = ACK;
-                            doTest = (int8_t)tempRxBuf[2];
+                            doTest = (int8_t) tempRxBuf[2];
                         } else {
                             controllerSize = *(uint16_t*) tempRxBuf;
                             if (copyToROM(controllerSize) != 0) {

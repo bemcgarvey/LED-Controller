@@ -36,14 +36,17 @@ private:
     bool open(QString fileName);
     void updateControls(void);
     void getActionControls(void);
-    enum RxState {IDLE, WAIT_VERSION, WAIT_CONFIG_SIZE, WAIT_CONFIG, WAIT_ACK};
+    enum RxState {IDLE, WAIT_VERSION, WAIT_CONFIG_SIZE, WAIT_CONFIG, WAIT_ACK, WAIT_RC_US};
     RxState state;
     int bytesNeeded;
     char *bufferPos;
     char tempBuffer[6];
-    enum DeviceCommands {CMD_READ = 0x80, CMD_WRITE = 0x81, CMD_TEST = 0x82, CMD_RESET = 0x8f
+    enum DeviceCommands {CMD_READ = 0x80, CMD_WRITE = 0x81, CMD_TEST = 0x82
+                         , CMD_MONITOR_RC = 0x83, CMD_RESET = 0x8f
                          , CMD_START1 = 0x4d, CMD_START2 = 0x63};
     enum DeviceResponse {ACK = 0x06, NACK = 0x15};
+    void clearRCComboBoxStyle(void);
+    QTimer *timer;
 private slots:
     void updatePortMenu(void);
     void comPortSelected(void);
@@ -58,6 +61,9 @@ private slots:
     void on_readPushButton_clicked();
     void on_connectPushButton_clicked();
     void on_resetPushButton_clicked();
+    void on_monitorRCPushButton_toggled(bool checked);
+    void showRCValue(int us);
+    void onTimeout(void);
 public slots:
     void onTestRequest(LEDPattern *pat, int output);
     void onModified(void);
