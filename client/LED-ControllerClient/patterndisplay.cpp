@@ -14,11 +14,14 @@
 PatternDisplay::PatternDisplay(QWidget *parent) :
     QFrame(parent), pattern(nullptr), editable(false), dragPixmap(nullptr)
 {
-
-    leftButton = new QPushButton("<", this);
-    leftSpeedButton = new QPushButton("<<", this);
-    rightButton = new QPushButton(">", this);
-    rightSpeedButton = new QPushButton(">>", this);
+    QIcon lIcon(":/images/leftButton.png");
+    leftButton = new QPushButton(lIcon, "", this);
+    QIcon lsIcon(":/images/leftSpeedButton.png");
+    leftSpeedButton = new QPushButton(lsIcon, "", this);
+    QIcon rIcon(":/images/rightButton.png");
+    rightButton = new QPushButton(rIcon, "", this);
+    QIcon rsIcon(":/images/rightSpeedButton.png");
+    rightSpeedButton = new QPushButton(rsIcon, "", this);
     connect(leftButton, &QPushButton::pressed, this, &PatternDisplay::onLeftButton);
     connect(leftSpeedButton, &QPushButton::pressed, this, &PatternDisplay::onLeftSpeedButton);
     connect(rightSpeedButton, &QPushButton::pressed, this, &PatternDisplay::onRightSpeedButton);
@@ -177,8 +180,6 @@ void PatternDisplay::resizeEvent(QResizeEvent *event)
     ledSize = vHeight / 2;
     ledsAcross = (length - 40) / (ledSize + 5);
 }
-
-//TODO make some nice button icons
 
 void PatternDisplay::onLeftButton()
 {  

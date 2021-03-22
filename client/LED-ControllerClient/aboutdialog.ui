@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>231</width>
-    <height>210</height>
+    <width>278</width>
+    <height>379</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -28,6 +28,16 @@
      </property>
      <property name="text">
       <string>LED-Controller</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="pixmap">
+      <pixmap resource="images.qrc">:/images/logo.png</pixmap>
      </property>
     </widget>
    </item>
@@ -89,7 +99,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="images.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>pushButton</sender>

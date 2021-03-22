@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/plane.ico</file>
+        <file>images/logo.png</file>
+        <file>images/rightButton.png</file>
+        <file>images/rightSpeedButton.png</file>
+        <file>images/leftButton.png</file>
+        <file>images/leftSpeedButton.png</file>
+    </qresource>
+</RCC>

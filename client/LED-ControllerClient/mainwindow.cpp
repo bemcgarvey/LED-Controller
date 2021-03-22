@@ -10,8 +10,6 @@
 #include "aboutdialog.h"
 #include "version.h"
 
-//TODO Application icons
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow), port(nullptr), pRxBuffer(nullptr)
