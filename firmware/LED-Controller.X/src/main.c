@@ -34,6 +34,7 @@ void main(void) {
     initActions();
     INTCON0bits.GIEH = 1;
     INTCON0bits.GIEL = 1;
+    ledOn();  //led on = initialization complete
     while (1) {
         if (serialConnected) {
             if (doTest != -1) {
@@ -44,7 +45,7 @@ void main(void) {
                 copyFromROM();
                 calculatePointers();
             }
-            if (updateFromROM) { //TODO test these changes
+            if (updateFromROM) {
                 updateFromROM = 0;
                 copyFromROM();
                 calculatePointers();

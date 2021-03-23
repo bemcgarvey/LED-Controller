@@ -20,6 +20,14 @@ int currentPWMus(void) {
     return (int)lastPWM;
 }
 
+int currentPWMusInt(void) {  //Can be called from ISR
+    INTCON0bits.GIEH = 0;
+    uint16_t lastPWM = currentPWMInput;
+    INTCON0bits.GIEH = 1;
+    lastPWM /= 2;
+    return (int)lastPWM;
+}
+
 void __interrupt(irq(TMR1G), high_priority, base(8)) Capture_ISR() {
     currentPWMInput = *((uint16_t *) &TMR1L);
     TMR1H = 0;

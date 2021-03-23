@@ -10,6 +10,7 @@
 
 void initCapture(void);
 int currentPWMus(void);
+int currentPWMusInt(void);
 
 #endif	/* CAPTURE_H */
 

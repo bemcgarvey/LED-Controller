@@ -24,7 +24,10 @@ void initControllerMemory(void) {
             controller.bytes[i] = fallbackControllerROM[i];
         }
         controllerSize = sizeof (fallbackControllerROM);
-        ledOn();
+        for (int i = 0; i < 6; ++i) {
+            ledToggle();  //Blink led 3 times to indicate invalid ROM
+            __delay_ms(300);
+        }
     } else {
         copyFromROM();
     }
@@ -107,9 +110,6 @@ void copyFromROM(void) {
         controller.bytes[i] = controllerROM.controller.bytes[i];
     }   
 }
-
-
-//TODO Find a better way to do the pattern pointers to avoid multiplication
 
 void calculatePointers(void) {
     for (int i = 0; i < 18; ++i) {

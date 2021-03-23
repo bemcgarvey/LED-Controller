@@ -34,6 +34,7 @@ void updateNewPattern(uint8_t newPattern) {
             actions[out].nextPattern = pat->nextPattern;
         } else {
             clearLEDs(out, outputs[out]->numLEDs);
+            actions[out].timeCountsRemaining = 0;
         }
     }
     activePattern = newPattern;

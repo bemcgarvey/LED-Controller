@@ -141,7 +141,7 @@ void __interrupt(irq(U1RX), low_priority, base(8)) U1_RX_ISR() {
                         lastCommand = CMD_MONITOR_RC;
                         txSource = NULL;
                         txHeaderBytes = 2;
-                        *((int16_t *) txHeader) = (int16_t)currentPWMus();
+                        *((int16_t *) txHeader) = (int16_t)currentPWMusInt();
                         txBytes = 0;
                         txHeaderPos = txHeader;
                         sendChecksum = 0;
