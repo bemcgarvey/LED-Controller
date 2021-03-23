@@ -62,6 +62,7 @@ PatternDisplay::PatternDisplay(QWidget *parent) :
     selection = -1;
     setAcceptDrops(true);
     dragSource = false;
+    setMaximumHeight(30);
 }
 
 PatternDisplay::~PatternDisplay() {

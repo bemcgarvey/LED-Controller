@@ -43,6 +43,7 @@ MainWindow::MainWindow(QWidget *parent)
     modified = false;
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &MainWindow::onTimeout);
+    ui->rcInComboBox1->setStyleSheet("background-color: lightgreen");
 }
 
 MainWindow::~MainWindow()
@@ -156,6 +157,17 @@ void MainWindow::updatePortMenu()
 {
     QList<QSerialPortInfo> portList = QSerialPortInfo::availablePorts();
     ui->menuPort->clear();
+    if (portList.size() == 0) {
+        ui->menuPort->addAction("No ports found");
+        if (port != nullptr) {
+            port->close();
+            delete port;
+        }
+        port = nullptr;
+        portLabel->setText("----");
+        connectedLabel->setText("Not Connected");
+        return;
+    }
     for (auto&& i : portList) {
         QAction * action = ui->menuPort->addAction(i.portName(), this, &MainWindow::comPortSelected);
         action->setCheckable(true);
