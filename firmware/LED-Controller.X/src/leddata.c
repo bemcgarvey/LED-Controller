@@ -44,6 +44,14 @@ void initControllerMemory(void) {
     calculatePointers();
 }
 
+#if defined __18F26Q43
+uint8_t NVMBuffer[256] __at(0x1500);
+#elif defined __18F27Q43
+uint8_t NVMBuffer[256] __at(0x2500);
+#else
+#error "Invalid processor.  Must be PIC18F26Q43 or PIC18F27Q43"
+#endif
+
 char copyToROM(uint16_t size) {
     uint16_t bytesRemaining;
     char firstPage = 1;
@@ -58,15 +66,12 @@ char copyToROM(uint16_t size) {
     while (bytesRemaining > 0) {
         //Erase page
         NVMADR = dest;
-        //NVMADRU = (dest & 0xff0000) >> 16;
-        //NVMADRH = (dest & 0x00ff00) >> 8;
-        //NVMADRL = (dest & 0x0000ff);
         NVMCON1bits.NVMCMD = 0b110; 
         NVMLOCK = 0x55;
         NVMLOCK = 0xaa;
         NVMCON0bits.GO = 1;
         while (NVMCON0bits.GO == 1);
-        uint8_t *pageBuffer = (uint8_t *)0x1500;
+        uint8_t *pageBuffer = NVMBuffer;
         if (firstPage) {
             //First page include size and checksum
             firstPage = 0;

@@ -13,7 +13,13 @@
 
 #include <stdint.h>
 
-#define MAX_MEMORY 3584
+#if defined __18F26Q43
+#define MAX_MEMORY 3840
+#elif defined __18F27Q43
+#define MAX_MEMORY 7936
+#else
+#error "Invalid processor.  Must be PIC18F26Q43 or PIC18F27Q43"
+#endif
 
 typedef struct {
     uint8_t numLEDs;
