@@ -35,8 +35,9 @@ void initControllerMemory(void) {
 }
 
 char copyToROM(uint16_t size) {
-    int bytesRemaining;
-    bytesRemaining = (int) size;
+    uint16_t bytesRemaining;
+    char firstPage = 1;
+    bytesRemaining = size;
     INTCON0bits.GIE = 0; //Disable interrupts for the duration of the copy
     uint8_t *src = controller.bytes;
     uint24_t dest = (uint24_t) &controllerROM;
@@ -54,48 +55,45 @@ char copyToROM(uint16_t size) {
         NVMLOCK = 0x55;
         NVMLOCK = 0xaa;
         NVMCON0bits.GO = 1;
-        if (bytesRemaining == size) {
+        while (NVMCON0bits.GO == 1);
+        uint8_t *pageBuffer = (uint8_t *)0x1500;
+        if (firstPage) {
             //First page include size and checksum
-            TABLAT = size & 0xff;  //TODO use direct page buffer
-            asm("TBLWT*+");
-            TABLAT = (size >> 8) & 0xff;
-            asm("TBLWT*+");
-            TABLAT = checksum & 0xff;
-            asm("TBLWT*+");
-            TABLAT = (checksum >> 8) & 0xff;
-            asm("TBLWT*+");
-            for (int i = 0; i < 252; ++i) {  //TODO only write as many bytes as needed, not a full page
-                TABLAT = *src;
-                if (i < 251) {
-                    asm("TBLWT*+");
-                } else {
-                    asm("TBLWT*");
-                }
+            firstPage = 0;
+            *pageBuffer++ = (uint8_t)(size & 0xff);
+            *pageBuffer++ = (uint8_t)((size >> 8) & 0xff);
+            *pageBuffer++ = (uint8_t)(checksum & 0xff);
+            *pageBuffer++ = (uint8_t)((checksum >> 8) & 0xff);
+            for (int i = 0; i < 252; ++i) {
+                *pageBuffer++ = *src;
                 ++src;
                 --bytesRemaining;
+                if (bytesRemaining == 0) {
+                    break;
+                }
             }
         } else {
-            for (int i = 0; i < 256; ++i) {  //TODO stop if we don't need a full page
-                TABLAT = *src;
-                if (i < 255) {
-                    asm("TBLWT*+");
-                } else {
-                    asm("TBLWT*");
-                }
+            for (int i = 0; i < 256; ++i) {
+                *pageBuffer++ = *src;
                 ++src;
                 --bytesRemaining;
+                if (bytesRemaining == 0) {
+                    break;
+                }
             }
         }
         NVMCON1bits.NVMCMD = 0b101;
         NVMLOCK = 0x55;
         NVMLOCK = 0xaa;
         NVMCON0bits.GO = 1;
+        while (NVMCON0bits.GO == 1);
         dest += 256;
     }
     NVMCON1bits.NVMCMD = 0b000;
     INTCON0bits.GIE = 1;
     for (int i = 0; i < size; ++i) {
         if (controller.bytes[i] != controllerROM.controller.bytes[i]) {
+            ledOff();
             return 0;
         }
     }
@@ -104,9 +102,9 @@ char copyToROM(uint16_t size) {
 
 void copyFromROM(void) {
     controllerSize = controllerROM.size;
-    for (int i = 0; i < controllerSize; ++i) {
+    for (uint16_t i = 0; i < controllerSize; ++i) {
         controller.bytes[i] = controllerROM.controller.bytes[i];
-    }   
+    }
 }
 
 void calculatePointers(void) {

@@ -26,7 +26,7 @@ void initLEDs(void) {
     CLCSELECT = 0;
     CLCnCONbits.EN = 0;
     CLCnCONbits.MODE = 0b010; //4 input AND
-    CLCnSEL0 = 0b101011; //SDO1
+    CLCnSEL0 = 0b1000000; //SDO1
     CLCnGLS0 = 0x00;
     CLCnGLS1 = 0x00;
     CLCnGLS2 = 0x00;
@@ -37,7 +37,7 @@ void initLEDs(void) {
     CLCSELECT = 1;
     CLCnCONbits.EN = 0;
     CLCnCONbits.MODE = 0b010; //4 input AND
-    CLCnSEL0 = 0b101011; //SDO1
+    CLCnSEL0 = 0b1000000; //SDO1
     CLCnGLS0 = 0x00;
     CLCnGLS1 = 0x00;
     CLCnGLS2 = 0x00;
