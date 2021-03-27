@@ -23,25 +23,27 @@ void initLEDs(void) {
     SPI1BAUD = 12;
     SPI1CON0bits.EN = 1;
     //Setup CLC1
-    CLC1CONbits.EN = 0;
-    CLC1CONbits.MODE = 0b010; //4 input AND
-    CLC1SEL0 = 0b101011; //SDO1
-    CLC1GLS0 = 0x00;
-    CLC1GLS1 = 0x00;
-    CLC1GLS2 = 0x00;
-    CLC1GLS3 = 0x00;
-    CLC1POL = 0b00001110;
-    CLC1CONbits.EN = 1;
+    CLCSELECT = 0;
+    CLCnCONbits.EN = 0;
+    CLCnCONbits.MODE = 0b010; //4 input AND
+    CLCnSEL0 = 0b101011; //SDO1
+    CLCnGLS0 = 0x00;
+    CLCnGLS1 = 0x00;
+    CLCnGLS2 = 0x00;
+    CLCnGLS3 = 0x00;
+    CLCnPOL = 0b00001110;
+    CLCnCONbits.EN = 1;
     //Setup CLC2
-    CLC2CONbits.EN = 0;
-    CLC2CONbits.MODE = 0b010; //4 input AND
-    CLC2SEL0 = 0b101011; //SDO1
-    CLC2GLS0 = 0x00;
-    CLC2GLS1 = 0x00;
-    CLC2GLS2 = 0x00;
-    CLC2GLS3 = 0x00;
-    CLC2POL = 0b00001110;
-    CLC2CONbits.EN = 1;
+    CLCSELECT = 1;
+    CLCnCONbits.EN = 0;
+    CLCnCONbits.MODE = 0b010; //4 input AND
+    CLCnSEL0 = 0b101011; //SDO1
+    CLCnGLS0 = 0x00;
+    CLCnGLS1 = 0x00;
+    CLCnGLS2 = 0x00;
+    CLCnGLS3 = 0x00;
+    CLCnPOL = 0b00001110;
+    CLCnCONbits.EN = 1;
 }
 
 void transmitByte(uint8_t b) {
@@ -58,17 +60,21 @@ void transmitByte(uint8_t b) {
 
 void setLEDs(uint8_t output, uint8_t *rgb, uint8_t ledCount) {
     switch (output) {
-        case 0: CLC1GLS0 = 0x02;
+        case 0:
+            CLCSELECT = 0;
+            CLCnGLS0 = 0x02;
             break;
-        case 1: CLC2GLS0 = 0x02;
+        case 1:
+            CLCSELECT = 1;
+            CLCnGLS0 = 0x02;
             break;
-        case 2: RB3PPS = 0b011111; //SPI SDO
+        case 2: RB3PPS = 0x32; //SPI SDO
             break;
-        case 3: RB2PPS = 0b011111; //SPI SDO
+        case 3: RB2PPS = 0x32; //SPI SDO
             break;
-        case 4: RC6PPS = 0b011111; //SPI SDO
+        case 4: RC6PPS = 0x32; //SPI SDO
             break;
-        case 5: RC5PPS = 0b011111; //SPI SDO
+        case 5: RC5PPS = 0x32; //SPI SDO
             break;
         default: return;
     }
@@ -79,9 +85,13 @@ void setLEDs(uint8_t output, uint8_t *rgb, uint8_t ledCount) {
         --count;
     }
     switch (output) {
-        case 0: CLC1GLS0 = 0x00;
+        case 0:
+            CLCSELECT = 0;
+            CLCnGLS0 = 0x00;
             break;
-        case 1: CLC2GLS0 = 0x00;
+        case 1: 
+            CLCSELECT = 1;
+            CLCnGLS0 = 0x00;
             break;
         case 2: RB3PPS = 0;
             break;
@@ -96,17 +106,21 @@ void setLEDs(uint8_t output, uint8_t *rgb, uint8_t ledCount) {
 
 void clearLEDs(uint8_t output, uint8_t ledCount) {
     switch (output) {
-        case 0: CLC1GLS0 = 0x02;
+        case 0:
+            CLCSELECT = 0; 
+            CLCnGLS0 = 0x02;
             break;
-        case 1: CLC2GLS0 = 0x02;
+        case 1:
+            CLCSELECT = 1;
+            CLCnGLS0 = 0x02;
             break;
-        case 2: RB3PPS = 0b011111; //SPI SDO
+        case 2: RB3PPS = 0x32; //SPI SDO
             break;
-        case 3: RB2PPS = 0b011111; //SPI SDO
+        case 3: RB2PPS = 0x32; //SPI SDO
             break;
-        case 4: RC6PPS = 0b011111; //SPI SDO
+        case 4: RC6PPS = 0x32; //SPI SDO
             break;
-        case 5: RC5PPS = 0b011111; //SPI SDO
+        case 5: RC5PPS = 0x32; //SPI SDO
             break;
         default: return;
     }
@@ -116,9 +130,13 @@ void clearLEDs(uint8_t output, uint8_t ledCount) {
         --count;
     }
     switch (output) {
-        case 0: CLC1GLS0 = 0x00;
+        case 0:
+            CLCSELECT = 0;
+            CLCnGLS0 = 0x00;
             break;
-        case 1: CLC2GLS0 = 0x00;
+        case 1:
+            CLCSELECT = 1;
+            CLCnGLS0 = 0x00;
             break;
         case 2: RB3PPS = 0;
             break;

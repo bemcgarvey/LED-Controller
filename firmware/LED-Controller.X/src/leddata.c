@@ -39,26 +39,24 @@ char copyToROM(uint16_t size) {
     bytesRemaining = (int) size;
     INTCON0bits.GIE = 0; //Disable interrupts for the duration of the copy
     uint8_t *src = controller.bytes;
-    uint32_t dest = (uint32_t) & controllerROM;
+    uint24_t dest = (uint24_t) &controllerROM;
     uint16_t checksum = 0;
     for (int i = 0; i < size; ++i) {
         checksum += controller.bytes[i];
     }
     while (bytesRemaining > 0) {
         //Erase page
-        NVMCON1bits.REG = 0b10;
-        NVMCON1bits.FREE = 1;
-        TBLPTRU = (dest & 0xff0000) >> 16;
-        TBLPTRH = (dest & 0x00ff00) >> 8;
-        TBLPTRL = (dest & 0x0000ff);
-        NVMCON1bits.WREN = 1;
-        NVMCON2 = 0x55;
-        NVMCON2 = 0xaa;
-        NVMCON1bits.WR = 1;
-        NVMCON1bits.FREE = 0;
+        NVMADR = dest;
+        //NVMADRU = (dest & 0xff0000) >> 16;
+        //NVMADRH = (dest & 0x00ff00) >> 8;
+        //NVMADRL = (dest & 0x0000ff);
+        NVMCON1bits.NVMCMD = 0b110; 
+        NVMLOCK = 0x55;
+        NVMLOCK = 0xaa;
+        NVMCON0bits.GO = 1;
         if (bytesRemaining == size) {
             //First page include size and checksum
-            TABLAT = size & 0xff;
+            TABLAT = size & 0xff;  //TODO use direct page buffer
             asm("TBLWT*+");
             TABLAT = (size >> 8) & 0xff;
             asm("TBLWT*+");
@@ -66,9 +64,9 @@ char copyToROM(uint16_t size) {
             asm("TBLWT*+");
             TABLAT = (checksum >> 8) & 0xff;
             asm("TBLWT*+");
-            for (int i = 0; i < 124; ++i) {
+            for (int i = 0; i < 252; ++i) {  //TODO only write as many bytes as needed, not a full page
                 TABLAT = *src;
-                if (i < 123) {
+                if (i < 251) {
                     asm("TBLWT*+");
                 } else {
                     asm("TBLWT*");
@@ -77,9 +75,9 @@ char copyToROM(uint16_t size) {
                 --bytesRemaining;
             }
         } else {
-            for (int i = 0; i < 128; ++i) {
+            for (int i = 0; i < 256; ++i) {  //TODO stop if we don't need a full page
                 TABLAT = *src;
-                if (i < 127) {
+                if (i < 255) {
                     asm("TBLWT*+");
                 } else {
                     asm("TBLWT*");
@@ -88,13 +86,13 @@ char copyToROM(uint16_t size) {
                 --bytesRemaining;
             }
         }
-        NVMCON1bits.WREN = 1;
-        NVMCON2 = 0x55;
-        NVMCON2 = 0xaa;
-        NVMCON1bits.WR = 1;
-        dest += 128;
+        NVMCON1bits.NVMCMD = 0b101;
+        NVMLOCK = 0x55;
+        NVMLOCK = 0xaa;
+        NVMCON0bits.GO = 1;
+        dest += 256;
     }
-    NVMCON1bits.WREN = 0;
+    NVMCON1bits.NVMCMD = 0b000;
     INTCON0bits.GIE = 1;
     for (int i = 0; i < size; ++i) {
         if (controller.bytes[i] != controllerROM.controller.bytes[i]) {

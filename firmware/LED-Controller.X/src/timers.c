@@ -16,9 +16,9 @@ void initTimer1(void) {
     T1GCONbits.GSPM = 1;
     T1GCONbits.GTM = 0;
     T1GATE = 0b0000;
-    PIR4bits.TMR1GIF = 0;
-    IPR4bits.TMR1GIP = 1;
-    PIE4bits.TMR1GIE = 1;
+    PIR3bits.TMR1GIF = 0;
+    IPR3bits.TMR1GIP = 1;
+    PIE3bits.TMR1GIE = 1;
     TMR1H = 0;
     TMR1L = 0;
     T1CONbits.ON = 1;
