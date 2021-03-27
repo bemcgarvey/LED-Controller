@@ -1,9 +1,12 @@
-/* 
- * File:   leddata.h
- * Author: bemcg
- *
- * Created on March 6, 2021, 1:07 PM
- */
+/////////////////////////////////////////////////////
+// Project: LED-Controller                         //
+// File: leddata.h                                 //
+// Target: PIC18F2xQ43                             // 
+// Compiler: XC8                                   //
+// Author: Brad McGarvey                           //
+// License: GNU General Public License v3.0        //
+// Description: LED data structures                //
+/////////////////////////////////////////////////////
 
 #ifndef LEDDATA_H
 #define	LEDDATA_H

@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////
 // Project: LED-Controller                         //
 // File: system.c                                  //
-// Target: PIC18F2xK42                             // 
+// Target: PIC18F2xQ43                             // 
 // Compiler: XC8                                   //
 // Author: Brad McGarvey                           //
 // License: GNU General Public License v3.0        //
@@ -23,20 +23,22 @@ void initPins(void) {
     TRISC = 0;
     TRISCbits.TRISC3 = 1;
     TRISCbits.TRISC0 = 1;
-
+    //PPS
     PPSLOCK = 0x55;
     PPSLOCK = 0xaa;
     PPSLOCKbits.PPSLOCKED = 0;
     RA1PPS = 0x01; //CLC1OUT
     RA2PPS = 0x02; //CLC2OUT
-    RC2PPS = 0x20; //UART1 TX
+    RB3PPS = 0x03; //CLC3OUT
+    RB2PPS = 0x04; //CLC4OUT
+    RC6PPS = 0x05; //CLC5OUT
+    RC5PPS = 0x06; //CLC6OUT
+    RC2PPS = 0x20; //UART1TX
     U1RXPPS = 0b010011; //RC3
     T1GPPS = 0b010000; //RC0
-    
-    //Keep unlocked
-    //PPSLOCK = 0x55;
-    //PPSLOCK = 0xaa;
-    //PPSLOCKbits.PPSLOCKED = 1;
+    PPSLOCK = 0x55;
+    PPSLOCK = 0xaa;
+    PPSLOCKbits.PPSLOCKED = 1;
 }
 
 void initOscillator(void) {

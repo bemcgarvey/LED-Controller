@@ -1,3 +1,13 @@
+/////////////////////////////////////////////////////
+// Project: LED-Controller                         //
+// File: capture.c                                 //
+// Target: PIC18F2xQ43                             // 
+// Compiler: XC8                                   //
+// Author: Brad McGarvey                           //
+// License: GNU General Public License v3.0        //
+// Description: RC input capture                   //
+/////////////////////////////////////////////////////
+
 #include <xc.h>
 #include <stdint.h>
 #include "capture.h"

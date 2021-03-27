@@ -1,3 +1,13 @@
+/////////////////////////////////////////////////////
+// Project: LED-Controller                         //
+// File: leddata.c                                 //
+// Target: PIC18F2xQ43                             // 
+// Compiler: XC8                                   //
+// Author: Brad McGarvey                           //
+// License: GNU General Public License v3.0        //
+// Description: LED data structures                //
+/////////////////////////////////////////////////////
+
 #include <xc.h>
 #include "leddata.h"
 #include "system.h"

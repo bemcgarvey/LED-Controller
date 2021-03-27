@@ -1,3 +1,13 @@
+/////////////////////////////////////////////////////
+// Project: LED-Controller                         //
+// File: actions.c                                 //
+// Target: PIC18F2xQ43                             // 
+// Compiler: XC8                                   //
+// Author: Brad McGarvey                           //
+// License: GNU General Public License v3.0        //
+// Description: RC and timing actions              //
+/////////////////////////////////////////////////////
+
 #include <xc.h>
 #include "actions.h"
 #include "leddata.h"

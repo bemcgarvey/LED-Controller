@@ -1,3 +1,13 @@
+/////////////////////////////////////////////////////
+// Project: LED-Controller                         //
+// File: timers.c                                  //
+// Target: PIC18F2xQ43                             // 
+// Compiler: XC8                                   //
+// Author: Brad McGarvey                           //
+// License: GNU General Public License v3.0        //
+// Description: Timer functions                    //
+/////////////////////////////////////////////////////
+
 #include <xc.h>
 #include "timers.h"
 #include <stdint.h>

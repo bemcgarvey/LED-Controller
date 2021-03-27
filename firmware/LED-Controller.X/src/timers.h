@@ -1,9 +1,12 @@
-/* 
- * File:   timers.h
- * Author: bemcg
- *
- * Created on March 5, 2021, 12:12 PM
- */
+/////////////////////////////////////////////////////
+// Project: LED-Controller                         //
+// File: timers.h                                  //
+// Target: PIC18F2xQ43                             // 
+// Compiler: XC8                                   //
+// Author: Brad McGarvey                           //
+// License: GNU General Public License v3.0        //
+// Description: Timer functions                    //
+/////////////////////////////////////////////////////
 
 #ifndef TIMERS_H
 #define	TIMERS_H

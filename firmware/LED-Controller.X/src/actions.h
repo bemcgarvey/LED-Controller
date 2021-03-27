@@ -1,9 +1,12 @@
-/* 
- * File:   actions.h
- * Author: bemcg
- *
- * Created on March 20, 2021, 8:34 PM
- */
+/////////////////////////////////////////////////////
+// Project: LED-Controller                         //
+// File: actions.h                                 //
+// Target: PIC18F2xQ43                             // 
+// Compiler: XC8                                   //
+// Author: Brad McGarvey                           //
+// License: GNU General Public License v3.0        //
+// Description: RC and timing actions              //
+/////////////////////////////////////////////////////
 
 #ifndef ACTIONS_H
 #define	ACTIONS_H
