@@ -39,7 +39,7 @@ void main(void) {
         if (serialConnected) {
             if (doTest != -1) {
                 clearLEDs((uint8_t) doTest, 255);
-                __delay_us(50);
+                __delay_us(100);
                 setLEDs((uint8_t) doTest, &controller.bytes[4], controller.bytes[0]);
                 doTest = -1;
                 copyFromROM();
