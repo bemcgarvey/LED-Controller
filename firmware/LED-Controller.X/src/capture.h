@@ -1,9 +1,12 @@
-/* 
- * File:   capture.h
- * Author: bemcg
- *
- * Created on March 5, 2021, 9:31 PM
- */
+/////////////////////////////////////////////////////
+// Project: LED-Controller                         //
+// File: capture.h                                 //
+// Target: PIC18F2xK42                             // 
+// Compiler: XC8                                   //
+// Author: Brad McGarvey                           //
+// License: GNU General Public License v3.0        //
+// Description: RC input capture                   //
+/////////////////////////////////////////////////////
 
 #ifndef CAPTURE_H
 #define	CAPTURE_H

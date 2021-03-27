@@ -29,15 +29,9 @@ void initPins(void) {
     PPSLOCKbits.PPSLOCKED = 0;
     RA1PPS = 0b000001; //CLC1OUT
     RA2PPS = 0b000010; //CLC2OUT
-    //RB3PPS = 0b011111; //SPI SDO
     RC2PPS = 0b010011; //UART1 TX
     U1RXPPS = 0b010011; //RC3
     T1GPPS = 0b010000; //RC0
-    
-    //Keep unlocked
-    //PPSLOCK = 0x55;
-    //PPSLOCK = 0xaa;
-    //PPSLOCKbits.PPSLOCKED = 1;
 }
 
 void initOscillator(void) {

@@ -1,9 +1,12 @@
-/* 
- * File:   version.h
- * Author: bemcg
- *
- * Created on March 15, 2021, 4:56 PM
- */
+/////////////////////////////////////////////////////
+// Project: LED-Controller                         //
+// File: version.h                                 //
+// Target: PIC18F2xK42                             // 
+// Compiler: XC8                                   //
+// Author: Brad McGarvey                           //
+// License: GNU General Public License v3.0        //
+// Description: Firmware version                   //
+/////////////////////////////////////////////////////
 
 #ifndef VERSION_H
 #define	VERSION_H
