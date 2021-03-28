@@ -79,6 +79,7 @@ bool MainWindow::save()
         file.close();
         delete[] writeBuffer;
         modified = false;
+        setWindowTitle("RC LED Editor  [" + file.fileName() + "]");
         return true;
     } else {
         return false;
@@ -114,8 +115,10 @@ bool MainWindow::open(QString fileName)
         delete[] readBuffer;
         updateControls();
         modified = false;
+        setWindowTitle("RC LED Editor  [" + file.fileName() + "]");
         return true;
     } else {
+        setWindowTitle("RC LED Editor");
         return false;
     }
 }
