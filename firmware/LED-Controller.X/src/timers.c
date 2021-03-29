@@ -41,7 +41,7 @@ void initSystemTimer(void) {
     T0CON1bits.CS = 0b010;  //Fosc/4
     T0CON1bits.CKPS = 0b0110; // 1:64 prescale
     TMR0L = 0;
-    TMR0H = 250;  // 16000000/64/250 = 1000 Hz / 10 = 100 Hz So timer period is 0.1 s
+    TMR0H = 250;  // 16000000/64/250 = 1000 Hz / 10 = 100 Hz So timer period is 0.01 s
     PIR3bits.TMR0IF = 0;
     IPR3bits.TMR0IP = 0;
     PIE3bits.TMR0IE = 1;

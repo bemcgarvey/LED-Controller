@@ -43,6 +43,7 @@ void initPins(void) {
 
 void initOscillator(void) {
     //adjust HFINTOSC if needed
+    while (OSCSTATbits.HFOR != 1);  //Wait for HFINTOSC ready
 }
 
 void initPMD(void) {

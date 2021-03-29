@@ -44,7 +44,7 @@ volatile uint8_t txHeaderBytes;
 volatile uint8_t *txHeaderPos;
 volatile uint16_t txBytes;
 volatile uint8_t *txSource;
-volatile uint8_t sendChecksum;
+char sendChecksum;
 
 #define txStart() (PIE4bits.U1TXIE = 1)
 #define txStop()  (PIE4bits.U1TXIE = 0)
@@ -119,7 +119,7 @@ void __interrupt(irq(U1RX), low_priority, base(8)) U1_RX_ISR() {
                         txSource = controller.bytes;
                         txHeaderBytes = 2;
                         *((uint16_t *) txHeader) = controllerSize;
-                        txBytes = *((uint16_t *) txHeader);
+                        txBytes = controllerSize;
                         txHeaderPos = txHeader;
                         sendChecksum = 1;
                         txStart();
@@ -178,7 +178,7 @@ void __interrupt(irq(U1RX), low_priority, base(8)) U1_RX_ISR() {
                             doTest = (int8_t) tempRxBuf[2];
                         } else {
                             controllerSize = *(uint16_t*) tempRxBuf;
-                            if (copyToROM(controllerSize) != 0) {
+                            if (copyToROM(controllerSize)) {
                                 U1TXB = ACK;
                             } else {
                                 U1TXB = NACK;

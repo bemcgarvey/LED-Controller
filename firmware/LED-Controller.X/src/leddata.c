@@ -108,7 +108,6 @@ char copyToROM(uint16_t size) {
     INTCON0bits.GIE = 1;
     for (int i = 0; i < size; ++i) {
         if (controller.bytes[i] != controllerROM.controller.bytes[i]) {
-            ledOff();
             return 0;
         }
     }
