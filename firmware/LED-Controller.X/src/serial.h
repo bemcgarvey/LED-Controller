@@ -17,7 +17,6 @@ extern char updatePointers;
 extern char updateFromROM;
 
 void initSerial(void);
-//void txBytes(void *buf, int nBytes);
 
 #endif	/* SERIAL_H */
 

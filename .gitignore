@@ -22,7 +22,8 @@ fp-info-cache
 *.ses
 
 # Exported BOM files
-**/schematic/**/*.xml
+=======
+/schematic/**/*.xml
 *.csv
 *.zip
 
