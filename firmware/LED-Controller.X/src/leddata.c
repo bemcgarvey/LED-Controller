@@ -1,11 +1,11 @@
 /////////////////////////////////////////////////////
 // Project: LED-Controller                         //
 // File: leddata.c                                 //
-// Target: PIC18F2xK42                             // 
+// Target: PIC18F2xQ43                             // 
 // Compiler: XC8                                   //
 // Author: Brad McGarvey                           //
 // License: GNU General Public License v3.0        //
-// Description: Definitions for data storage       //
+// Description: LED data structures                //
 /////////////////////////////////////////////////////
 
 #include <xc.h>
@@ -44,67 +44,67 @@ void initControllerMemory(void) {
     calculatePointers();
 }
 
+#if defined __18F26Q43
+uint8_t NVMBuffer[256] __at(0x1500);
+#elif defined __18F27Q43
+uint8_t NVMBuffer[256] __at(0x2500);
+#else
+#error "Invalid processor.  Must be PIC18F26Q43 or PIC18F27Q43"
+#endif
+
 char copyToROM(uint16_t size) {
-    int bytesRemaining;
-    bytesRemaining = (int) size;
+    uint16_t bytesRemaining;
+    char firstPage = 1;
+    bytesRemaining = size;
     INTCON0bits.GIE = 0; //Disable interrupts for the duration of the copy
     uint8_t *src = controller.bytes;
-    uint32_t dest = (uint32_t) & controllerROM;
+    uint24_t dest = (uint24_t) &controllerROM;
     uint16_t checksum = 0;
     for (int i = 0; i < size; ++i) {
         checksum += controller.bytes[i];
     }
     while (bytesRemaining > 0) {
         //Erase page
-        NVMCON1bits.REG = 0b10;
-        NVMCON1bits.FREE = 1;
-        TBLPTRU = (dest & 0xff0000) >> 16;
-        TBLPTRH = (dest & 0x00ff00) >> 8;
-        TBLPTRL = (dest & 0x0000ff);
-        NVMCON1bits.WREN = 1;
-        NVMCON2 = 0x55;
-        NVMCON2 = 0xaa;
-        NVMCON1bits.WR = 1;
-        NVMCON1bits.FREE = 0;
-        if (bytesRemaining == size) {
+        NVMADR = dest;
+        NVMCON1bits.NVMCMD = 0b110; 
+        NVMLOCK = 0x55;
+        NVMLOCK = 0xaa;
+        NVMCON0bits.GO = 1;
+        while (NVMCON0bits.GO == 1);
+        uint8_t *pageBuffer = NVMBuffer;
+        if (firstPage) {
             //First page include size and checksum
-            TABLAT = size & 0xff;
-            asm("TBLWT*+");
-            TABLAT = (size >> 8) & 0xff;
-            asm("TBLWT*+");
-            TABLAT = checksum & 0xff;
-            asm("TBLWT*+");
-            TABLAT = (checksum >> 8) & 0xff;
-            asm("TBLWT*+");
-            for (int i = 0; i < 124; ++i) {
-                TABLAT = *src;
-                if (i < 123) {
-                    asm("TBLWT*+");
-                } else {
-                    asm("TBLWT*");
-                }
+            firstPage = 0;
+            *pageBuffer++ = (uint8_t)(size & 0xff);
+            *pageBuffer++ = (uint8_t)((size >> 8) & 0xff);
+            *pageBuffer++ = (uint8_t)(checksum & 0xff);
+            *pageBuffer++ = (uint8_t)((checksum >> 8) & 0xff);
+            for (int i = 0; i < 252; ++i) {
+                *pageBuffer++ = *src;
                 ++src;
                 --bytesRemaining;
+                if (bytesRemaining == 0) {
+                    break;
+                }
             }
         } else {
-            for (int i = 0; i < 128; ++i) {
-                TABLAT = *src;
-                if (i < 127) {
-                    asm("TBLWT*+");
-                } else {
-                    asm("TBLWT*");
-                }
+            for (int i = 0; i < 256; ++i) {
+                *pageBuffer++ = *src;
                 ++src;
                 --bytesRemaining;
+                if (bytesRemaining == 0) {
+                    break;
+                }
             }
         }
-        NVMCON1bits.WREN = 1;
-        NVMCON2 = 0x55;
-        NVMCON2 = 0xaa;
-        NVMCON1bits.WR = 1;
-        dest += 128;
+        NVMCON1bits.NVMCMD = 0b101;
+        NVMLOCK = 0x55;
+        NVMLOCK = 0xaa;
+        NVMCON0bits.GO = 1;
+        while (NVMCON0bits.GO == 1);
+        dest += 256;
     }
-    NVMCON1bits.WREN = 0;
+    NVMCON1bits.NVMCMD = 0b000;
     INTCON0bits.GIE = 1;
     for (int i = 0; i < size; ++i) {
         if (controller.bytes[i] != controllerROM.controller.bytes[i]) {
@@ -116,9 +116,9 @@ char copyToROM(uint16_t size) {
 
 void copyFromROM(void) {
     controllerSize = controllerROM.size;
-    for (int i = 0; i < controllerSize; ++i) {
+    for (uint16_t i = 0; i < controllerSize; ++i) {
         controller.bytes[i] = controllerROM.controller.bytes[i];
-    }   
+    }
 }
 
 void calculatePointers(void) {

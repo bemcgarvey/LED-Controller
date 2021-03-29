@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////
 // Project: LED-Controller                         //
 // File: serial.c                                  //
-// Target: PIC18F2xK42                             // 
+// Target: PIC18F2xQ43                             // 
 // Compiler: XC8                                   //
 // Author: Brad McGarvey                           //
 // License: GNU General Public License v3.0        //
@@ -44,10 +44,10 @@ volatile uint8_t txHeaderBytes;
 volatile uint8_t *txHeaderPos;
 volatile uint16_t txBytes;
 volatile uint8_t *txSource;
-volatile uint8_t sendChecksum;
+char sendChecksum;
 
-#define txStart() (PIE3bits.U1TXIE = 1)
-#define txStop()  (PIE3bits.U1TXIE = 0)
+#define txStart() (PIE4bits.U1TXIE = 1)
+#define txStop()  (PIE4bits.U1TXIE = 0)
 
 void initSerial(void) {
     serialConnected = 0;
@@ -59,9 +59,9 @@ void initSerial(void) {
     U1CON0bits.MODE = 0b0000;
     U1BRGH = 138 >> 8;
     U1BRGL = (uint8_t) 138; //115200
-    PIE3bits.U1RXIE = 1;
-    IPR3bits.U1RXIP = 0;
-    IPR3bits.U1TXIP = 0;
+    PIE4bits.U1RXIE = 1;
+    IPR4bits.U1RXIP = 0;
+    IPR4bits.U1TXIP = 0;
     U1CON2bits.C0EN = 1; //enable checksum
     sendChecksum = 0;
     U1CON1bits.ON = 1;
@@ -76,7 +76,7 @@ void initSerial(void) {
 
 void __interrupt(irq(U1RX), low_priority, base(8)) U1_RX_ISR() {
     uint8_t rx;
-    while (PIR3bits.U1RXIF) {
+    while (PIR4bits.U1RXIF) {
         rx = U1RXB;
         switch (state) {
             case RX_IDLE:
@@ -119,7 +119,7 @@ void __interrupt(irq(U1RX), low_priority, base(8)) U1_RX_ISR() {
                         txSource = controller.bytes;
                         txHeaderBytes = 2;
                         *((uint16_t *) txHeader) = controllerSize;
-                        txBytes = *((uint16_t *) txHeader);
+                        txBytes = controllerSize;
                         txHeaderPos = txHeader;
                         sendChecksum = 1;
                         txStart();
@@ -178,7 +178,7 @@ void __interrupt(irq(U1RX), low_priority, base(8)) U1_RX_ISR() {
                             doTest = (int8_t) tempRxBuf[2];
                         } else {
                             controllerSize = *(uint16_t*) tempRxBuf;
-                            if (copyToROM(controllerSize) != 0) {
+                            if (copyToROM(controllerSize)) {
                                 U1TXB = ACK;
                             } else {
                                 U1TXB = NACK;
@@ -199,7 +199,7 @@ void __interrupt(irq(U1RX), low_priority, base(8)) U1_RX_ISR() {
 }
 
 void __interrupt(irq(U1TX), low_priority, base(8)) U1_TX_ISR() {
-    while (txHeaderBytes > 0 && PIR3bits.U1TXIF) {
+    while (txHeaderBytes > 0 && PIR4bits.U1TXIF) {
         U1TXB = *txHeaderPos;
         ++txHeaderPos;
         --txHeaderBytes;
@@ -208,13 +208,13 @@ void __interrupt(irq(U1TX), low_priority, base(8)) U1_TX_ISR() {
         }
     }
     if (txHeaderBytes == 0) {
-        while (txBytes > 0 && PIR3bits.U1TXIF == 1) {
+        while (txBytes > 0 && PIR4bits.U1TXIF == 1) {
             U1TXB = *txSource;
             --txBytes;
             ++txSource;
         }
         if (txBytes == 0) {
-            if (sendChecksum && PIR3bits.U1TXIF == 1) {
+            if (sendChecksum && PIR4bits.U1TXIF == 1) {
                 U1TXB = -U1TXCHK;
                 sendChecksum = 0;
             }

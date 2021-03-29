@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////
 // Project: LED-Controller                         //
 // File: timers.c                                  //
-// Target: PIC18F2xK42                             // 
+// Target: PIC18F2xQ43                             // 
 // Compiler: XC8                                   //
 // Author: Brad McGarvey                           //
 // License: GNU General Public License v3.0        //
@@ -26,9 +26,9 @@ void initTimer1(void) {
     T1GCONbits.GSPM = 1;
     T1GCONbits.GTM = 0;
     T1GATE = 0b0000;
-    PIR4bits.TMR1GIF = 0;
-    IPR4bits.TMR1GIP = 1;
-    PIE4bits.TMR1GIE = 1;
+    PIR3bits.TMR1GIF = 0;
+    IPR3bits.TMR1GIP = 1;
+    PIE3bits.TMR1GIE = 1;
     TMR1H = 0;
     TMR1L = 0;
     T1CONbits.ON = 1;
@@ -41,7 +41,7 @@ void initSystemTimer(void) {
     T0CON1bits.CS = 0b010;  //Fosc/4
     T0CON1bits.CKPS = 0b0110; // 1:64 prescale
     TMR0L = 0;
-    TMR0H = 250;  // 16000000/64/250 = 1000 Hz / 10 = 100 Hz So timer period is 0.1 s
+    TMR0H = 250;  // 16000000/64/250 = 1000 Hz / 10 = 100 Hz So timer period is 0.01 s
     PIR3bits.TMR0IF = 0;
     IPR3bits.TMR0IP = 0;
     PIE3bits.TMR0IE = 1;

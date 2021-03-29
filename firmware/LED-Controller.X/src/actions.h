@@ -1,11 +1,11 @@
 /////////////////////////////////////////////////////
 // Project: LED-Controller                         //
 // File: actions.h                                 //
-// Target: PIC18F2xK42                             // 
+// Target: PIC18F2xQ43                             // 
 // Compiler: XC8                                   //
 // Author: Brad McGarvey                           //
 // License: GNU General Public License v3.0        //
-// Description: RC and time based actions          //
+// Description: RC and timing actions              //
 /////////////////////////////////////////////////////
 
 #ifndef ACTIONS_H

@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////
 // Project: LED-Controller                         //
 // File: main.c                                    //
-// Target: PIC18F2xK42                             // 
+// Target: PIC18F2xQ43                             // 
 // Compiler: XC8                                   //
 // Author: Brad McGarvey                           //
 // License: GNU General Public License v3.0        //
@@ -19,7 +19,8 @@
 
 void main(void) {
     initOscillator();
-    initPins();
+    __delay_ms(300);  //make sure power is stable - could be a problem when 
+    initPins();       // plugging in by hand  
     initPMD();
     initControllerMemory();
     initInterrupts();
@@ -31,6 +32,7 @@ void main(void) {
     for (uint8_t i = 0; i < 6; ++i) {
         clearLEDs(i, 255);
     }
+    __delay_us(100);
     initActions();
     INTCON0bits.GIEH = 1;
     INTCON0bits.GIEL = 1;

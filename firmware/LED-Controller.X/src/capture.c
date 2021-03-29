@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////
 // Project: LED-Controller                         //
 // File: capture.c                                 //
-// Target: PIC18F2xK42                             // 
+// Target: PIC18F2xQ43                             // 
 // Compiler: XC8                                   //
 // Author: Brad McGarvey                           //
 // License: GNU General Public License v3.0        //
@@ -42,7 +42,7 @@ void __interrupt(irq(TMR1G), high_priority, base(8)) Capture_ISR() {
     currentPWMInput = *((uint16_t *) &TMR1L);
     TMR1H = 0;
     TMR1L = 0;
-    PIR4bits.TMR1GIF = 0;
+    PIR3bits.TMR1GIF = 0;
     T1GCONbits.GGO = 1;
 }
 
