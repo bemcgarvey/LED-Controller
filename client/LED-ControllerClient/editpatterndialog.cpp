@@ -23,6 +23,7 @@ EditPatternDialog::EditPatternDialog(QWidget *parent, LEDPattern *pat) :
     }
     onColorChange(ui->colorPickerFrame->getColor());
     connect(ui->patternDisplay, &PatternDisplay::selectionChanged, ui->colorPickerFrame, &ColorPicker::onPatternSelectionChange);
+    connect(ui->patternDisplay, &PatternDisplay::rightClicked, ui->colorPickerFrame, &ColorPicker::onRightClickPattern);
     connect(ui->colorPickerFrame, &ColorPicker::colorChanged, this, &EditPatternDialog::onColorChange);
 }
 

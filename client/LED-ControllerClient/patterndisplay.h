@@ -17,6 +17,8 @@ public:
     void setEditable(bool value);
     void setSelectionColor(int r, int g, int b);
     void setColor(int index, int r, int g, int b);
+    QColor getColor(int index);
+    enum RightClickActions {FILL, GRADIENT};
 protected:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseDoubleClickEvent(QMouseEvent *event) override;
@@ -41,13 +43,15 @@ private:
     QPoint dragStartPos;
     bool dragSource;
     QPixmap *dragPixmap;
+    QMenu *popupMenu;
 private slots:
     void onLeftButton(void);
     void onRightButton(void);
     void onLeftSpeedButton(void);
     void onRightSpeedButton(void);
 signals:
-    void selectionChanged(int value);    
+    void selectionChanged(int value);
+    void rightClicked(int selection1, int selection2, RightClickActions action);
 };
 
 #endif // LEDPATTERNDISPLAY_H

@@ -9,6 +9,7 @@
 #include <QApplication>
 #include <QDrag>
 #include <QMimeData>
+#include <QMenu>
 #include "mainwindow.h"
 
 PatternDisplay::PatternDisplay(QWidget *parent) :
@@ -63,10 +64,13 @@ PatternDisplay::PatternDisplay(QWidget *parent) :
     setAcceptDrops(true);
     dragSource = false;
     setMaximumHeight(30);
+    popupMenu = new QMenu(this);
+    popupMenu->addAction("Fill");
+    popupMenu->addAction("Gradient Fill");
 }
 
 PatternDisplay::~PatternDisplay() {
-
+    delete popupMenu;
 }
 
 void PatternDisplay::setPattern(LEDPattern *p)
@@ -86,6 +90,25 @@ void PatternDisplay::mousePressEvent(QMouseEvent *event)
             }
         }
         dragStartPos = event->pos();
+    } else if (event->button() == Qt::RightButton) {
+        if (editable) {
+            int newSelection = ((event->x() - 20) / (ledSize + 5)) + leftIndex;
+            int currentSelection = selection;
+            if (currentSelection < 0) {
+                currentSelection = 0;
+            }
+            if (newSelection < pattern->getNumLEDs()) {
+                QAction *action = popupMenu->exec(QCursor::pos());
+                if (action == nullptr) {
+                    return;
+                }
+                if (action->text() == "Fill") {
+                    emit rightClicked(currentSelection, newSelection, FILL);
+                } else if (action->text() == "Gradient Fill") {
+                    emit rightClicked(currentSelection, newSelection, GRADIENT);
+                }
+            }
+        }
     }
 }
 
@@ -169,6 +192,15 @@ void PatternDisplay::setSelectionColor(int r, int g, int b)
 void PatternDisplay::setColor(int index, int r, int g, int b)
 {
     (*pattern)[index] = LEDrgb(r, g, b);
+}
+
+QColor PatternDisplay::getColor(int index)
+{
+    if (index < pattern->getNumLEDs()) {
+        return (*pattern)[index].rgb();
+    } else {
+        return Qt::black;
+    }
 }
 
 

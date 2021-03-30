@@ -2,6 +2,7 @@
 #define COLORPICKER_H
 
 #include <QFrame>
+#include "patterndisplay.h"
 
 class ColorPicker : public QFrame
 {
@@ -31,6 +32,7 @@ private:
     int border;
 public slots:
     void onPatternSelectionChange(int value);
+    void onRightClickPattern(int selection1, int selection2, PatternDisplay::RightClickActions action);
 signals:
     void colorChanged(QColor c);
 };

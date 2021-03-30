@@ -154,3 +154,61 @@ void ColorPicker::onPatternSelectionChange(int value)
         pat->setColor(value, c.red(), c.green(), c.blue());
     }
 }
+
+void ColorPicker::onRightClickPattern(int selection1, int selection2, PatternDisplay::RightClickActions action)
+{
+    PatternDisplay *pat = dynamic_cast<PatternDisplay *>(sender());
+    if (pat) {
+        if (action == PatternDisplay::RightClickActions::FILL) {
+            QColor c2 = colors[selectedColor];
+            if (selection1 <= selection2) {
+                if (selection1 < 0) {
+                    selection1 = 0;
+                }
+                for (int i = selection1; i <= selection2; ++i) {
+                    pat->setColor(i, c2.red(), c2.green(), c2.blue());
+                }
+            } else {
+                for (int i = selection1; i >= selection2; --i) {
+                    pat->setColor(i, c2.red(), c2.green(), c2.blue());
+                }
+            }
+            pat->update();
+        } else if (action == PatternDisplay::RightClickActions::GRADIENT) {
+            QColor c2 = colors[selectedColor];
+            QColor c1 = pat->getColor(selection1);
+            if (selection1 < selection2) {
+                double steps = selection2 - selection1;
+                double redStep = (c2.red() - c1.red()) / steps;
+                double greenStep = (c2.green() - c1.green()) / steps;
+                double blueStep = (c2.blue() - c1.blue()) / steps;
+                pat->setColor(selection2, c2.red(), c2.green(), c2.blue());
+                double r = c1.red();
+                double g = c1.green();
+                double b = c1.blue();
+                for (int i = selection1 + 1; i < selection2; ++i) {
+                    r += redStep;
+                    g += greenStep;
+                    b += blueStep;
+                    pat->setColor(i, r, g, b);
+                }
+            } else if (selection1 > selection2) {
+                double steps = selection1 - selection2;
+                double redStep = (c2.red() - c1.red()) / steps;
+                double greenStep = (c2.green() - c1.green()) / steps;
+                double blueStep = (c2.blue() - c1.blue()) / steps;
+                pat->setColor(selection2, c2.red(), c2.green(), c2.blue());
+                double r = c1.red();
+                double g = c1.green();
+                double b = c1.blue();
+                for (int i = selection1 - 1; i >= selection2; --i) {
+                    r += redStep;
+                    g += greenStep;
+                    b += blueStep;
+                    pat->setColor(i, r, g, b);
+                }
+            }
+            pat->update();
+        }
+    }
+}
