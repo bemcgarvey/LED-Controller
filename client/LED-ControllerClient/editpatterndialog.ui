@@ -132,6 +132,9 @@
          </item>
          <item>
           <widget class="QDoubleSpinBox" name="onTimeSpinBox">
+           <property name="accelerated">
+            <bool>true</bool>
+           </property>
            <property name="suffix">
             <string>s</string>
            </property>
