@@ -8,11 +8,13 @@ class ColorPicker : public QFrame
     Q_OBJECT
 public:
     ColorPicker(QWidget *parent = nullptr);
-    static void loadColors();
-    static void saveColors();
+    static void loadColors(void);
+    static void saveColors(void);
+    static void resetColors(void);
     QVector<QColor> getColors() const;
     void setColors(const QVector<QColor> &value);
     QColor getColor(void) const;
+    static bool getColorsChanged();
 protected:
     void mouseDoubleClickEvent(QMouseEvent *event) override;
     void paintEvent(QPaintEvent *event) override;

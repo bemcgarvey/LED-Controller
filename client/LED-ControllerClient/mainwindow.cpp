@@ -337,6 +337,15 @@ void MainWindow::closeEvent(QCloseEvent *event)
             event->accept();
         } else {
             event->ignore();
+            return;
+        }
+    }
+    if (ColorPicker::getColorsChanged()) {
+        if (QMessageBox::warning(this, "LED-Controller"
+                                 , "Color pallette has been modified.  Save it?"
+                                 , QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Ok) {
+
+            ColorPicker::saveColors();
         }
     }
 }

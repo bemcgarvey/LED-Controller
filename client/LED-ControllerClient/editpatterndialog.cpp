@@ -70,3 +70,9 @@ void EditPatternDialog::on_testPushButton_clicked()
     MainWindow *mw = dynamic_cast<MainWindow *>(nativeParentWidget());
     mw->onTestRequest(&tempPattern, ui->testOutputComboBox->currentIndex());
 }
+
+void EditPatternDialog::on_resetColorsPushButton_clicked()
+{
+    ui->colorPickerFrame->resetColors();
+    ui->colorPickerFrame->update();
+}

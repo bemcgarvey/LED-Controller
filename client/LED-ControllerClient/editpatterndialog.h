@@ -22,6 +22,8 @@ private slots:
     void onColorChange(QColor c);
     void on_onCheckBox_clicked(bool checked);
     void on_testPushButton_clicked();
+    void on_resetColorsPushButton_clicked();
+
 private:
     Ui::EditPatternDialog *ui;
     LEDPattern *pattern;

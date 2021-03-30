@@ -19,7 +19,7 @@ ColorPicker::ColorPicker(QWidget *parent) :
     rHeight -= space;
 }
 
-void ColorPicker::loadColors()
+void ColorPicker::loadColors(void)
 {
     if (!colorsLoaded) {
         QSettings settings;
@@ -31,19 +31,13 @@ void ColorPicker::loadColors()
             }
             settings.endArray();
         } else {
-            colors[0] = Qt::white;
-            colors[1] = Qt::red;
-            colors[2] = Qt::green;
-            colors[3] = Qt::blue;
-            colors[4] = Qt::yellow;
-            colors[5] = Qt::magenta;
-            colors[6] = Qt::cyan;
+            resetColors();
         }
         colorsLoaded = true;
     }
 }
 
-void ColorPicker::saveColors()
+void ColorPicker::saveColors(void)
 {
     if (colorsChanged) {
         QSettings settings;
@@ -54,6 +48,21 @@ void ColorPicker::saveColors()
         }
         settings.endArray();
     }
+}
+
+void ColorPicker::resetColors()
+{
+    colors[0] = Qt::white;
+    colors[1] = Qt::red;
+    colors[2] = Qt::green;
+    colors[3] = Qt::blue;
+    colors[4] = Qt::yellow;
+    colors[5] = Qt::magenta;
+    colors[6] = Qt::cyan;
+    for (int i = 7; i < colors.size(); ++i) {
+        colors[i] = Qt::black;
+    }
+    colorsChanged = true;
 }
 
 void ColorPicker::mouseDoubleClickEvent(QMouseEvent *event)
@@ -130,6 +139,11 @@ void ColorPicker::resizeEvent(QResizeEvent *event)
     rWidth -= space;
     rHeight = (height() - 2 * border) / 6;
     rHeight -= space;
+}
+
+bool ColorPicker::getColorsChanged()
+{
+    return colorsChanged;
 }
 
 void ColorPicker::onPatternSelectionChange(int value)
