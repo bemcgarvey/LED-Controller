@@ -6,6 +6,8 @@
 #include <QPushButton>
 #include "ledpattern.h"
 
+class OutputPanelDisplayManager;
+
 class PatternDisplay : public QFrame
 {
     Q_OBJECT
@@ -19,6 +21,7 @@ public:
     void setColor(int index, int r, int g, int b);
     QColor getColor(int index);
     enum RightClickActions {FILL, GRADIENT};
+    void setDisplayManager(OutputPanelDisplayManager *value);
 protected:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseDoubleClickEvent(QMouseEvent *event) override;
@@ -44,6 +47,7 @@ private:
     bool dragSource;
     QPixmap *dragPixmap;
     QMenu *popupMenu;
+    OutputPanelDisplayManager *displayManager;
 private slots:
     void onLeftButton(void);
     void onRightButton(void);

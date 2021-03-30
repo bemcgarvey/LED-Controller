@@ -11,9 +11,11 @@
 #include <QMimeData>
 #include <QMenu>
 #include "mainwindow.h"
+#include "outputpaneldisplaymanager.h"
 
 PatternDisplay::PatternDisplay(QWidget *parent) :
-    QFrame(parent), pattern(nullptr), editable(false), dragPixmap(nullptr)
+    QFrame(parent), pattern(nullptr), editable(false)
+  , dragPixmap(nullptr), displayManager(nullptr)
 {
     QIcon lIcon(":/images/leftButton.png");
     leftButton = new QPushButton(lIcon, "", this);
@@ -203,8 +205,6 @@ QColor PatternDisplay::getColor(int index)
     }
 }
 
-
-
 void PatternDisplay::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event);
@@ -273,7 +273,6 @@ void PatternDisplay::mouseMoveEvent(QMouseEvent *event)
     dragSource = false;
 }
 
-
 void PatternDisplay::dragEnterEvent(QDragEnterEvent *event)
 {
     if (event->mimeData()->hasFormat("application/x-led_pattern") && !dragSource) {
@@ -283,7 +282,17 @@ void PatternDisplay::dragEnterEvent(QDragEnterEvent *event)
 
 void PatternDisplay::dropEvent(QDropEvent *event)
 {
+    QByteArray data = event->mimeData()->data("application/x-led_pattern");
+    int leds = data[0];
+    if (leds > pattern->getNumLEDs() && leds <= 255) {
+        displayManager->on_nLEDsSpinBoxChange(leds);
+    }
     pattern->fromByteArray(event->mimeData()->data("application/x-led_pattern"));
     event->acceptProposedAction();
     update();
+}
+
+void PatternDisplay::setDisplayManager(OutputPanelDisplayManager *value)
+{
+    displayManager = value;
 }

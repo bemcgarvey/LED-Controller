@@ -12,6 +12,7 @@ OutputPanelDisplayManager::OutputPanelDisplayManager(LEDOutput *model, QSpinBox 
     }
     for (auto&& i : patterns->findChildren<PatternDisplay *>()) {
         patternDisplays.append(i);
+        i->setDisplayManager(this);
     }
     updateControls();
     connect(nPatternsSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), this, &OutputPanelDisplayManager::on_nPatternSpinBoxChange);

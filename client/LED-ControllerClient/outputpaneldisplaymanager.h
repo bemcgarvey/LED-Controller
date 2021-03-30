@@ -25,6 +25,7 @@ private:
     QFrame *patternsFrame;
 private slots:
     void on_nPatternSpinBoxChange(int value);
+public slots:
     void on_nLEDsSpinBoxChange(int value);
 signals:
     void sizeChanged(void);
