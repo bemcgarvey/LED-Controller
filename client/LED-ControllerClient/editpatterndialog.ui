@@ -200,6 +200,11 @@
              <string>Pattern C</string>
             </property>
            </item>
+           <item>
+            <property name="text">
+             <string>Rotate</string>
+            </property>
+           </item>
           </widget>
          </item>
          <item>

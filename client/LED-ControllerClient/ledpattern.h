@@ -22,10 +22,11 @@ public:
     int getNextPattern() const;
     void setNextPattern(int value);
     bool operator!=(const LEDPattern& rhs) const;
+    static const int ROTATE = 255;
 private:
     int numLEDs; //0 - 255
     int onTime;  //in 0.1s increments -1 = stay on
-    int nextPattern;  //0 - 2 for A - C
+    int nextPattern;  //0 - 2 for A - C, 255 for rotate
     QVector<LEDrgb> leds;
 };
 

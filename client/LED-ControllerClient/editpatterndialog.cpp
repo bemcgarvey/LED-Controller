@@ -19,7 +19,11 @@ EditPatternDialog::EditPatternDialog(QWidget *parent, LEDPattern *pat) :
             ui->onCheckBox->setChecked(false);
             ui->onTimeSpinBox->setValue(pattern->getOnTime() / 10.0);
         }
-        ui->nextPattternComboBox->setCurrentIndex(pattern->getNextPattern());
+        if (pattern->getNextPattern() == LEDPattern::ROTATE) {
+            ui->nextPattternComboBox->setCurrentIndex(ui->nextPattternComboBox->count() - 1);
+        } else {
+            ui->nextPattternComboBox->setCurrentIndex(pattern->getNextPattern());
+        }
     }
     onColorChange(ui->colorPickerFrame->getColor());
     connect(ui->patternDisplay, &PatternDisplay::selectionChanged, ui->colorPickerFrame, &ColorPicker::onPatternSelectionChange);
@@ -39,7 +43,11 @@ void EditPatternDialog::onButtonBoxRejected()
 
 void EditPatternDialog::onButtonBoxAccepted()
 {
-    tempPattern.setNextPattern(ui->nextPattternComboBox->currentIndex());
+    if(ui->nextPattternComboBox->currentIndex() == ui->nextPattternComboBox->count() - 1) {
+        tempPattern.setNextPattern(LEDPattern::ROTATE);
+    } else {
+        tempPattern.setNextPattern(ui->nextPattternComboBox->currentIndex());
+    }
     if (ui->onCheckBox->isChecked()) {
         tempPattern.setOnTime(-1);
     } else {
