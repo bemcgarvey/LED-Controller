@@ -22,7 +22,7 @@ public:
     int getNextPattern() const;
     void setNextPattern(int value);
     bool operator!=(const LEDPattern& rhs) const;
-    static const int ROTATE = 255;
+    enum {ROTATE_OUT = 254, ROTATE_IN = 255};
 private:
     int numLEDs; //0 - 255
     int onTime;  //in 0.1s increments -1 = stay on

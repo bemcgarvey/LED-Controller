@@ -202,7 +202,12 @@
            </item>
            <item>
             <property name="text">
-             <string>Rotate</string>
+             <string>Rotate Out</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Rotate In</string>
             </property>
            </item>
           </widget>

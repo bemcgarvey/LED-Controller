@@ -49,14 +49,18 @@ void transmitByte(uint8_t b) {
     }
 }
 
-void setLEDs(uint8_t output, uint8_t *rgb, uint8_t ledCount) {
+void setLEDs(uint8_t output, uint8_t *rgb, uint8_t ledCount, uint8_t startLED) {
     CLCSELECT = output;
     CLCnGLS0 = 0x02;
-    int count = 3 * ledCount;
-    while (count > 0) {
-        transmitByte(*rgb);
-        ++rgb;
-        --count;
+    uint8_t *pos = rgb + (3 * startLED);
+    while (ledCount > 0) {
+        transmitByte(*pos++);
+        transmitByte(*pos++);
+        transmitByte(*pos++);
+        --ledCount;
+        if (ledCount == startLED) {
+            pos = rgb;
+        }
     }
     CLCnGLS0 = 0x00;
 }
@@ -64,10 +68,11 @@ void setLEDs(uint8_t output, uint8_t *rgb, uint8_t ledCount) {
 void clearLEDs(uint8_t output, uint8_t ledCount) {
     CLCSELECT = output;
     CLCnGLS0 = 0x02;
-    int count = 3 * ledCount;
-    while (count > 0) {
+    while (ledCount > 0) {
         transmitByte(0x00);
-        --count;
+        transmitByte(0x00);
+        transmitByte(0x00);
+        --ledCount;
     }
     CLCnGLS0 = 0x00;
 }

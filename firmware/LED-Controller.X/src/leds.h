@@ -14,7 +14,7 @@
 #include <stdint.h>
 
 void initLEDs(void);
-void setLEDs(uint8_t output, uint8_t *rgb, uint8_t ledCount);
+void setLEDs(uint8_t output, uint8_t *rgb, uint8_t ledCount, uint8_t startLED);
 void clearLEDs(uint8_t output, uint8_t ledCount);
 
 #endif	/* LEDS_H */

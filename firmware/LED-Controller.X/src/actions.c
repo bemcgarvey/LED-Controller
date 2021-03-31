@@ -17,7 +17,9 @@
 OutputAction actions[6];
 int8_t currentRCRange = -1;
 
-enum {PAT_A = 0, PAT_B, PAT_C};
+enum {
+    PAT_A = 0, PAT_B, PAT_C, ROTATE_OUT = 254, ROTATE_IN = 255
+};
 uint8_t activePattern = PAT_A;
 
 void initActions(void) {
@@ -27,6 +29,8 @@ void initActions(void) {
             actions[i].timeCountsRemaining = patterns[3 * i]->onTime;
             actions[i].nextPattern = patterns[3 * i]->nextPattern;
             actions[i].active = 1;
+            actions[i].startLED = 0;
+            actions[i].currentPattern = PAT_A;
         } else {
             actions[i].active = 0;
         }
@@ -39,9 +43,11 @@ void updateNewPattern(uint8_t newPattern) {
     for (char out = 0; out < 6; ++out) {
         LEDPattern *pat = patterns[out * 3 + newPattern];
         if (pat != NULL) {
-            setLEDs(out, &(pat->rgbs), outputs[out]->numLEDs);
+            setLEDs(out, &(pat->rgbs), outputs[out]->numLEDs, 0);
             actions[out].timeCountsRemaining = pat->onTime;
             actions[out].nextPattern = pat->nextPattern;
+            actions[out].startLED = 0;
+            actions[out].currentPattern = newPattern;
         } else {
             clearLEDs(out, outputs[out]->numLEDs);
             actions[out].timeCountsRemaining = 0;
@@ -62,11 +68,35 @@ void doTimeTick(void) {
 }
 
 void processAction(uint8_t out) {
-    LEDPattern *pat = patterns[out * 3 + actions[out].nextPattern];
+    LEDPattern *pat;
+    if (actions[out].nextPattern >= ROTATE_OUT) {
+        pat = patterns[out * 3 + actions[out].currentPattern];
+    } else {
+        pat = patterns[out * 3 + actions[out].nextPattern];
+    }
     if (pat != NULL) {
-        setLEDs(out, &(pat->rgbs), outputs[out]->numLEDs);
-        actions[out].timeCountsRemaining = pat->onTime;
-        actions[out].nextPattern = pat->nextPattern;
+        if (actions[out].nextPattern == ROTATE_IN) {
+            uint8_t start = actions[out].startLED;
+            ++actions[out].startLED;
+            if (actions[out].startLED >= pat->numLEDs) {
+                actions[out].startLED = 0;
+            }
+            setLEDs(out, &(pat->rgbs), pat->numLEDs, start);
+            actions[out].timeCountsRemaining = pat->onTime;
+        } else if (actions[out].nextPattern == ROTATE_OUT) {
+            uint8_t start = actions[out].startLED;
+            if (actions[out].startLED == 0) {
+                actions[out].startLED = pat->numLEDs - 1;
+            } else {
+                --actions[out].startLED;
+            }
+            setLEDs(out, &(pat->rgbs), pat->numLEDs, start);
+            actions[out].timeCountsRemaining = pat->onTime;
+        } else {
+            setLEDs(out, &(pat->rgbs), outputs[out]->numLEDs, 0);
+            actions[out].timeCountsRemaining = pat->onTime;
+            actions[out].nextPattern = pat->nextPattern;
+        }
     } else {
         clearLEDs(out, outputs[out]->numLEDs);
     }
