@@ -14,11 +14,22 @@
 #include "leds.h"
 #include "capture.h"
 
+typedef struct {
+    int16_t timeCountsRemaining;
+    uint8_t currentPattern;
+    uint8_t nextPattern;
+    uint8_t startLED;
+    int8_t direction;
+} OutputAction;
+
 OutputAction actions[6];
 int8_t currentRCRange = -1;
 
+void processAction(uint8_t out);
+
 enum {
-    PAT_A = 0, PAT_B, PAT_C, ROTATE_OUT = 254, ROTATE_IN = 255
+    PAT_A = 0, PAT_B = 1, PAT_C = 2, LAST_REGULAR_PATTERN = 2
+    , BOUNCE = 253, ROTATE_OUT = 254, ROTATE_IN = 255
 };
 uint8_t activePattern = PAT_A;
 
@@ -28,11 +39,11 @@ void initActions(void) {
         if (outputs[i]->numLEDs > 0) {
             actions[i].timeCountsRemaining = patterns[3 * i]->onTime;
             actions[i].nextPattern = patterns[3 * i]->nextPattern;
-            actions[i].active = 1;
             actions[i].startLED = 0;
             actions[i].currentPattern = PAT_A;
+            actions[i].direction = -1;
         } else {
-            actions[i].active = 0;
+            actions[i].timeCountsRemaining = 0;
         }
     }
     currentRCRange = -1;
@@ -48,6 +59,7 @@ void updateNewPattern(uint8_t newPattern) {
             actions[out].nextPattern = pat->nextPattern;
             actions[out].startLED = 0;
             actions[out].currentPattern = newPattern;
+            actions[out].direction = -1;
         } else {
             clearLEDs(out, outputs[out]->numLEDs);
             actions[out].timeCountsRemaining = 0;
@@ -58,7 +70,7 @@ void updateNewPattern(uint8_t newPattern) {
 
 void doTimeTick(void) {
     for (char i = 0; i < 6; ++i) {
-        if (actions[i].active && actions[i].timeCountsRemaining > 0) {
+        if (actions[i].timeCountsRemaining > 0) {
             --actions[i].timeCountsRemaining;
             if (actions[i].timeCountsRemaining == 0) {
                 processAction(i);
@@ -69,7 +81,7 @@ void doTimeTick(void) {
 
 void processAction(uint8_t out) {
     LEDPattern *pat;
-    if (actions[out].nextPattern >= ROTATE_OUT) {
+    if (actions[out].nextPattern > LAST_REGULAR_PATTERN) {
         pat = patterns[out * 3 + actions[out].currentPattern];
     } else {
         pat = patterns[out * 3 + actions[out].nextPattern];
@@ -90,6 +102,20 @@ void processAction(uint8_t out) {
             } else {
                 --actions[out].startLED;
             }
+            setLEDs(out, &(pat->rgbs), pat->numLEDs, start);
+            actions[out].timeCountsRemaining = pat->onTime;
+        } else if (actions[out].nextPattern == BOUNCE) {
+            uint8_t start = actions[out].startLED;
+            if (start == 255) {
+                start = pat->numLEDs - 1;
+            } else if (start == pat->numLEDs) {
+                start = 0;
+                actions[out].direction = -1;
+            } else if (start == 1) {
+                actions[out].direction = 1;
+            }
+            actions[out].startLED = start;
+            actions[out].startLED += actions[out].direction;
             setLEDs(out, &(pat->rgbs), pat->numLEDs, start);
             actions[out].timeCountsRemaining = pat->onTime;
         } else {
@@ -139,7 +165,7 @@ void processRCAction(void) {
             updateNewPattern(PAT_C);
             break;
         case RC_NEXT_PATTERN:
-            if (activePattern == PAT_C) {
+            if (activePattern == LAST_REGULAR_PATTERN) {
                 updateNewPattern(PAT_A);
             } else {
                 updateNewPattern(activePattern + 1);

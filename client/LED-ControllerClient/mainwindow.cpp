@@ -343,7 +343,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
     if (ColorPicker::getColorsChanged()) {
         if (QMessageBox::warning(this, "LED-Controller"
                                  , "Color pallette has been modified.  Save it?"
-                                 , QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Ok) {
+                                 , QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
 
             ColorPicker::saveColors();
         }

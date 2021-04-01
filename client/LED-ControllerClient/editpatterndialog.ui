@@ -202,6 +202,11 @@
            </item>
            <item>
             <property name="text">
+             <string>Bounce</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
              <string>Rotate Out</string>
             </property>
            </item>

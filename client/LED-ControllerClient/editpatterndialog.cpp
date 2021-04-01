@@ -19,10 +19,9 @@ EditPatternDialog::EditPatternDialog(QWidget *parent, LEDPattern *pat) :
             ui->onCheckBox->setChecked(false);
             ui->onTimeSpinBox->setValue(pattern->getOnTime() / 10.0);
         }
-        if (pattern->getNextPattern() == LEDPattern::ROTATE_IN) {
-            ui->nextPattternComboBox->setCurrentIndex(ui->nextPattternComboBox->count() - 1);
-        } else if (pattern->getNextPattern() == LEDPattern::ROTATE_OUT) {
-            ui->nextPattternComboBox->setCurrentIndex(ui->nextPattternComboBox->count() - 2);
+        if (pattern->getNextPattern() > LEDPattern::LAST_REGULAR_PATTERN) {
+            int index = ui->nextPattternComboBox->count() - (LEDPattern::LAST_SPECIAL_PATTERN - pattern->getNextPattern() + 1);
+            ui->nextPattternComboBox->setCurrentIndex(index);
         } else {
             ui->nextPattternComboBox->setCurrentIndex(pattern->getNextPattern());
         }
@@ -45,17 +44,17 @@ void EditPatternDialog::onButtonBoxRejected()
 
 void EditPatternDialog::onButtonBoxAccepted()
 {
-    if(ui->nextPattternComboBox->currentIndex() == ui->nextPattternComboBox->count() - 1) {
-        tempPattern.setNextPattern(LEDPattern::ROTATE_IN);
-    } else if(ui->nextPattternComboBox->currentIndex() == ui->nextPattternComboBox->count() - 2) {
-        tempPattern.setNextPattern(LEDPattern::ROTATE_OUT);
+    if(ui->nextPattternComboBox->currentIndex() > LEDPattern::LAST_REGULAR_PATTERN) {
+        int pat = LEDPattern::LAST_SPECIAL_PATTERN
+                - (ui->nextPattternComboBox->count() - ui->nextPattternComboBox->currentIndex() - 1);
+        tempPattern.setNextPattern(pat);
     } else {
         tempPattern.setNextPattern(ui->nextPattternComboBox->currentIndex());
     }
     if (ui->onCheckBox->isChecked()) {
         tempPattern.setOnTime(-1);
     } else {
-        tempPattern.setOnTime(ui->onTimeSpinBox->value() * 10);
+        tempPattern.setOnTime(qRound(ui->onTimeSpinBox->value() * 10.0));
     }
     if (*pattern != tempPattern) {
         MainWindow *mw = dynamic_cast<MainWindow *>(nativeParentWidget());
