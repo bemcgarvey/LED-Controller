@@ -19,7 +19,7 @@ typedef struct {
     uint8_t currentPattern;
     uint8_t nextPattern;
     uint8_t startLED;
-    int8_t direction;
+    int8_t step;
 } OutputAction;
 
 OutputAction actions[6];
@@ -28,26 +28,30 @@ int8_t currentRCRange = -1;
 void processAction(uint8_t out);
 
 enum {
-    PAT_A = 0, PAT_B = 1, PAT_C = 2, LAST_REGULAR_PATTERN = 2
-    , BOUNCE = 253, ROTATE_OUT = 254, ROTATE_IN = 255
+    PATTERN_A = 0x00, PATTERN_B = 0x01, PATTERN_C = 0x02, ROTATE_OUT = 0x40
+    , ROTATE_IN = 0x80, BOUNCE = 0xC0
 };
-uint8_t activePattern = PAT_A;
+
+uint8_t activePattern = PATTERN_A;
 
 void initActions(void) {
-    //Start with PatternA
+    //Start with Pattern A
     for (char i = 0; i < 6; ++i) {
         if (outputs[i]->numLEDs > 0) {
             actions[i].timeCountsRemaining = patterns[3 * i]->onTime;
             actions[i].nextPattern = patterns[3 * i]->nextPattern;
             actions[i].startLED = 0;
-            actions[i].currentPattern = PAT_A;
-            actions[i].direction = -1;
+            actions[i].currentPattern = PATTERN_A;
+            actions[i].step = actions[i].nextPattern & 0x3f;
+            if ((actions[i].nextPattern & 0xc0) == ROTATE_OUT || (actions[i].nextPattern & 0xc0) == BOUNCE) {
+                actions[i].step = -actions[i].step;
+            }
         } else {
             actions[i].timeCountsRemaining = 0;
         }
     }
     currentRCRange = -1;
-    activePattern = PAT_A;
+    activePattern = PATTERN_A;
 }
 
 void updateNewPattern(uint8_t newPattern) {
@@ -59,7 +63,10 @@ void updateNewPattern(uint8_t newPattern) {
             actions[out].nextPattern = pat->nextPattern;
             actions[out].startLED = 0;
             actions[out].currentPattern = newPattern;
-            actions[out].direction = -1;
+            actions[out].step = actions[out].nextPattern & 0x3f;
+            if ((actions[out].nextPattern & 0xc0) == ROTATE_OUT || (actions[out].nextPattern & 0xc0) == BOUNCE) {
+                actions[out].step = -actions[out].step;
+            }
         } else {
             clearLEDs(out, outputs[out]->numLEDs);
             actions[out].timeCountsRemaining = 0;
@@ -81,42 +88,29 @@ void doTimeTick(void) {
 
 void processAction(uint8_t out) {
     LEDPattern *pat;
-    if (actions[out].nextPattern > LAST_REGULAR_PATTERN) {
+    if (actions[out].nextPattern > PATTERN_C) {
         pat = patterns[out * 3 + actions[out].currentPattern];
     } else {
         pat = patterns[out * 3 + actions[out].nextPattern];
     }
     if (pat != NULL) {
-        if (actions[out].nextPattern == ROTATE_IN) {
-            uint8_t start = actions[out].startLED;
-            ++actions[out].startLED;
-            if (actions[out].startLED >= pat->numLEDs) {
-                actions[out].startLED = 0;
+        if (actions[out].nextPattern & 0xc0) {
+            int newStart = actions[out].startLED;
+            newStart += actions[out].step;
+            if ((actions[out].nextPattern & 0xc0) == BOUNCE) {
+                if (actions[out].step > 0 && newStart >= pat->numLEDs) {
+                    actions[out].step = -actions[out].step;
+                } else if (actions[out].step < 0 && newStart == -actions[out].step) {
+                    actions[out].step = -actions[out].step;
+                }
             }
-            setLEDs(out, &(pat->rgbs), pat->numLEDs, start);
-            actions[out].timeCountsRemaining = pat->onTime;
-        } else if (actions[out].nextPattern == ROTATE_OUT) {
-            uint8_t start = actions[out].startLED;
-            if (actions[out].startLED == 0) {
-                actions[out].startLED = pat->numLEDs - 1;
-            } else {
-                --actions[out].startLED;
+            if (newStart >= pat->numLEDs) {
+                newStart -= pat->numLEDs;
+            } else if (newStart < 0) {
+                newStart += pat->numLEDs;
             }
-            setLEDs(out, &(pat->rgbs), pat->numLEDs, start);
-            actions[out].timeCountsRemaining = pat->onTime;
-        } else if (actions[out].nextPattern == BOUNCE) {
-            uint8_t start = actions[out].startLED;
-            if (start == 255) {
-                start = pat->numLEDs - 1;
-            } else if (start == pat->numLEDs) {
-                start = 0;
-                actions[out].direction = -1;
-            } else if (start == 1) {
-                actions[out].direction = 1;
-            }
-            actions[out].startLED = start;
-            actions[out].startLED += actions[out].direction;
-            setLEDs(out, &(pat->rgbs), pat->numLEDs, start);
+            actions[out].startLED = (uint8_t) newStart;
+            setLEDs(out, &(pat->rgbs), pat->numLEDs, (uint8_t) newStart);
             actions[out].timeCountsRemaining = pat->onTime;
         } else {
             setLEDs(out, &(pat->rgbs), outputs[out]->numLEDs, 0);
@@ -156,17 +150,17 @@ void processRCAction(void) {
             }
             break;
         case RC_PATTERN_A:
-            updateNewPattern(PAT_A);
+            updateNewPattern(PATTERN_A);
             break;
         case RC_PATTERN_B:
-            updateNewPattern(PAT_B);
+            updateNewPattern(PATTERN_B);
             break;
         case RC_PATTERN_C:
-            updateNewPattern(PAT_C);
+            updateNewPattern(PATTERN_C);
             break;
         case RC_NEXT_PATTERN:
-            if (activePattern == LAST_REGULAR_PATTERN) {
-                updateNewPattern(PAT_A);
+            if (activePattern == PATTERN_C) {
+                updateNewPattern(PATTERN_A);
             } else {
                 updateNewPattern(activePattern + 1);
             }
