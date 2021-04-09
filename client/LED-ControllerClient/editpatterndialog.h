@@ -23,11 +23,14 @@ private slots:
     void on_onCheckBox_clicked(bool checked);
     void on_testPushButton_clicked();
     void on_resetColorsPushButton_clicked();
+    void on_nextPattternComboBox_currentIndexChanged(const QString &arg1);
 
 private:
     Ui::EditPatternDialog *ui;
     LEDPattern *pattern;
     LEDPattern tempPattern;
+    void setPatternComboBox(void);
+    int getSelectedPattern(void);
 };
 
 #endif // EDITPATTERNDIALOG_H
