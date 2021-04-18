@@ -44,6 +44,10 @@ MainWindow::MainWindow(QWidget *parent)
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &MainWindow::onTimeout);
     ui->rcInComboBox1->setStyleSheet("background-color: lightgreen");
+    QStringList c = QCoreApplication::arguments();
+    if (c.size() > 1) {
+        open(c.at(1));
+    }
 }
 
 MainWindow::~MainWindow()
