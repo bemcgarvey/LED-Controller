@@ -285,7 +285,7 @@ void PatternDisplay::dropEvent(QDropEvent *event)
     QByteArray data = event->mimeData()->data("application/x-led_pattern");
     int leds = data[0];
     if (leds > pattern->getNumLEDs() && leds <= 255) {
-        displayManager->on_nLEDsSpinBoxChange(leds);
+        displayManager->setLEDsSpinBoxValue(leds);
     }
     pattern->fromByteArray(event->mimeData()->data("application/x-led_pattern"));
     event->acceptProposedAction();

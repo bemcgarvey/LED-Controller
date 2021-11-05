@@ -34,6 +34,11 @@ void OutputPanelDisplayManager::updateControls()
     }
 }
 
+void OutputPanelDisplayManager::setLEDsSpinBoxValue(int value)
+{
+    nLEDSpinBox->setValue(value);
+}
+
 void OutputPanelDisplayManager::on_nPatternSpinBoxChange(int value)
 {
     outputConfig->setNumPatterns(value);
