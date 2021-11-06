@@ -78,7 +78,39 @@ void EditPatternDialog::on_resetColorsPushButton_clicked()
     ui->colorPickerFrame->update();
 }
 
-void EditPatternDialog::on_nextPattternComboBox_currentIndexChanged(const QString &arg1)
+void EditPatternDialog::setPatternComboBox()
+{
+    uint8_t pat = pattern->getNextPattern() & 0xc0;
+    uint8_t step = pattern->getNextPattern() & 0x3f;
+    if (pat == LEDPattern::BOUNCE) {
+        ui->nextPatternComboBox->setCurrentIndex(ui->nextPatternComboBox->findText("Bounce"));
+        ui->stepSpinBox->setValue(step);
+    } else if (pat == LEDPattern::ROTATE_OUT) {
+        ui->nextPatternComboBox->setCurrentIndex(ui->nextPatternComboBox->findText("Rotate Out"));
+        ui->stepSpinBox->setValue(step);
+    } else if (pat == LEDPattern::ROTATE_IN) {
+        ui->nextPatternComboBox->setCurrentIndex(ui->nextPatternComboBox->findText("Rotate In"));
+        ui->stepSpinBox->setValue(step);
+    } else {
+        ui->nextPatternComboBox->setCurrentIndex(pattern->getNextPattern());
+        ui->stepSpinBox->setValue(0);
+    }
+}
+
+int EditPatternDialog::getSelectedPattern()
+{
+    if (ui->nextPatternComboBox->currentText() == "Bounce") {
+        return LEDPattern::BOUNCE + ui->stepSpinBox->value();
+    } else if (ui->nextPatternComboBox->currentText() == "Rotate Out") {
+        return LEDPattern::ROTATE_OUT + ui->stepSpinBox->value();
+    } else if (ui->nextPatternComboBox->currentText() == "Rotate In") {
+        return LEDPattern::ROTATE_IN + ui->stepSpinBox->value();
+    } else {
+        return ui->nextPatternComboBox->currentIndex();
+    }
+}
+
+void EditPatternDialog::on_nextPatternComboBox_currentTextChanged(const QString &arg1)
 {
     if (arg1 == "Bounce" || arg1 == "Rotate Out" || arg1 == "Rotate In") {
         ui->stepSpinBox->setEnabled(true);
@@ -87,34 +119,3 @@ void EditPatternDialog::on_nextPattternComboBox_currentIndexChanged(const QStrin
     }
 }
 
-void EditPatternDialog::setPatternComboBox()
-{
-    uint8_t pat = pattern->getNextPattern() & 0xc0;
-    uint8_t step = pattern->getNextPattern() & 0x3f;
-    if (pat == LEDPattern::BOUNCE) {
-        ui->nextPattternComboBox->setCurrentIndex(ui->nextPattternComboBox->findText("Bounce"));
-        ui->stepSpinBox->setValue(step);
-    } else if (pat == LEDPattern::ROTATE_OUT) {
-        ui->nextPattternComboBox->setCurrentIndex(ui->nextPattternComboBox->findText("Rotate Out"));
-        ui->stepSpinBox->setValue(step);
-    } else if (pat == LEDPattern::ROTATE_IN) {
-        ui->nextPattternComboBox->setCurrentIndex(ui->nextPattternComboBox->findText("Rotate In"));
-        ui->stepSpinBox->setValue(step);
-    } else {
-        ui->nextPattternComboBox->setCurrentIndex(pattern->getNextPattern());
-        ui->stepSpinBox->setValue(0);
-    }
-}
-
-int EditPatternDialog::getSelectedPattern()
-{
-    if (ui->nextPattternComboBox->currentText() == "Bounce") {
-        return LEDPattern::BOUNCE + ui->stepSpinBox->value();
-    } else if (ui->nextPattternComboBox->currentText() == "Rotate Out") {
-        return LEDPattern::ROTATE_OUT + ui->stepSpinBox->value();
-    } else if (ui->nextPattternComboBox->currentText() == "Rotate In") {
-        return LEDPattern::ROTATE_IN + ui->stepSpinBox->value();
-    } else {
-        return ui->nextPattternComboBox->currentIndex();
-    }
-}

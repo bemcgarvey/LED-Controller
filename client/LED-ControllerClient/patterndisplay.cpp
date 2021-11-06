@@ -32,7 +32,7 @@ PatternDisplay::PatternDisplay(QWidget *parent) :
     QHBoxLayout *hBox = new QHBoxLayout(this);
     QVBoxLayout *vBoxLeft = new QVBoxLayout();
     QVBoxLayout *vBoxRight = new QVBoxLayout();
-    hBox->setMargin(0);
+    hBox->setContentsMargins(0, 0, 0, 0);
     leftButton->setMaximumWidth(20);
     leftSpeedButton->setMaximumWidth(20);
     rightButton->setMaximumWidth(20);
@@ -52,11 +52,11 @@ PatternDisplay::PatternDisplay(QWidget *parent) :
     vBoxLeft->addWidget(leftButton);
     vBoxLeft->addWidget(leftSpeedButton);
     vBoxLeft->setSpacing(0);
-    vBoxLeft->setMargin(0);
+    vBoxLeft->setContentsMargins(0, 0, 0, 0);
     vBoxRight->addWidget(rightButton);
     vBoxRight->addWidget(rightSpeedButton);
     vBoxRight->setSpacing(0);
-    vBoxRight->setMargin(0);
+    vBoxRight->setContentsMargins(0, 0, 0, 0);
     hBox->addLayout(vBoxLeft);
     hBox->insertStretch(-1, 1);
     hBox->addLayout(vBoxRight);
@@ -84,7 +84,7 @@ void PatternDisplay::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton) {
         if (editable) {
-            int newSelection = ((event->x() - 20) / (ledSize + 5)) + leftIndex;
+            int newSelection = ((event->position().x() - 20) / (ledSize + 5)) + leftIndex;
             if (newSelection < pattern->getNumLEDs()) {
                 selection = newSelection;
                 update();
@@ -94,7 +94,7 @@ void PatternDisplay::mousePressEvent(QMouseEvent *event)
         dragStartPos = event->pos();
     } else if (event->button() == Qt::RightButton) {
         if (editable) {
-            int newSelection = ((event->x() - 20) / (ledSize + 5)) + leftIndex;
+            int newSelection = ((event->position().x() - 20) / (ledSize + 5)) + leftIndex;
             int currentSelection = selection;
             if (currentSelection < 0) {
                 currentSelection = 0;

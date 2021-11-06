@@ -23,7 +23,7 @@ private slots:
     void on_onCheckBox_clicked(bool checked);
     void on_testPushButton_clicked();
     void on_resetColorsPushButton_clicked();
-    void on_nextPattternComboBox_currentIndexChanged(const QString &arg1);
+    void on_nextPatternComboBox_currentTextChanged(const QString &arg1);
 
 private:
     Ui::EditPatternDialog *ui;

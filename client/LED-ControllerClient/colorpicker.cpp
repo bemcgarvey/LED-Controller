@@ -123,8 +123,8 @@ QColor ColorPicker::getColor() const
 void ColorPicker::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton) {
-        int c = (event->x() - border) / (rWidth + space);
-        int r = (event->y() - border) / (rHeight + space);
+        int c = (event->position().x() - border) / (rWidth + space);
+        int r = (event->position().y() - border) / (rHeight + space);
         selectedColor = r * 6 + c;
         emit colorChanged(colors[selectedColor]);
         update();

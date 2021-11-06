@@ -93,12 +93,6 @@
            <height>0</height>
           </size>
          </property>
-         <property name="maximumSize">
-          <size>
-           <width>120</width>
-           <height>16777215</height>
-          </size>
-         </property>
          <property name="text">
           <string>Reset to default colors</string>
          </property>
@@ -200,7 +194,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QComboBox" name="nextPattternComboBox">
+          <widget class="QComboBox" name="nextPatternComboBox">
            <item>
             <property name="text">
              <string>Pattern A</string>
